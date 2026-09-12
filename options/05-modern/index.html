@@ -21,6 +21,7 @@ html{scroll-behavior:smooth}
 body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--bg);font-size:1rem;line-height:1.65;-webkit-font-smoothing:antialiased}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px}
 .wrap{width:min(1360px,calc(100% - 4rem));margin-inline:auto}
 h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spacing:-.01em}
 .small{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;font-weight:500;color:var(--ink-2)}
@@ -59,6 +60,7 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
 .hero .mosaic figcaption{position:absolute;left:1rem;bottom:.9rem;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;background:rgba(250,248,243,.92);padding:.35rem .7rem;border-radius:999px}
 .hero .mosaic .tall{grid-row:span 2}
 .hero .mosaic .wide{grid-column:span 2}
+.hero .mosaic .wide img{object-position:50% 42%}
 .hero .mosaic .green{background:var(--green);color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:1.6rem}
 .hero .mosaic .green b{font-family:var(--display);font-weight:400;font-size:4.4rem;line-height:1;letter-spacing:-.02em}
 .hero .mosaic .green span{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
@@ -113,7 +115,7 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
 .visit dl{display:grid;grid-template-columns:auto 1fr;gap:.35rem 1.4rem;font-size:.94rem;margin-bottom:1rem}
 .visit dt{font-weight:500}
 .visit dd{color:var(--ink-2)}
-.visit .phone{font-family:var(--display);font-size:2rem}
+.visit .phone{font-family:var(--display);font-size:2rem;color:var(--ink);line-height:1.1}
 
 /* footer */
 .site-footer{padding:4rem 0 2rem;font-size:.88rem;color:var(--ink-2)}
@@ -127,6 +129,12 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
 
 .reveal{opacity:0;transform:translateY(16px);transition:opacity .9s,transform .9s}
 .reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none;transition:none}
+  .marquee .track{animation:none}
+  .hero .mosaic img,.tile .pic img{transition:none}
+}
 
 @media(max-width:1000px){
   .nav,.right .btn{display:none}.nav-toggle{display:block}
@@ -138,7 +146,24 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
   .visit .grid{grid-template-columns:1fr}
   .site-footer .grid{grid-template-columns:1fr 1fr}
 }
-@media(max-width:560px){.wrap{width:calc(100% - 2.4rem)}.grid6,.site-footer .grid{grid-template-columns:1fr}.hero .mosaic{grid-template-columns:1fr;grid-template-rows:auto}.hero .mosaic .wide,.hero .mosaic .tall{grid-column:span 1}.hero .mosaic figure{height:240px}.story .pics img:last-child{transform:none}}
+@media(max-width:560px){
+  .wrap{width:calc(100% - 2.4rem)}
+  .grid6,.site-footer .grid{grid-template-columns:1fr}
+  .hero{padding:3.5rem 0 2rem}
+  .hero .top{margin-bottom:2.2rem}
+  .hero .mosaic{grid-template-columns:1fr;grid-template-rows:auto;gap:.8rem}
+  .hero .mosaic .wide,.hero .mosaic .tall{grid-column:span 1}
+  .hero .mosaic figure{height:240px}
+  .hero .mosaic .lead{order:-1}
+  .hero .mosaic .green{padding:1.4rem;min-height:170px}
+  .marquee{margin-top:2rem}
+  .ranges,.visit{padding:4.5rem 0}
+  .ranges .head{margin-bottom:2.2rem}
+  .statement,.story{padding:5rem 0}
+  .story .grid{gap:3rem}
+  .story .pics img:last-child{transform:none}
+  .site-footer{padding-top:3rem}
+}
 </style>
 </head>
 <body>
@@ -166,10 +191,10 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
       </div>
     </div>
     <div class="mosaic">
-      <figure class="tall"><img src="../../assets/img/strudel.png" alt="Apple strudel"><figcaption>Apple Strudel</figcaption></figure>
-      <figure><img src="../../assets/img/mini-pastries.jpg" alt="Mini pastries"><figcaption>Mini Range</figcaption></figure>
+      <figure class="tall"><img src="../../assets/img/chocolate-tarts.jpg" alt="A tray of freshly baked tarts"><figcaption>Baked fresh daily</figcaption></figure>
+      <figure class="lead"><img src="../../assets/img/strudel.png" alt="Apple strudel"><figcaption>Apple Strudel</figcaption></figure>
       <div class="green"><b>1957</b><span>Est. Northbridge, Perth</span></div>
-      <figure class="wide"><img src="../../assets/img/mini-tarts-wide.jpg" alt="Mini fruit tarts and cannoli"><figcaption>Baked fresh daily</figcaption></figure>
+      <figure class="wide"><img src="../../assets/img/cake-flatlay.jpg" alt="Corica cakes and pastries"><figcaption>Continental cakes</figcaption></figure>
     </div>
   </div>
   <div class="marquee" aria-hidden="true">
@@ -189,7 +214,7 @@ h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spac
     <div class="grid6">
       <a class="tile reveal" href="#"><div class="pic"><img src="../../assets/img/strudel.png" alt=""></div><div class="meta"><h3>Strudels</h3><span>01</span></div><p>Our world-famous apple strudel, and seasonal fillings.</p></a>
       <a class="tile reveal" href="#" style="transition-delay:.08s"><div class="pic"><img src="../../assets/img/hazelnut-torta.jpg" alt=""></div><div class="meta"><h3>Cakes</h3><span>02</span></div><p>Hazelnut Torta, continental and custom-made celebration cakes.</p></a>
-      <a class="tile reveal" href="#" style="transition-delay:.16s"><div class="pic"><img src="../../assets/img/mini-pastries.jpg" alt=""></div><div class="meta"><h3>Mini Range</h3><span>03</span></div><p>Recipes perfected since 1957, in bite-sized form.</p></a>
+      <a class="tile reveal" href="#" style="transition-delay:.16s"><div class="pic"><img src="../../assets/img/mini-cupcake.png" alt=""></div><div class="meta"><h3>Mini Range</h3><span>03</span></div><p>Recipes perfected since 1957, in bite-sized form.</p></a>
       <a class="tile reveal" href="#" style="transition-delay:.24s"><div class="pic"><img src="../../assets/img/profiteroles.jpg" alt=""></div><div class="meta"><h3>Small Pastries</h3><span>04</span></div><p>Profiteroles, tarts and continental classics.</p></a>
       <a class="tile reveal" href="#" style="transition-delay:.32s"><div class="pic"><img src="../../assets/img/chocolate-tarts.jpg" alt=""></div><div class="meta"><h3>Biscuits</h3><span>05</span></div><p>Traditional Italian biscuits, made daily.</p></a>
       <a class="tile reveal" href="#" style="transition-delay:.4s"><div class="pic"><img src="../../assets/img/blueberry-cheesecake.png" alt=""></div><div class="meta"><h3>Gluten Free</h3><span>06</span></div><p>A dedicated selection. Ask in store or call ahead.</p></a>
