@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corica Pastries | Continental Cakes &amp; Pastries, Northbridge — Since 1957</title>
+<meta name="description" content="Since 1957 Corica Pastries has delighted Perth with world-famous apple strudels, continental cakes and pastries. Visit our Northbridge patisserie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4efe6; --paper-deep:#ebe3d4; --white:#fbf9f4;
+  --ink:#1c1d1a; --ink-soft:#575a53; --line:#d8cfbd;
+  --green:#004d3f; --green-ink:#0b3a30; --gold:#b9953a; --red:#b8402d;
+  --display:'Libre Caslon Display', 'Libre Caslon Text', Georgia, serif;
+  --serif:'Libre Caslon Text', Georgia, serif;
+  --sans:'Figtree', 'Helvetica Neue', Arial, sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--paper);font-size:1.02rem;line-height:1.6;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+.wrap{width:min(1320px,calc(100% - 3rem));margin-inline:auto}
+h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.02;letter-spacing:-.01em}
+.serif{font-family:var(--serif)}
+.label{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--green)}
+.rule{border:0;border-top:1px solid var(--ink);margin:0}
+.rule.light{border-color:var(--line)}
+.btn{display:inline-flex;align-items:center;gap:.7rem;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:1rem 1.6rem;border:1px solid var(--ink);color:var(--ink);transition:.25s}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.fill{background:var(--green);border-color:var(--green);color:var(--paper)}
+.btn.fill:hover{background:var(--green-ink)}
+.btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+
+/* masthead */
+.masthead{border-bottom:1px solid var(--ink);background:var(--paper);position:sticky;top:0;z-index:50}
+.masthead .top{display:flex;justify-content:space-between;align-items:center;padding:.6rem 0;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line)}
+.masthead .main{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:.9rem 0}
+.brand{display:flex;align-items:center;gap:1rem}
+.brand img{height:58px;width:auto}
+.brand .name{font-family:var(--display);font-size:1.45rem;line-height:1;letter-spacing:.02em}
+.brand .name small{display:block;font-family:var(--sans);font-size:.62rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft);margin-top:.35rem}
+.nav{display:flex;justify-content:center;gap:2rem;font-size:.82rem;font-weight:500;letter-spacing:.06em}
+.nav a{padding:.3rem 0;border-bottom:1px solid transparent;transition:.2s}
+.nav a:hover,.nav a.active{border-color:var(--ink)}
+.nav-toggle{display:none;background:none;border:1px solid var(--ink);font-family:var(--sans);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;padding:.55rem .9rem;cursor:pointer}
+.mobile-nav{display:none;border-top:1px solid var(--ink)}
+.mobile-nav a{display:block;padding:.9rem 0;border-bottom:1px solid var(--line);font-weight:500}
+.mobile-nav.open{display:block}
+
+/* hero */
+.hero{padding:3.5rem 0 0}
+.hero .grid{display:grid;grid-template-columns:7fr 5fr;gap:3rem;align-items:end}
+.hero h1{font-size:clamp(3rem,7.4vw,7rem);margin:.7rem 0 1.4rem}
+.hero h1 em{font-style:italic;color:var(--green)}
+.hero .lede{font-family:var(--serif);font-size:1.3rem;line-height:1.5;max-width:44ch;color:var(--ink-soft)}
+.hero .actions{display:flex;gap:1rem;flex-wrap:wrap;margin:2rem 0 3rem}
+.hero .meta{display:grid;grid-template-columns:repeat(3,auto);gap:2.5rem;padding:1.2rem 0;border-top:1px solid var(--ink);font-size:.82rem}
+.hero .meta b{display:block;font-family:var(--display);font-size:1.5rem;font-weight:400;margin-bottom:.15rem}
+.hero .art{position:relative}
+.hero .art .main{aspect-ratio:4/5;object-fit:cover;width:100%;background:#fff}
+.hero .art .float{position:absolute;left:-18%;bottom:8%;width:52%;box-shadow:0 30px 60px rgba(28,29,26,.22);border:6px solid var(--paper)}
+.hero .art .float img{aspect-ratio:1;object-fit:cover}
+.hero .art .cap{position:absolute;right:0;top:-1.6rem;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft)}
+
+/* ticker */
+.ticker{margin-top:4rem;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);overflow:hidden;background:var(--paper-deep)}
+.ticker .track{display:flex;width:max-content;animation:tick 40s linear infinite}
+.ticker span{font-family:var(--display);font-size:1.6rem;padding:.9rem 2.4rem;white-space:nowrap}
+.ticker span::after{content:"\2726";margin-left:2.4rem;color:var(--gold);font-size:1rem;vertical-align:middle}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* index of ranges */
+.index{padding:6rem 0}
+.index .head{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:3rem}
+.index h2{font-size:clamp(2.4rem,4.6vw,4rem);margin-top:.6rem}
+.index .head p{font-family:var(--serif);color:var(--ink-soft);font-size:1.1rem;max-width:46ch}
+.rows{border-top:1px solid var(--ink)}
+.row{display:grid;grid-template-columns:70px 1.1fr 1.4fr 180px 40px;gap:2rem;align-items:center;padding:1.6rem 0;border-bottom:1px solid var(--line);position:relative;transition:padding .3s}
+.row:hover{padding-left:.6rem}
+.row .n{font-family:var(--display);font-size:1.1rem;color:var(--gold)}
+.row h3{font-size:1.9rem}
+.row p{color:var(--ink-soft);font-size:.95rem;max-width:42ch}
+.row .thumb{width:180px;aspect-ratio:3/2;overflow:hidden;background:#fff}
+.row .thumb img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
+.row:hover .thumb img{transform:scale(1.06)}
+.row .arr{justify-self:end;width:32px;height:32px;border:1px solid var(--ink);border-radius:50%;display:grid;place-items:center;transition:.25s}
+.row:hover .arr{background:var(--ink);color:var(--paper)}
+.row .arr svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:1.6}
+.index .all{margin-top:1.4rem;font-size:.82rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+.index .all a{border-bottom:1px solid var(--ink)}
+
+/* feature strudel */
+.feature{background:var(--green);color:var(--paper);padding:0}
+.feature .grid{display:grid;grid-template-columns:1fr 1fr;min-height:640px}
+.feature .pic{background:#fff url(../../assets/img/strudel.png) center/cover;min-height:360px}
+.feature .copy{padding:clamp(3rem,6vw,6rem);display:flex;flex-direction:column;justify-content:center}
+.feature .label{color:var(--gold)}
+.feature h2{font-size:clamp(2.4rem,4.4vw,3.8rem);margin:.8rem 0 1.4rem}
+.feature h2 em{font-style:italic;color:#d9c47a}
+.feature p{font-family:var(--serif);font-size:1.15rem;color:rgba(244,239,230,.85);max-width:48ch;margin-bottom:1rem}
+.feature .btn{align-self:flex-start;border-color:rgba(244,239,230,.5);color:var(--paper);margin-top:1rem}
+.feature .btn:hover{background:var(--paper);color:var(--green)}
+
+/* story columns */
+.story{padding:6rem 0}
+.story .grid{display:grid;grid-template-columns:2fr 3fr;gap:4rem}
+.story .sticky{position:sticky;top:130px;align-self:start}
+.story h2{font-size:clamp(2.2rem,4vw,3.4rem);margin:.6rem 0 1.4rem}
+.story .drop::first-letter{font-family:var(--display);font-size:3.9rem;float:left;line-height:.8;padding:.35rem .6rem 0 0;color:var(--green)}
+.story .cols{columns:2;column-gap:2.5rem;font-family:var(--serif);color:var(--ink-soft);font-size:1.05rem}
+.story .cols p{margin-bottom:1.2rem;break-inside:avoid}
+.story .cols img{margin:.4rem 0 1.4rem;aspect-ratio:4/3;object-fit:cover;width:100%}
+.timeline{margin-top:2.5rem;border-top:1px solid var(--ink)}
+.timeline li{list-style:none;display:grid;grid-template-columns:90px 1fr;gap:1.5rem;padding:1rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.timeline b{font-family:var(--display);font-weight:400;font-size:1.3rem}
+
+/* catering + visit */
+.dual{border-top:1px solid var(--ink)}
+.dual .grid{display:grid;grid-template-columns:1fr 1fr}
+.dual .cell{padding:4rem 3rem 4rem 0}
+.dual .cell+.cell{border-left:1px solid var(--ink);padding-left:3rem;padding-right:0}
+.dual h2{font-size:2.4rem;margin:.6rem 0 1rem}
+.dual p{font-family:var(--serif);color:var(--ink-soft);margin-bottom:1.4rem;max-width:40ch}
+.hours{display:grid;grid-template-columns:auto 1fr;gap:.5rem 2rem;font-size:.95rem;margin-bottom:1.6rem}
+.hours dt{font-weight:600}
+.hours dd{color:var(--ink-soft)}
+.address{font-family:var(--display);font-size:1.6rem;line-height:1.2;margin-bottom:1rem}
+
+/* footer */
+.site-footer{background:var(--ink);color:rgba(244,239,230,.75);padding:4rem 0 2rem;font-size:.9rem}
+.site-footer .grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(244,239,230,.15)}
+.site-footer .big{font-family:var(--display);font-size:2.6rem;color:var(--paper);line-height:1;margin-bottom:1rem}
+.site-footer h5{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:600}
+.site-footer li{list-style:none;margin-bottom:.4rem}
+.site-footer a:hover{color:#fff}
+.site-footer .bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:1.4rem;font-size:.78rem;letter-spacing:.08em}
+
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .8s,transform .8s}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:1000px){
+  .masthead .main{grid-template-columns:1fr auto}
+  .nav{display:none}.nav-toggle{display:block}
+  .hero .grid,.index .head,.feature .grid,.story .grid,.dual .grid{grid-template-columns:1fr}
+  .hero .art{margin-top:2rem}.hero .art .float{left:0}
+  .row{grid-template-columns:40px 1fr 40px;gap:1rem}
+  .row p,.row .thumb{display:none}
+  .story .sticky{position:static}
+  .story .cols{columns:1}
+  .dual .cell{padding:3rem 0}
+  .dual .cell+.cell{border-left:0;border-top:1px solid var(--ink);padding-left:0}
+  .site-footer .grid{grid-template-columns:1fr 1fr}
+  .masthead .top{display:none}
+}
+@media(max-width:560px){.hero .meta{grid-template-columns:1fr 1fr}.site-footer .grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="top">
+      <span>Northbridge, Western Australia</span>
+      <span>Open Mon – Sat &nbsp;&middot;&nbsp; <a href="tel:0893288196">(08) 9328 8196</a></span>
+    </div>
+    <div class="main">
+      <a class="brand" href="#">
+        <img src="../../assets/img/logo.png" alt="Corica Pastries">
+        <span class="name">Corica Pastries<small>Est. 1957</small></span>
+      </a>
+      <nav class="nav">
+        <a href="#" class="active">Home</a><a href="#story">About Us</a><a href="#index">The Patisserie</a><a href="#catering">Catering</a><a href="#">FAQs</a><a href="#visit">Contact</a>
+      </nav>
+      <a href="#catering" class="btn" style="padding:.7rem 1.2rem">Order &amp; Catering</a>
+      <button class="nav-toggle" aria-expanded="false" aria-controls="mobileNav">Menu</button>
+    </div>
+    <nav class="mobile-nav" id="mobileNav"><a href="#">Home</a><a href="#story">About Us</a><a href="#index">The Patisserie</a><a href="#catering">Catering</a><a href="#">FAQs</a><a href="#visit">Contact</a></nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="label">Northbridge &middot; Perth &middot; Since 1957</div>
+        <h1>Perth's most famous <em>apple strudel</em>, and much more besides.</h1>
+        <p class="lede">For nearly seventy years Corica Pastries has delighted taste buds with expertly crafted pastries inspired by the rich flavours of continental Europe.</p>
+        <div class="actions">
+          <a href="#index" class="btn fill">View the Patisserie <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+          <a href="#story" class="btn">Our story</a>
+        </div>
+        <div class="meta">
+          <div><b>1957</b>Established</div>
+          <div><b>Northbridge</b>106 Aberdeen St</div>
+          <div><b>Mon – Sat</b>Baked fresh daily</div>
+        </div>
+      </div>
+      <div class="art">
+        <span class="cap">The mini range</span>
+        <img class="main" src="../../assets/img/mini-pastries.jpg" alt="A selection of Corica mini pastries">
+        <div class="float"><img src="../../assets/img/strudel.png" alt="Corica apple strudel"></div>
+      </div>
+    </div>
+  </div>
+  <div class="ticker" aria-hidden="true">
+    <div class="track">
+      <span>Apple Strudel</span><span>Hazelnut Torta</span><span>Cannoli</span><span>Continental Cakes</span><span>Mini Range</span><span>Biscotti</span><span>Gluten Free Range</span><span>Custom Celebration Cakes</span>
+      <span>Apple Strudel</span><span>Hazelnut Torta</span><span>Cannoli</span><span>Continental Cakes</span><span>Mini Range</span><span>Biscotti</span><span>Gluten Free Range</span><span>Custom Celebration Cakes</span>
+    </div>
+  </div>
+</section>
+
+<section class="index" id="index">
+  <div class="wrap">
+    <div class="head reveal">
+      <div>
+        <div class="label">The Patisserie</div>
+        <h2>What we bake.</h2>
+      </div>
+      <p>Whether you pick up a Corica product from one of our retail partners or visit our very own cake shop, you'll never be disappointed.</p>
+    </div>
+    <div class="rows">
+      <a class="row reveal" href="#"><span class="n">01</span><h3>Strudels</h3><p>You haven't experienced the true delight of strudel until you've tried our world-famous apple strudel.</p><div class="thumb"><img src="../../assets/img/strudel.png" alt=""></div><span class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="row reveal" href="#"><span class="n">02</span><h3>Birthday &amp; Celebration Cakes</h3><p>From the Hazelnut Torta to custom-made cakes for the occasions that matter.</p><div class="thumb"><img src="../../assets/img/hazelnut-torta.jpg" alt=""></div><span class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="row reveal" href="#"><span class="n">03</span><h3>Mini Range</h3><p>Unique strudels, cakes and pastries in bite-sized form. Perfect for the table.</p><div class="thumb"><img src="../../assets/img/mini-tarts-wide.jpg" alt=""></div><span class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="row reveal" href="#"><span class="n">04</span><h3>Small Pastries</h3><p>Profiteroles, tarts and continental classics, made by hand each morning.</p><div class="thumb"><img src="../../assets/img/profiteroles.jpg" alt=""></div><span class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+      <a class="row reveal" href="#"><span class="n">05</span><h3>Biscuits &amp; Gluten Free</h3><p>Traditional Italian biscuits, plus a dedicated gluten free selection.</p><div class="thumb"><img src="../../assets/img/chocolate-tarts.jpg" alt=""></div><span class="arr"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a>
+    </div>
+    <div class="all"><a href="#">See the full range</a><span>Have a special request? <a href="#visit">Contact us</a></span></div>
+  </div>
+</section>
+
+<section class="feature">
+  <div class="grid">
+    <div class="pic" role="img" aria-label="Corica apple strudel"></div>
+    <div class="copy reveal">
+      <div class="label">The signature</div>
+      <h2>Heaven <em>on a plate.</em></h2>
+      <p>Corica Pastries has served countless strudels to customers from all corners of the globe at our Northbridge cake shop.</p>
+      <p>One bite of our perfectly light pastry, fruity filling and silky cream and you'll agree.</p>
+      <a href="#" class="btn">About the strudel</a>
+    </div>
+  </div>
+</section>
+
+<section class="story" id="story">
+  <div class="wrap">
+    <div class="grid">
+      <div class="sticky reveal">
+        <div class="label">Our story</div>
+        <h2>Perfected since 1957.</h2>
+        <ul class="timeline">
+          <li><b>1957</b><span>Giuseppe Corica establishes Corica Pastries, bringing continental recipes to Perth.</span></li>
+          <li><b>Northbridge</b><span>The Aberdeen Street cake shop becomes a Perth institution.</span></li>
+          <li><b>Today</b><span>The same recipes, the same care, baked fresh every morning.</span></li>
+        </ul>
+      </div>
+      <div class="cols reveal">
+        <p class="drop">Established in 1957, Corica Pastries has consistently been delighting customers with our world-famous apple strudels, continental and custom-made cakes, and a choice of unique pastries.</p>
+        <img src="../../assets/img/shop-staff.jpg" alt="Stocking the shelves at the Northbridge shop">
+        <p>Whether you purchase a Corica product from another retailer or in our very own cake shop, you'll never be disappointed. Using recipes perfected since 1957, we offer our customers unique strudels, cakes and pastries.</p>
+        <img src="../../assets/img/cake-flatlay.jpg" alt="Corica cakes and pastries">
+        <p>Corica Pastries has served up countless strudels to customers from all corners of the globe. You only need to take one bite to agree it's like heaven on a plate.</p>
+        <p><a href="#" class="btn">Read more</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="dual" id="catering">
+  <div class="wrap">
+    <div class="grid">
+      <div class="cell reveal">
+        <div class="label">Catering</div>
+        <h2>Hosting an event or function?</h2>
+        <p>Our mini range and continental cakes are made for sharing. Tell us the occasion and the numbers and we'll put together a selection.</p>
+        <a href="#" class="btn fill">Organise catering</a>
+      </div>
+      <div class="cell reveal" id="visit">
+        <div class="label">Visit</div>
+        <p class="address">106 Aberdeen Street<br>Northbridge WA 6003</p>
+        <dl class="hours">
+          <dt>Mon – Fri</dt><dd>8am – 5:30pm</dd>
+          <dt>Saturday</dt><dd>8am – 3pm</dd>
+          <dt>Sun &amp; Public Holidays</dt><dd>Closed</dd>
+        </dl>
+        <a href="tel:0893288196" class="btn">(08) 9328 8196</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <div class="big">Corica Pastries</div>
+        <p>Since 1957, delighting Perth with world-famous apple strudels, continental cakes and traditional Italian pastries.</p>
+      </div>
+      <div><h5>The Patisserie</h5><ul><li><a href="#">Strudels</a></li><li><a href="#">Birthday Cakes</a></li><li><a href="#">Special Occasions</a></li><li><a href="#">Mini Range</a></li><li><a href="#">Biscuits</a></li><li><a href="#">Gluten Free Range</a></li></ul></div>
+      <div><h5>Visit</h5><ul><li>106 Aberdeen Street</li><li>Northbridge WA 6003</li><li><a href="tel:0893288196">(08) 9328 8196</a></li></ul></div>
+      <div><h5>Follow</h5><ul><li><a href="https://www.facebook.com/CoricaPastries/" target="_blank" rel="noopener">Facebook</a></li><li><a href="https://www.instagram.com/coricapastriesau/" target="_blank" rel="noopener">Instagram</a></li></ul></div>
+    </div>
+    <div class="bottom"><span>&copy; 2026 Corica Pastries. All rights reserved.</span><span>Est. 1957 &middot; Northbridge, Western Australia</span></div>
+  </div>
+</footer>
+
+<script>
+const t=document.querySelector('.nav-toggle'),m=document.getElementById('mobileNav');
+t.addEventListener('click',()=>{const o=m.classList.toggle('open');t.setAttribute('aria-expanded',o)});
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
