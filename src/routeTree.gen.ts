@@ -13,8 +13,15 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqsRouteImport } from './routes/faqs'
+import { Route as ShopRouteImport } from './routes/shop'
 import { Route as PatisserieIndexRouteImport } from './routes/patisserie/index'
 import { Route as PatisserieCategoryRouteImport } from './routes/patisserie/$category'
+import { Route as ShopIndexRouteImport } from './routes/shop/index'
+import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
+import { Route as ShopAccountRouteImport } from './routes/shop/account'
+import { Route as ShopCartRouteImport } from './routes/shop/cart'
+import { Route as ApiSwSplatRouteImport } from './routes/api/sw/$'
+import { Route as ShopParentParentSlugRouteImport } from './routes/shop/parent/$parentSlug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,6 +43,11 @@ const FaqsRoute = FaqsRouteImport.update({
   path: '/faqs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopRoute = ShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PatisserieIndexRoute = PatisserieIndexRouteImport.update({
   id: '/patisserie/',
   path: '/patisserie/',
@@ -46,14 +58,51 @@ const PatisserieCategoryRoute = PatisserieCategoryRouteImport.update({
   path: '/patisserie/$category',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopSlugRoute = ShopSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopAccountRoute = ShopAccountRouteImport.update({
+  id: '/account',
+  path: '/account',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCartRoute = ShopCartRouteImport.update({
+  id: '/cart',
+  path: '/cart',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ApiSwSplatRoute = ApiSwSplatRouteImport.update({
+  id: '/api/sw/$',
+  path: '/api/sw/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShopParentParentSlugRoute = ShopParentParentSlugRouteImport.update({
+  id: '/parent/$parentSlug',
+  path: '/parent/$parentSlug',
+  getParentRoute: () => ShopRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/shop': typeof ShopRouteWithChildren
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/shop/$slug': typeof ShopSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
   '/patisserie/': typeof PatisserieIndexRoute
+  '/shop/': typeof ShopIndexRoute
+  '/api/sw/$': typeof ApiSwSplatRoute
+  '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +110,13 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/shop/$slug': typeof ShopSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
   '/patisserie': typeof PatisserieIndexRoute
+  '/shop': typeof ShopIndexRoute
+  '/api/sw/$': typeof ApiSwSplatRoute
+  '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +124,15 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/shop': typeof ShopRouteWithChildren
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/shop/$slug': typeof ShopSlugRoute
+  '/shop/account': typeof ShopAccountRoute
+  '/shop/cart': typeof ShopCartRoute
   '/patisserie/': typeof PatisserieIndexRoute
+  '/shop/': typeof ShopIndexRoute
+  '/api/sw/$': typeof ApiSwSplatRoute
+  '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,8 +141,15 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/faqs'
+    | '/shop'
     | '/patisserie/$category'
+    | '/shop/$slug'
+    | '/shop/account'
+    | '/shop/cart'
     | '/patisserie/'
+    | '/shop/'
+    | '/api/sw/$'
+    | '/shop/parent/$parentSlug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -88,15 +157,28 @@ export interface FileRouteTypes {
     | '/contact'
     | '/faqs'
     | '/patisserie/$category'
+    | '/shop/$slug'
+    | '/shop/account'
+    | '/shop/cart'
     | '/patisserie'
+    | '/shop'
+    | '/api/sw/$'
+    | '/shop/parent/$parentSlug'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
     | '/faqs'
+    | '/shop'
     | '/patisserie/$category'
+    | '/shop/$slug'
+    | '/shop/account'
+    | '/shop/cart'
     | '/patisserie/'
+    | '/shop/'
+    | '/api/sw/$'
+    | '/shop/parent/$parentSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,8 +186,10 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   FaqsRoute: typeof FaqsRoute
+  ShopRoute: typeof ShopRouteWithChildren
   PatisserieCategoryRoute: typeof PatisserieCategoryRoute
   PatisserieIndexRoute: typeof PatisserieIndexRoute
+  ApiSwSplatRoute: typeof ApiSwSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -138,6 +222,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop': {
+      id: '/shop'
+      path: '/shop'
+      fullPath: '/shop'
+      preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/patisserie/': {
       id: '/patisserie/'
       path: '/patisserie'
@@ -152,16 +243,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PatisserieCategoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/$slug': {
+      id: '/shop/$slug'
+      path: '/$slug'
+      fullPath: '/shop/$slug'
+      preLoaderRoute: typeof ShopSlugRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/account': {
+      id: '/shop/account'
+      path: '/account'
+      fullPath: '/shop/account'
+      preLoaderRoute: typeof ShopAccountRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/cart': {
+      id: '/shop/cart'
+      path: '/cart'
+      fullPath: '/shop/cart'
+      preLoaderRoute: typeof ShopCartRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/api/sw/$': {
+      id: '/api/sw/$'
+      path: '/api/sw/$'
+      fullPath: '/api/sw/$'
+      preLoaderRoute: typeof ApiSwSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/shop/parent/$parentSlug': {
+      id: '/shop/parent/$parentSlug'
+      path: '/parent/$parentSlug'
+      fullPath: '/shop/parent/$parentSlug'
+      preLoaderRoute: typeof ShopParentParentSlugRouteImport
+      parentRoute: typeof ShopRoute
+    }
   }
 }
+
+interface ShopRouteChildren {
+  ShopSlugRoute: typeof ShopSlugRoute
+  ShopAccountRoute: typeof ShopAccountRoute
+  ShopCartRoute: typeof ShopCartRoute
+  ShopIndexRoute: typeof ShopIndexRoute
+  ShopParentParentSlugRoute: typeof ShopParentParentSlugRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopSlugRoute: ShopSlugRoute,
+  ShopAccountRoute: ShopAccountRoute,
+  ShopCartRoute: ShopCartRoute,
+  ShopIndexRoute: ShopIndexRoute,
+  ShopParentParentSlugRoute: ShopParentParentSlugRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   FaqsRoute: FaqsRoute,
+  ShopRoute: ShopRouteWithChildren,
   PatisserieCategoryRoute: PatisserieCategoryRoute,
   PatisserieIndexRoute: PatisserieIndexRoute,
+  ApiSwSplatRoute: ApiSwSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

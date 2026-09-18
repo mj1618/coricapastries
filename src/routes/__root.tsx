@@ -10,6 +10,7 @@ import { Header } from '#/components/Header'
 import { Footer } from '#/components/Footer'
 import { ButtonLink } from '#/components/ui'
 import { site } from '#/data/site'
+import { CartProvider } from '#/lib/shop/cart'
 import appCss from '../styles.css?url'
 
 const fontsHref =
@@ -60,7 +61,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 
 function RootLayout() {
   return (
-    <>
+    <CartProvider>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-cream focus:px-4 focus:py-2 focus:text-green"
@@ -72,7 +73,7 @@ function RootLayout() {
         <Outlet />
       </main>
       <Footer />
-    </>
+    </CartProvider>
   )
 }
 

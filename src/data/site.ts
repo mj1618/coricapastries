@@ -41,6 +41,7 @@ export const nav = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
   { to: '/patisserie', label: 'The Patisserie' },
+  { to: '/shop', label: 'Shop' },
   { to: '/faqs', label: 'FAQs' },
   { to: '/contact', label: 'Contact Us' },
 ] as const

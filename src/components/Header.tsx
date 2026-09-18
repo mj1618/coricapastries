@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { nav, site } from '#/data/site'
+import { useCart } from '#/lib/shop/cart'
 
 const left = nav.slice(0, 3)
 const right = nav.slice(3)
@@ -12,6 +13,13 @@ const desktopLink =
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const cart = useCart()
+  const badge = (to: string) =>
+    to === '/shop' && cart.hydrated && cart.count > 0 ? (
+      <span className="ml-1.5 inline-flex min-w-[1.35rem] items-center justify-center rounded-full bg-green px-1 text-[0.62rem] leading-[1.35rem] tracking-normal text-cream">
+        {cart.count}
+      </span>
+    ) : null
 
   // Close the mobile menu on Escape.
   useEffect(() => {
@@ -78,6 +86,7 @@ export function Header() {
             {right.map((item) => (
               <Link key={item.to} to={item.to} className={desktopLink}>
                 {item.label}
+                {badge(item.to)}
               </Link>
             ))}
           </nav>
@@ -107,6 +116,7 @@ export function Header() {
               onClick={() => setOpen(false)}
             >
               {item.label}
+              {badge(item.to)}
             </Link>
           ))}
         </nav>

@@ -16,7 +16,9 @@ export default defineConfig({
         crawlLinks: true,
         autoSubfolderIndex: true,
         // Crawled anchors like /faqs#wholesale would otherwise become their own page.
-        filter: ({ path }) => !path.includes('#'),
+        // Shop and API routes need live SupplyWise data, so they render on request.
+        filter: ({ path }) =>
+          !path.includes('#') && !path.startsWith('/shop') && !path.startsWith('/api'),
       },
     }),
     viteReact(),
