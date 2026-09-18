@@ -1,0 +1,191 @@
+@import 'tailwindcss';
+
+/*
+  Corica Pastries design tokens. Translated from the chosen "Heritage" concept:
+  centred, symmetrical, deep green / cream / gold hairlines, Cormorant + EB Garamond.
+  The logo colours (#004d3f green, #fadf3e gold) are fixed; the gold below is a
+  toned-down print gold that sits better on cream than the logo's bright yellow.
+*/
+@theme {
+  --color-green: #004d3f;
+  --color-green-deep: #003a30;
+  --color-green-soft: #e6efe9;
+  --color-cream: #f7f1e3;
+  --color-cream-deep: #efe6d1;
+  --color-ivory: #fffcf5;
+  --color-gold: #c9a640;
+  --color-gold-soft: #e8d59b;
+  --color-red: #b8402d;
+  --color-ink: #1f2a26;
+  --color-ink-soft: #5d6a64;
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'EB Garamond', Georgia, 'Times New Roman', serif;
+
+  --tracking-eyebrow: 0.32em;
+  --tracking-nav: 0.22em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-body);
+    color: var(--color-ink);
+    background: var(--color-cream);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: 0.005em;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+@layer components {
+  /* Page width */
+  .wrap {
+    width: min(1180px, calc(100% - 2rem));
+    margin-inline: auto;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      width: min(1180px, calc(100% - 3rem));
+    }
+  }
+
+  /* Small uppercase label above headings */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-gold);
+    font-weight: 500;
+  }
+  .eyebrow-green {
+    color: var(--color-green);
+  }
+
+  /* Gold hairline ornament with a small star */
+  .orn {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    justify-content: center;
+    color: var(--color-gold);
+    margin: 1rem 0;
+  }
+  .orn::before,
+  .orn::after {
+    content: '';
+    height: 1px;
+    width: 56px;
+    background: var(--color-gold);
+  }
+  .orn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    letter-spacing: var(--tracking-nav);
+    text-transform: uppercase;
+    padding: 0.95rem 1.9rem;
+    border: 1px solid var(--color-green);
+    color: var(--color-green);
+    text-align: center;
+    transition:
+      background 0.25s,
+      color 0.25s,
+      border-color 0.25s;
+  }
+  .btn:hover {
+    background: var(--color-green);
+    color: var(--color-cream);
+  }
+  .btn-solid {
+    background: var(--color-green);
+    color: var(--color-cream);
+  }
+  .btn-solid:hover {
+    background: var(--color-green-deep);
+  }
+  .btn-gold {
+    border-color: var(--color-gold);
+    color: var(--color-gold);
+  }
+  .btn-gold:hover {
+    background: var(--color-gold);
+    color: var(--color-green-deep);
+  }
+  .btn-cream {
+    border-color: rgb(247 241 227 / 0.6);
+    color: var(--color-cream);
+  }
+  .btn-cream:hover {
+    background: var(--color-cream);
+    color: var(--color-green);
+  }
+
+  /* Underlined text link */
+  .link-gold {
+    color: var(--color-green);
+    border-bottom: 1px solid var(--color-gold);
+    transition: color 0.2s;
+  }
+  .link-gold:hover {
+    color: var(--color-red);
+  }
+
+  /* Double hairline frame used on cards and photos */
+  .frame-card {
+    position: relative;
+    background: var(--color-ivory);
+    border: 1px solid var(--color-gold-soft);
+  }
+  .frame-card::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid var(--color-gold-soft);
+    pointer-events: none;
+  }
+
+  /* Scroll reveal. Only hides content once JS has added `.js` to <html>,
+     so prerendered HTML and no-JS visitors always see everything. */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+  }
+  .js .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}

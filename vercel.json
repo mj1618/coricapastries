@@ -1,12 +1,10 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": true,
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "tanstack-start",
   "headers": [
     {
       "source": "/(.*)",
-      "headers": [
-        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
-      ]
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
     }
   ]
 }
