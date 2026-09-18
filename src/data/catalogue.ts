@@ -1050,3 +1050,102 @@ export const catalogue: Category[] = [
     ]
   }
 ]
+
+/* -------------------------------------------------------------------------
+   Presentation metadata for the eight ranges.
+
+   `blurb` doubles as the one-line description on the /patisserie tiles and as
+   the lede on each category page, so keep it to a single factual sentence
+   drawn from the product descriptions above. `image` is the representative
+   photo for the overview tile — chosen so the circular crop stays filled.
+   ------------------------------------------------------------------------- */
+
+export type CategoryMeta = {
+  blurb: string
+  image: string
+  imageAlt: string
+}
+
+export const categoryMeta: Record<string, CategoryMeta> = {
+  strudels: {
+    blurb:
+      'The world-famous apple strudel that made our name: layers of flaky puff pastry, Italian custard, fresh apple and fresh cream.',
+    image: '/img/products/apple-strudel.jpg',
+    imageAlt:
+      'A Corica apple strudel, its flaky puff pastry layered with apple, custard and cream',
+  },
+  'birthday-cakes': {
+    blurb:
+      'Continental tortas of sponge, custard, buttercream and liqueur, in five sizes from ten serves up to eighty.',
+    image: '/img/products/black-forrest-torta.jpg',
+    imageAlt:
+      'A Black Forrest torta finished with piped cream, chocolate flake and maraschino cherries',
+  },
+  'special-occasions': {
+    blurb:
+      'Cheesecakes, honey cakes, fruit flans and croquembouche towers for the occasions worth baking for.',
+    image: '/img/products/mixed-fruit-cheesecake.jpg',
+    imageAlt: 'A mixed fruit cheesecake topped with glazed seasonal fruit',
+  },
+  'mini-range': {
+    blurb:
+      'Our pastries in bite size — éclairs, profiteroles, cannoli and tarts, priced individually for platters and functions.',
+    image: '/img/products/mini-sicilian-cannoli.jpg',
+    imageAlt: 'Two mini Sicilian cannoli filled with custard',
+  },
+  'small-pastries': {
+    blurb:
+      'The single-serve counter: slices, tarts and pastries made fresh, from the almond slice to the chocolate horn.',
+    image: '/img/products/amore.jpg',
+    imageAlt:
+      'Three Amore pastries, layers of shortbread biscuit filled with buttercream',
+  },
+  biscuits: {
+    blurb:
+      'Traditional Italian biscuits by the packet: cantucci, palmiers, meringues, shortbread and paste secche.',
+    image: '/img/products/mixed-shortbread.jpg',
+    imageAlt:
+      'An assortment of Corica shortbread biscuits with jam, chocolate and glacé cherry toppings',
+  },
+  'gluten-free': {
+    blurb:
+      'Gluten free tarts and loaves made with almonds, alongside our dairy free and gluten free paste secche.',
+    image: '/img/products/gf-pear-tart.jpg',
+    imageAlt:
+      'A gluten free pear and almond tart glazed and topped with sliced pear',
+  },
+  christmas: {
+    blurb:
+      'Our seasonal range — fruit mince pies, gingerbread, shortbread trees and yule logs. Please call to check availability.',
+    image: '/img/products/gingerbread.jpg',
+    imageAlt:
+      'Iced gingerbread shapes: a gingerbread man, a star and a Christmas tree',
+  },
+}
+
+/** The eight ranges in the order the owners present them. */
+export const categorySlugs = catalogue.map((c) => c.slug)
+
+export function getCategory(slug: string): Category | undefined {
+  return catalogue.find((c) => c.slug === slug)
+}
+
+export function getCategoryMeta(slug: string): CategoryMeta {
+  return (
+    categoryMeta[slug] ?? {
+      blurb: '',
+      image: '/img/products/apple-strudel.jpg',
+      imageAlt: 'A Corica pastry',
+    }
+  )
+}
+
+/** `$23` for whole dollars, `$36.50` otherwise. */
+export function formatPrice(value: number): string {
+  return Number.isInteger(value) ? `$${value}` : `$${value.toFixed(2)}`
+}
+
+/** Turns "Half (3-4 serves)" into "Half (3–4 serves)". */
+export function prettyLabel(label: string): string {
+  return label.replace(/(\d)\s*-\s*(\d)/g, '$1–$2')
+}

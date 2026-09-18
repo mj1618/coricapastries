@@ -11,7 +11,13 @@ export default defineConfig({
     tailwindcss(),
     tanstackStart({
       // Every page is static content, so prerender the whole site to HTML at build time.
-      prerender: { enabled: true, crawlLinks: true, autoSubfolderIndex: true },
+      prerender: {
+        enabled: true,
+        crawlLinks: true,
+        autoSubfolderIndex: true,
+        // Crawled anchors like /faqs#wholesale would otherwise become their own page.
+        filter: ({ path }) => !path.includes('#'),
+      },
     }),
     viteReact(),
   ],

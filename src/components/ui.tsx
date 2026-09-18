@@ -52,7 +52,7 @@ export function ButtonLink({
 }) {
   return (
     <Link
-      to={to as any}
+      to={to}
       hash={hash}
       className={`btn ${variantClass[variant]} ${className}`}
     >

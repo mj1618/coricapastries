@@ -45,7 +45,8 @@ export function Footer() {
             <ul className="space-y-2">
               <li>{site.address.street}</li>
               <li>
-                {site.address.suburb} {site.address.state} {site.address.postcode}
+                {site.address.suburb} {site.address.state}{' '}
+                {site.address.postcode}
               </li>
               <li>
                 <a href={site.phone.href} className="hover:text-gold-soft">

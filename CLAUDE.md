@@ -1,87 +1,102 @@
-# Corica Pastries website concepts
+# Corica Pastries website
 
-Home page design concepts for Corica Pastries, a Perth (Northbridge) Italian/continental
-patisserie established 1957 by Giuseppe Corica. Current live site: https://www.coricapastries.com.au/
+Production website for Corica Pastries, a Perth (Northbridge) Italian/continental patisserie
+established 1957 by Giuseppe Corica. Current live (old WordPress) site: https://www.coricapastries.com.au/
+This repo replaces it. The owners chose the "Heritage" direction from six home page concepts
+(tagged `concepts-v1` in git; see `git show concepts-v1:options/01-heritage/index.html`).
 
 ## The brief
 
 - Nearly 70 years of history. Be respectful of it. Nothing too bold.
 - "Traditional, but a modern quality take on traditional."
 - The logo is NOT changing. Logo colours: deep green `#004d3f`, gold `#fadf3e`, cream, small red accents.
-- Home page only for now. The owners will pick a direction from the options, then other pages follow.
-- Keep copy factual. Do not invent history, awards, family names or product claims. The only
-  established facts: est. 1957 by Giuseppe Corica, 106 Aberdeen Street Northbridge WA 6003,
-  (08) 9328 8196, hours Mon–Fri 8am–5:30pm / Sat 8am–3pm / Sun & public holidays closed
-  (hours were taken from the current site and are unconfirmed).
+- Owner feedback on the Heritage concept (2026-09-18): larger strudel hero like the old home page,
+  remove catering, revamp About Us, make it easy to use.
+- Keep copy factual. Do not invent history, awards, family names or product claims. Established
+  facts live in `src/data/site.ts` (address, phone, hours) and `src/data/catalogue.ts` (products,
+  prices and descriptions scraped from the old site on 2026-09-18). The FAQ answers in
+  `src/data/faqs.ts` are the old site's answers, lightly edited. Hours are from the old site and
+  unconfirmed by the owners.
 
-## Layout
+## Stack
+
+TanStack Start (React 19, file-based routing, Vite 8) + Tailwind v4 + Nitro, deployed on Vercel.
+Every route is static content and is prerendered to HTML at build time (`prerender` in
+`vite.config.ts`, with link crawling so the `$category` pages are discovered). The only server
+code is the contact form's server function.
 
 ```
-index.html                 Gallery page listing all concepts (the site's home page)
-assets/img/                Shared photography and logos pulled from the current site
-assets/thumbs/NN.jpg       1152x720 screenshots of each concept, used by the gallery
-options/NN-name/index.html One self-contained concept per folder (inline CSS + JS)
-options/06-warm-continental/   Supplied by a third party as bare HTML; css/, js/ and
-                               images/gallery/ were written here to make it render.
-                               Do NOT edit its index.html; it is kept byte-identical.
-vercel.json                Static hosting config (cleanUrls, trailingSlash, noindex header)
-.claude/launch.json        Local static server config (python http.server on 8765)
+src/routes/__root.tsx        HTML shell, fonts, global meta, Header/Footer, 404 page
+src/routes/index.tsx         Home
+src/routes/about.tsx         About Us
+src/routes/patisserie/       Range overview (index.tsx) and category listings ($category.tsx)
+src/routes/faqs.tsx          FAQs (data in src/data/faqs.ts)
+src/routes/contact.tsx       Contact: cards, map embed, enquiry form
+src/server/contact.ts        Server function that emails enquiries via the Resend REST API
+src/components/              Header, Footer, Reveal (scroll fade-in), ui.tsx (Eyebrow, Ornament,
+                             ButtonLink, PageHero), plus per-page folders
+src/data/site.ts             Business facts and nav
+src/data/catalogue.ts        Categories and products (edit here to change prices/copy)
+src/lib/seo.ts               head() helper for titles, descriptions, canonical, OG tags
+src/styles.css               Tailwind @theme tokens and the shared component classes
+public/img/                  Photography and logos. products/ holds 800x800 product photos
+                             from the old site; strudel-hero.png is the 1089x741 hero cutout.
 ```
 
-Concepts 01–05 reference shared images as `../../assets/img/<name>`. Concept 06 uses its own
-`css/`, `js/`, `images/` folders plus a few remote images from the live Corica site.
-
-| # | Folder | Direction | Fonts |
-|---|---|---|---|
-| 1 | 01-heritage | Centred, symmetrical, green/cream/gold hairlines, 1957 seal | Cormorant Garamond, EB Garamond |
-| 2 | 02-editorial | Warm paper, magazine layout, numbered index of ranges | Libre Caslon, Figtree |
-| 3 | 03-shopfront | Awning stripe, photo cards, menu board, hours and map | Lora, Karla |
-| 4 | 04-boutique | Deep green throughout, gold, arched frames | Marcellus, Mulish |
-| 5 | 05-modern | Near-white, photo mosaic, large Bodoni headline | Bodoni Moda, Work Sans |
-| 6 | 06-warm-continental | Supplied HTML; cream/olive/terracotta, dark hero | Playfair Display, Cormorant, Jost |
+Design tokens (Tailwind): colours `green green-deep green-soft cream cream-deep ivory gold
+gold-soft red ink ink-soft`; fonts `font-display` (Cormorant Garamond) and `font-body`
+(EB Garamond), loaded from Google Fonts in `__root.tsx`. Shared classes: `.wrap .eyebrow
+.eyebrow-green .orn .btn .btn-solid .btn-gold .btn-cream .link-gold .frame-card .reveal`.
 
 ## Conventions
 
-- Plain HTML/CSS/JS. No build step, no framework, no package.json. Keep it that way.
-- Fonts come from Google Fonts. Every concept must work offline-ish with a real fallback stack.
-- Each concept has a mobile nav toggle and IntersectionObserver `.reveal` fade-ins. Elements with
-  `.reveal` start invisible, which matters for screenshots (see below).
-- Adding a concept: new folder `options/NN-name/`, add a card to `index.html`, add a thumbnail
-  to `assets/thumbs/NN.jpg`, update the table above.
-- Product photos from the current site are small (298px squares). Do not scale them past ~450px
-  or they go soft. Several are on white backgrounds; check crops so tiles don't look empty.
-- `mini-tarts-wide.jpg` is a 1920x885 banner that is mostly white space; it needs a deliberate
-  object-position/scale or it renders as a blank box.
+- `npm run dev` (port 3000), `npm run build`, `npm run typecheck`, `npm run lint`.
+  `.claude/launch.json` defines the `corica-dev` preview server.
+- Never hardcode the phone, address or hours; import from `src/data/site.ts`.
+- `.reveal` elements only hide-then-fade when JS has added `.js` to `<html>`, so prerendered
+  HTML and no-JS visitors see everything. Keep it that way.
+- Product photos are 800px squares; do not upscale. `mini-tarts-wide.jpg` and
+  `shop-counter-wide.jpg` are wide banners that need a deliberate object-position.
+- Adding a category: add it to `catalogue` in `src/data/catalogue.ts`; the route, footer links,
+  category switcher and prerender pick it up automatically.
+- There is no online shop or cart. Ordering is by phone or in store, and copy should say so.
+
+## Contact form
+
+`src/server/contact.ts` sends through Resend using plain `fetch`. It needs `RESEND_API_KEY`
+and `CONTACT_TO_EMAIL` (see `.env.example`) set in the Vercel project. Without them the form
+shows a "please call the shop" message instead of failing silently.
 
 ## Screenshots and QA
 
-Use headless Chrome with a throwaway profile (never the user's real profile):
+Use headless Chrome with a throwaway profile (never the user's real profile) against the dev
+server:
 
 ```
-"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
-  --hide-scrollbars --no-first-run --user-data-dir=/tmp/chrome-qa --window-size=1440,900 \
-  --virtual-time-budget=6000 --screenshot=/tmp/out.png "file:///$PWD/options/01-heritage/index.html"
+timeout 60 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --disable-gpu \
+  --hide-scrollbars --no-first-run --force-prefers-reduced-motion --disable-features=LazyImageLoading --user-data-dir=/tmp/chrome-qa --window-size=1440,2400 \
+  --virtual-time-budget=8000 --screenshot=/tmp/out.png http://localhost:3000/
 ```
 
 - Wrap it in `timeout 60`: Chrome writes the PNG then often hangs instead of exiting.
 - Run captures sequentially with separate `--user-data-dir` values; a shared profile deadlocks.
-- Headless Chrome on macOS clamps the window to ~500px wide, so `--window-size=390,...` is a lie.
-  For true mobile captures, wrap the page in a 390px-wide iframe inside a temporary host page.
-- For full-page captures, make a temp copy in the scratchpad with `.reveal{opacity:0` changed to
-  `opacity:1` and `transform:none`, and rewrite `../../assets` to absolute `file://` paths.
-  Never leave temp copies in the project.
-- Thumbnails: 1440x900 capture, resized to 1152x720 JPEG q82 into `assets/thumbs/`.
+- Headless Chrome on macOS clamps the window to ~500px wide. For true mobile captures, wrap the
+  page in a 390px-wide iframe inside a temporary host page.
+- `--force-prefers-reduced-motion` makes `.reveal` sections render opaque (via the reduced-motion
+  rule in `styles.css`); without it IntersectionObserver never fires under a virtual time budget
+  and sections come out blank. `--disable-features=LazyImageLoading` makes lazy images load too.
 
 ## Hosting and deployment
 
 - GitHub: `mj1618/coricapastries` (public), branch `main`.
 - Vercel: project `corica-website` in team "SupplyWise projects" (scope `supplywise-projects-e7d2d05f`).
-  Production alias: https://corica-website.vercel.app
+  Production alias: https://corica-website.vercel.app . `vercel.json` sets
+  `"framework": "tanstack-start"` and a global `X-Robots-Tag: noindex` header.
 - The Vercel project is Git-connected, so a push to `main` auto-deploys. To deploy immediately:
-  `vercel deploy --prod --yes` from the repo root.
-- `trailingSlash` must stay `true` in `vercel.json`. With it false, `/options/06-warm-continental`
-  loses its trailing slash and the relative `css/style.css` link resolves to the wrong folder.
-- Every response carries `X-Robots-Tag: noindex` because this is a client preview, not the real site.
+  `timeout 600 vercel deploy --prod --yes` from the repo root (needs `.vercel/project.json`,
+  which is gitignored; `vercel link --project corica-website --scope supplywise-projects-e7d2d05f --yes` recreates it).
+- Remove the `X-Robots-Tag` header from `vercel.json` when the real domain is pointed at Vercel.
+  Until then the vercel.app URL must not be indexed as a duplicate of the live site.
 
 ### Vercel CLI gotcha
 
@@ -91,9 +106,9 @@ any login made afterwards. Always wrap Vercel CLI calls in `timeout`, and before
 kill stray processes: `pgrep -fl "bin/vercel"` then `kill -9 <pid>`. Never run `vercel login --debug`;
 it prints the access token to stdout.
 
-## Status (2026-09-12)
+## Status (2026-09-18)
 
-All six concepts are built, QA'd on desktop and 390px mobile, and deployed. Waiting on the owners
-to choose a direction. Known gaps: all nav links other than home are `#` placeholders, there is no
-biscuit photo (the Biscuits tile reuses the chocolate tarts image), and the photography needs
-replacing with higher-resolution originals before any real build.
+Heritage direction chosen and built out as a full site: Home, About, Patisserie (8 ranges),
+FAQs, Contact, 404. Deployed to the vercel.app alias. Still to do: owners to confirm hours and
+prices, supply higher-resolution photography, provide the enquiry recipient address (and a
+Resend key) for the contact form, and move the coricapastries.com.au domain to Vercel.

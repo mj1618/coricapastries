@@ -26,11 +26,14 @@ export function Header() {
       <div className="bg-green-deep px-4 py-2 text-center text-[0.72rem] uppercase tracking-[0.12em] text-cream sm:text-[0.82rem] sm:tracking-[0.14em]">
         Open Monday to Saturday
         <span className="hidden sm:inline">
-          &nbsp;<span className="text-gold">&#10022;</span>&nbsp; {site.address.street},{' '}
-          {site.address.suburb}
+          &nbsp;<span className="text-gold">&#10022;</span>&nbsp;{' '}
+          {site.address.street}, {site.address.suburb}
         </span>
         &nbsp;<span className="text-gold">&#10022;</span>&nbsp;
-        <a href={site.phone.href} className="whitespace-nowrap hover:text-gold-soft">
+        <a
+          href={site.phone.href}
+          className="whitespace-nowrap hover:text-gold-soft"
+        >
           {site.phone.display}
         </a>
       </div>
