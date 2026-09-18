@@ -102,10 +102,12 @@ function Hero() {
           <div className="relative lg:-mr-4 xl:-mr-8">
             {/* Soft ellipse so the cutout reads as sitting on a surface. */}
             <div
-              className="pointer-events-none absolute inset-x-[5%] -bottom-[12%] h-[26%]"
+              className="pointer-events-none absolute inset-x-0 -bottom-[12%] h-[26%]"
               style={{
+                // closest-side keeps the ellipse inside its box, so it fades to
+                // nothing before the edges instead of being clipped.
                 background:
-                  'radial-gradient(ellipse at 48% 50%, rgb(0 22 17 / 0.7) 0%, rgb(0 22 17 / 0.42) 40%, rgb(0 22 17 / 0.14) 64%, rgb(0 22 17 / 0) 80%)',
+                  'radial-gradient(ellipse closest-side at 50% 50%, rgb(0 22 17 / 0.7) 0%, rgb(0 22 17 / 0.42) 40%, rgb(0 22 17 / 0.14) 70%, rgb(0 22 17 / 0) 100%)',
               }}
               aria-hidden="true"
             />
