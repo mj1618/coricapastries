@@ -3,6 +3,7 @@ import { Reveal } from '#/components/Reveal'
 import { PriceNote } from '#/components/patisserie/OrderCard'
 import { ButtonLink, Eyebrow, Ornament, PageHero } from '#/components/ui'
 import { catalogue, getCategoryMeta } from '#/data/catalogue'
+import { shopCategory } from '#/data/shopLinks'
 import { site } from '#/data/site'
 import { seo } from '#/lib/seo'
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute('/patisserie/')({
     seo({
       title: 'The Patisserie',
       description:
-        'Every range Corica Pastries bakes in Northbridge: apple strudels, birthday tortas, cheesecakes and croquembouche, the mini range, small pastries, Italian biscuits, a gluten free range and Christmas. Order by phone or in store.',
+        'Every range Corica Pastries bakes in Northbridge: apple strudels, birthday tortas, cheesecakes and croquembouche, the mini range, small pastries, Italian biscuits, a gluten free range and Christmas. Order online for pickup, by phone or in store.',
       path: '/patisserie',
     }),
   component: Page,
@@ -23,7 +24,7 @@ function Page() {
       <PageHero
         eyebrow="The Patisserie"
         title="Strudels, cakes and pastries, made the way we have since 1957."
-        lede="Everything is baked here in Northbridge. Browse the ranges below, then order by phone or come and see us in the shop."
+        lede="Everything is baked here in Northbridge. Browse the ranges below, then order online for pickup, by phone or in the shop."
       />
       <Ranges />
       <HowToOrder />
@@ -55,33 +56,55 @@ function Ranges() {
                 delay={(i % 4) * 0.08}
                 className="h-full"
               >
-                <Link
-                  to="/patisserie/$category"
-                  params={{ category: category.slug }}
-                  className="group flex h-full flex-col items-center text-center"
-                >
-                  <div className="relative mx-auto aspect-square w-full max-w-[190px] overflow-hidden rounded-full border border-gold-soft bg-white p-2.5 sm:max-w-[240px]">
-                    <img
-                      src={meta.image}
-                      alt={meta.imageAlt}
-                      width={800}
-                      height={800}
-                      loading="lazy"
-                      decoding="async"
-                      className="h-full w-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
+                <div className="flex h-full flex-col items-center text-center">
+                  <Link
+                    to="/patisserie/$category"
+                    params={{ category: category.slug }}
+                    className="group block w-full"
+                  >
+                    <div className="relative mx-auto aspect-square w-full max-w-[190px] overflow-hidden rounded-full border border-gold-soft bg-white p-2.5 sm:max-w-[240px]">
+                      <img
+                        src={meta.image}
+                        alt={meta.imageAlt}
+                        width={800}
+                        height={800}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
 
-                  <h3 className="mt-5 text-[1.65rem] text-balance">
-                    {category.name}
-                  </h3>
+                    <h3 className="mt-5 text-[1.65rem] text-balance transition-colors group-hover:text-red">
+                      {category.name}
+                    </h3>
+                  </Link>
+
                   <p className="mt-2 max-w-[32ch] flex-1 text-[0.98rem] text-pretty text-ink-soft">
                     {meta.blurb}
                   </p>
-                  <span className="mt-4 inline-block border-b border-gold pb-0.5 text-[0.75rem] tracking-nav text-green uppercase transition-colors group-hover:text-red">
-                    Discover
-                  </span>
-                </Link>
+
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                    <Link
+                      to="/patisserie/$category"
+                      params={{ category: category.slug }}
+                      className="border-b border-gold pb-0.5 text-[0.75rem] tracking-nav text-green uppercase transition-colors hover:text-red"
+                    >
+                      Discover
+                      <span className="sr-only"> {category.name}</span>
+                    </Link>
+                    <span className="text-gold" aria-hidden="true">
+                      &#10022;
+                    </span>
+                    <Link
+                      to="/shop"
+                      search={{ category: shopCategory(category.slug) }}
+                      className="border-b border-gold pb-0.5 text-[0.75rem] tracking-nav text-green uppercase transition-colors hover:text-red"
+                    >
+                      Order online
+                      <span className="sr-only"> ({category.name})</span>
+                    </Link>
+                  </div>
+                </div>
               </Reveal>
             )
           })}
@@ -103,8 +126,8 @@ const steps = [
   },
   {
     n: 'II',
-    title: 'Call the shop or visit us',
-    body: `Ring ${site.phone.display} and one of our team will take your order, or come in and order at the counter.`,
+    title: 'Order online, or call us',
+    body: `Add what you would like to the cart in our online shop and choose a pickup day, or ring ${site.phone.display} and one of our team will take your order at the counter.`,
   },
   {
     n: 'III',
@@ -114,6 +137,7 @@ const steps = [
 ]
 
 const goodToKnow = [
+  'Online orders are for pickup — you choose a pickup day at checkout and collect from the shop.',
   'Some products need 48–72 hours’ notice, so the more notice you can give us the better.',
   'We can write a custom message on your cake — please ask when you order.',
   'Wholesale is available by arrangement. Call the shop to discuss.',
@@ -136,7 +160,7 @@ function HowToOrder() {
         <Reveal className="text-center">
           <Eyebrow>How to order</Eyebrow>
           <h2 className="mx-auto mt-2 max-w-[24ch] text-[clamp(1.9rem,3.6vw,2.8rem)] text-cream">
-            Ordering is simple, and always by phone or in person
+            Order online, by phone or in person
           </h2>
           <Ornament />
         </Reveal>
@@ -181,7 +205,10 @@ function HowToOrder() {
           </div>
 
           <div className="mt-9 flex flex-wrap justify-center gap-4">
-            <a href={site.phone.href} className="btn btn-gold">
+            <ButtonLink to="/shop" variant="gold">
+              Order online
+            </ButtonLink>
+            <a href={site.phone.href} className="btn btn-cream">
               Call {site.phone.display}
             </a>
             <ButtonLink to="/contact" variant="cream">
@@ -190,8 +217,8 @@ function HowToOrder() {
           </div>
 
           <p className="mt-8 text-center text-[0.9rem] text-cream/75 italic">
-            Prices are a guide only and may change. Please call to confirm
-            current pricing and availability.
+            Prices shown here are a guide; the online shop always shows current
+            prices.
           </p>
         </Reveal>
       </div>

@@ -21,22 +21,30 @@ This repo replaces it. The owners chose the "Heritage" direction from six home p
 ## Stack
 
 TanStack Start (React 19, file-based routing, Vite 8) + Tailwind v4 + Nitro, deployed on Vercel.
-Every route is static content and is prerendered to HTML at build time (`prerender` in
-`vite.config.ts`, with link crawling so the `$category` pages are discovered). The only server
-code is the contact form's server function.
+The brochure pages are static content and are prerendered to HTML at build time (`prerender` in
+`vite.config.ts`, with link crawling so the `$category` pages are discovered). `/shop*` and
+`/api/*` are excluded from the prerender filter because they need live SupplyWise data. The
+server code is the contact form's server function and the SupplyWise proxy.
 
 ```
-src/routes/__root.tsx        HTML shell, fonts, global meta, Header/Footer, 404 page
+src/routes/__root.tsx        HTML shell, fonts, global meta, CartProvider, Header/Footer, 404
 src/routes/index.tsx         Home
 src/routes/about.tsx         About Us
 src/routes/patisserie/       Range overview (index.tsx) and category listings ($category.tsx)
 src/routes/faqs.tsx          FAQs (data in src/data/faqs.ts)
 src/routes/contact.tsx       Contact: cards, map embed, enquiry form
+src/routes/shop.tsx          Shop layout route: loads the store snapshot for every /shop page
+src/routes/shop/             index.tsx (grid, ?category=), $slug.tsx (product),
+                             parent/$parentSlug.tsx (variant group), cart.tsx, account.tsx
+src/routes/api/sw/$.ts       Same-origin proxy to the SupplyWise Retail Storefront API
 src/server/contact.ts        Server function that emails enquiries via the Resend REST API
 src/components/              Header, Footer, Reveal (scroll fade-in), ui.tsx (Eyebrow, Ornament,
-                             ButtonLink, PageHero), plus per-page folders
+                             ButtonLink, PageHero), plus per-page folders including shop/
+src/lib/shop/                SupplyWise client: api, catalog, browse, cart, favourites, auth,
+                             checkout, money, sanitize, types, config (slug, bases, storage keys)
 src/data/site.ts             Business facts and nav
 src/data/catalogue.ts        Categories and products (edit here to change prices/copy)
+src/data/shopLinks.ts        Catalogue slug → shop `?category=` key, for brochure→shop links
 src/lib/seo.ts               head() helper for titles, descriptions, canonical, OG tags
 src/styles.css               Tailwind @theme tokens and the shared component classes
 public/img/                  Photography and logos. products/ holds 800x800 product photos
@@ -58,8 +66,57 @@ gold-soft red ink ink-soft`; fonts `font-display` (Cormorant Garamond) and `font
 - Product photos are 800px squares; do not upscale. `mini-tarts-wide.jpg` and
   `shop-counter-wide.jpg` are wide banners that need a deliberate object-position.
 - Adding a category: add it to `catalogue` in `src/data/catalogue.ts`; the route, footer links,
-  category switcher and prerender pick it up automatically.
-- There is no online shop or cart. Ordering is by phone or in store, and copy should say so.
+  category switcher and prerender pick it up automatically. Also add its shop key to
+  `shopCategoryBySlug` in `src/data/shopLinks.ts` so the "Order online" links keep working.
+- Ordering is online at `/shop` for **pickup**, by phone or in store. Copy should offer all three
+  and must never promise delivery — the shop has no delivery option.
+- Brochure pages never link to a raw `/shop?category=…` string. They go through
+  `shopCategory(slug)` in `src/data/shopLinks.ts`, because two catalogue slugs differ from the
+  shop's category keys (`special-occasions → special-occasion`, `gluten-free → gluten-free-range`).
+
+## Shop (SupplyWise)
+
+The online shop at `/shop` is a custom storefront over the SupplyWise Retail Storefront API.
+Reference spec: https://supplywise.com.au/retail-shop-builder-llm.txt
+
+**Routes.** `/shop` (product grid, filtered by `?category=<key>`), `/shop/$slug` (a product),
+`/shop/parent/$parentSlug` (a variant group), `/shop/cart`, `/shop/account`. Category keys come
+from the SupplyWise category names: `small-pastries, extras, mini-range, biscuits, strudels,
+special-occasion, gluten-free-range, birthday-cakes, christmas`.
+
+**Store data.** `src/routes/shop.tsx` is the layout route for every `/shop` page. Its loader calls
+`getStore()` once and shares the snapshot with children via `Route.useLoaderData()` /
+`useLoaderData({ from: '/shop' })`. It has `staleTime: 60_000` and sends
+`cache-control: public, s-maxage=60, stale-while-revalidate=600`. Shop routes are excluded from
+the prerender filter in `vite.config.ts`, so they render on request (SSR on the first hit) and
+prices and stock stay live.
+
+**Proxy.** `src/routes/api/sw/$.ts` forwards `/api/sw/*` to
+`https://actions.supplywise.com.au/api/retail/v1/coricapastries`, passing method, query, body,
+`Content-Type` and `Authorization` through unchanged. The browser only ever talks to our own
+origin, so ad and privacy blockers cannot silently drop a storefront request. Server-side code
+calls SupplyWise directly (`SW_DIRECT_BASE`); `apiBase()` in `src/lib/shop/config.ts` picks.
+
+**Cart and favourites.** Client-only, in `localStorage`: the cart under `sw_cart_coricapastries`
+and favourites under `sw_favourites_coricapastries` (`STORAGE_KEYS` in `src/lib/shop/config.ts`).
+`CartProvider` is mounted in `__root.tsx`, so the Header cart badge works on every page; it only
+reads storage after mount (`cart.hydrated`) to avoid a hydration mismatch.
+
+**Checkout hand-off.** We never take payment. `createCheckout()` POSTs the cart to `/checkout`
+and gets back `{ token, checkoutUrl }`; the shopper is redirected to SupplyWise's hosted
+checkout, which owns the pickup calendar, delivery pricing and payment. Corica is **pickup only**
+(`shippingType: 'pickup-only'`), so the shopper picks a pickup day at checkout and collects from
+106 Aberdeen Street. Some products carry a notice period (1–3 days) that the hosted checkout
+enforces.
+
+**Shopper login.** PKCE (S256) against `https://supplywise.com.au/coricapastries/retail/authorize`,
+with `redirect_uri` set to `<origin>/shop/account`. The verifier and CSRF state are stashed in
+`sessionStorage` under `sw_pkce`; tokens live under `sw_retail_tokens`. The redirect URI has to be
+byte-identical between the authorize call and the token exchange.
+
+**Supplier-side setup still required.** In SupplyWise, under **Settings → Custom Storefront**, add
+the storefront domain and mark it the default. Until that is done the post-checkout "Back to
+store" links will not return to `/shop`, and shopper login will not redirect back to us.
 
 ## Contact form
 
@@ -109,6 +166,14 @@ it prints the access token to stdout.
 ## Status (2026-09-18)
 
 Heritage direction chosen and built out as a full site: Home, About, Patisserie (8 ranges),
-FAQs, Contact, 404. Deployed to the vercel.app alias. Still to do: owners to confirm hours and
-prices, supply higher-resolution photography, provide the enquiry recipient address (and a
-Resend key) for the contact form, and move the coricapastries.com.au domain to Vercel.
+FAQs, Contact, 404. Deployed to the vercel.app alias.
+
+The SupplyWise-powered online shop is being built at `/shop`, and the brochure pages now point at
+it: "Order online" in the hero, on every range tile, in the patisserie "How to order" band, on
+each range's order card, and in the FAQs, About, Contact and 404 copy. All of it says pickup from
+Aberdeen Street, never delivery.
+
+Still to do: owners to confirm hours and prices, supply higher-resolution photography, provide the
+enquiry recipient address (and a Resend key) for the contact form, move the coricapastries.com.au
+domain to Vercel, and register the storefront domain under SupplyWise Settings → Custom Storefront
+(see the Shop section).

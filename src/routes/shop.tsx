@@ -1,5 +1,6 @@
 import { Outlet, createFileRoute } from '@tanstack/react-router'
 import { getStore } from '#/lib/shop/api'
+import { AccountSync } from '#/components/shop/AccountSync'
 
 /**
  * Layout for every /shop route. Loads the whole-store snapshot once (server-side on
@@ -13,5 +14,10 @@ export const Route = createFileRoute('/shop')({
   headers: () => ({
     'cache-control': 'public, s-maxage=60, stale-while-revalidate=600',
   }),
-  component: () => <Outlet />,
+  component: () => (
+    <>
+      <AccountSync />
+      <Outlet />
+    </>
+  ),
 })

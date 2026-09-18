@@ -4,7 +4,8 @@ import type { Product } from '#/data/catalogue'
 /**
  * One product in a range listing: square photo, name, description, price
  * (a single figure, or a list of sizes/options) and any allergen notice.
- * There is no cart — ordering is by phone or in store — so nothing is clickable.
+ * These brochure cards are not clickable; adding to a cart happens in /shop,
+ * which the range's OrderCard links to.
  */
 export function ProductCard({ product }: { product: Product }) {
   return (

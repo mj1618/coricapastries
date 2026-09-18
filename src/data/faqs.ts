@@ -70,17 +70,24 @@ export const faqs: FaqGroup[] = [
   {
     id: 'ordering',
     group: 'Ordering',
-    blurb: 'Custom cakes, special requests and wholesale.',
+    blurb: 'Online orders, custom cakes, special requests and wholesale.',
     items: [
       {
         id: 'pre-order',
         q: 'How can I pre-order your products?',
-        a: 'Orders are placed by phone or in store. Call us on {phone} and the shop team will talk your order through with you.',
+        a: 'Order online in our shop and choose a pickup day, or call us on {phone} and the shop team will talk your order through with you.',
+        cta: { to: '/shop', label: 'Order online' },
+      },
+      {
+        id: 'online-ordering',
+        q: 'How does online ordering work?',
+        a: 'Choose your products in our online shop and add them to your cart. Payment is taken on the checkout of our ordering partner, SupplyWise.\n\nOrders are for pickup only: choose your pickup day at checkout and collect your order from {address}.',
+        cta: { to: '/shop', label: 'Visit the shop' },
       },
       {
         id: 'notice',
         q: 'How far in advance should I place my order?',
-        a: 'It depends on the products and the quantity — the more notice you can give us, the better. Some products need 48 to 72 hours.\n\nIf something pops up unexpectedly, give us a ring anyway and we will do our best.',
+        a: 'It depends on the products and the quantity — the more notice you can give us, the better. Some products need 48 to 72 hours.\n\nThe online shop shows the notice period for each product and lets you choose a pickup day that suits.\n\nIf something pops up unexpectedly, give us a ring anyway and we will do our best.',
       },
       {
         id: 'message-on-cake',
@@ -111,7 +118,7 @@ export const faqs: FaqGroup[] = [
       {
         id: 'home-delivery',
         q: 'Do you offer home delivery?',
-        a: 'We do not deliver ourselves, but you can order from us on UberEats and DoorDash.',
+        a: 'We do not deliver ourselves, but you can order from us on UberEats and DoorDash.\n\nOrders placed in our online shop are for pickup — you collect them from the shop at {address}.',
       },
       {
         id: 'cant-find',

@@ -5,6 +5,7 @@ import { OrderCard, PriceNote } from '#/components/patisserie/OrderCard'
 import { ProductCard } from '#/components/patisserie/ProductCard'
 import { PageHero } from '#/components/ui'
 import { catalogue, getCategoryMeta } from '#/data/catalogue'
+import { shopCategory } from '#/data/shopLinks'
 import { seo } from '#/lib/seo'
 import type { Category } from '#/data/catalogue'
 
@@ -31,7 +32,7 @@ export const Route = createFileRoute('/patisserie/$category')({
       .join(', ')
     return seo({
       title: category.name,
-      description: `${meta.blurb} Includes ${names}. Baked in Northbridge and ordered by phone or in store.`,
+      description: `${meta.blurb} Includes ${names}. Baked in Northbridge, and available to order online for pickup, by phone or in store.`,
       path: `/patisserie/${category.slug}`,
       image: meta.image,
     })
@@ -81,7 +82,10 @@ function Page() {
             </div>
 
             <Reveal>
-              <OrderCard rangeName={category.name} />
+              <OrderCard
+                rangeName={category.name}
+                shopCategory={shopCategory(category.slug)}
+              />
             </Reveal>
           </div>
 

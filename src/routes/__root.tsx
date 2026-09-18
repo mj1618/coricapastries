@@ -86,12 +86,14 @@ function NotFound() {
       </h1>
       <p className="mx-auto mt-4 max-w-[48ch] text-ink-soft">
         The link may be out of date. Everything we bake is listed in the
-        patisserie, and the shop is always happy to help by phone.
+        patisserie, you can order online for pickup in our shop, and the team is
+        always happy to help by phone.
       </p>
       <div className="mt-8 flex flex-wrap justify-center gap-4">
         <ButtonLink to="/" variant="solid">
           Back to home
         </ButtonLink>
+        <ButtonLink to="/shop">Order online</ButtonLink>
         <ButtonLink to="/patisserie">View the Patisserie</ButtonLink>
       </div>
       <p className="mt-8 text-ink-soft">

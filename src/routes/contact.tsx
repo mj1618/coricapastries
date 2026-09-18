@@ -84,6 +84,12 @@ function Details() {
           <p className="mx-auto mt-3 max-w-[26ch] text-ink-soft">
             Orders, custom cakes and wholesale enquiries.
           </p>
+          <p className="mt-4 text-[0.95rem] text-ink-soft">
+            Prefer to order online?{' '}
+            <Link to="/shop" className="link-gold">
+              Visit the shop
+            </Link>
+          </p>
         </Reveal>
 
         <Reveal className="frame-card px-7 py-10 sm:px-8" delay={0.24}>

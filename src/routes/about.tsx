@@ -209,6 +209,11 @@ function WhereToFind() {
               </p>
 
               <p className="mt-6">
+                <Link to="/shop" className="link-gold">
+                  Order online for pickup
+                </Link>
+              </p>
+              <p className="mt-2">
                 <Link to="/contact" className="link-gold">
                   Hours, map and directions
                 </Link>

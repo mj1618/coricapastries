@@ -2,6 +2,7 @@ import { Link, createFileRoute } from '@tanstack/react-router'
 import { Reveal } from '#/components/Reveal'
 import { ButtonLink, Eyebrow, Ornament } from '#/components/ui'
 import { catalogue } from '#/data/catalogue'
+import { shopCategory } from '#/data/shopLinks'
 import { site } from '#/data/site'
 import { seo } from '#/lib/seo'
 
@@ -10,7 +11,7 @@ export const Route = createFileRoute('/')({
     seo({
       title: 'Corica Pastries',
       description:
-        "Corica Pastries has been baking continental cakes and pastries in Northbridge since 1957 — home of Perth's most famous apple strudel. Visit the shop at 106 Aberdeen Street or call (08) 9328 8196.",
+        "Corica Pastries has been baking continental cakes and pastries in Northbridge since 1957 — home of Perth's most famous apple strudel. Order online for pickup, visit the shop at 106 Aberdeen Street or call (08) 9328 8196.",
       path: '/',
     }),
   component: Page,
@@ -85,13 +86,17 @@ function Hero() {
             </p>
 
             <div className="mt-9 flex flex-wrap justify-center gap-4 lg:justify-start">
-              <ButtonLink to="/patisserie" variant="gold">
+              <ButtonLink to="/shop" variant="gold">
+                Order online
+              </ButtonLink>
+              <ButtonLink to="/patisserie" variant="cream">
                 View the Patisserie
               </ButtonLink>
-              <a href={site.phone.href} className="btn btn-cream">
-                Call the shop
-              </a>
             </div>
+
+            <p className="mt-4 text-[0.95rem] text-cream/75">
+              {`Online orders are collected from the shop at ${site.address.street}, ${site.address.suburb}.`}
+            </p>
           </div>
 
           <div className="relative lg:-mr-4 xl:-mr-8">
@@ -215,13 +220,26 @@ function Ranges() {
               <p className="mx-auto mb-4 max-w-[34ch] flex-1 text-pretty text-ink-soft">
                 {range.copy}
               </p>
-              <Link
-                to="/patisserie/$category"
-                params={{ category: range.category }}
-                className="border-b border-gold text-[0.78rem] tracking-[0.24em] text-green uppercase"
-              >
-                Discover<span className="sr-only"> {range.name}</span>
-              </Link>
+              <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                <Link
+                  to="/patisserie/$category"
+                  params={{ category: range.category }}
+                  className="border-b border-gold text-[0.78rem] tracking-[0.24em] text-green uppercase"
+                >
+                  Discover<span className="sr-only"> {range.name}</span>
+                </Link>
+                <span className="text-gold" aria-hidden="true">
+                  &#10022;
+                </span>
+                <Link
+                  to="/shop"
+                  search={{ category: shopCategory(range.category) }}
+                  className="border-b border-gold text-[0.78rem] tracking-[0.24em] text-green uppercase"
+                >
+                  Order online
+                  <span className="sr-only"> ({range.name})</span>
+                </Link>
+              </div>
             </Reveal>
           ))}
         </div>
@@ -380,6 +398,11 @@ function Visit() {
             arrangement.
           </p>
           <p className="mt-4">
+            <Link to="/shop" className="link-gold">
+              Order online for pickup
+            </Link>
+          </p>
+          <p className="mt-2">
             <Link to="/contact" className="link-gold">
               Send an enquiry
             </Link>

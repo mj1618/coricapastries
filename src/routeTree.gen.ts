@@ -22,6 +22,7 @@ import { Route as ShopAccountRouteImport } from './routes/shop/account'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
 import { Route as ApiSwSplatRouteImport } from './routes/api/sw/$'
 import { Route as ShopParentParentSlugRouteImport } from './routes/shop/parent/$parentSlug'
+import { Route as ShopAccountOrdersOrderIdRouteImport } from './routes/shop/account_.orders.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -88,6 +89,12 @@ const ShopParentParentSlugRoute = ShopParentParentSlugRouteImport.update({
   path: '/parent/$parentSlug',
   getParentRoute: () => ShopRoute,
 } as any)
+const ShopAccountOrdersOrderIdRoute =
+  ShopAccountOrdersOrderIdRouteImport.update({
+    id: '/account_/orders/$orderId',
+    path: '/account/orders/$orderId',
+    getParentRoute: () => ShopRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
+  '/shop/account/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -117,6 +125,7 @@ export interface FileRoutesByTo {
   '/shop': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
+  '/shop/account/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -133,6 +142,7 @@ export interface FileRoutesById {
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
+  '/shop/account_/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -150,6 +160,7 @@ export interface FileRouteTypes {
     | '/shop/'
     | '/api/sw/$'
     | '/shop/parent/$parentSlug'
+    | '/shop/account/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -164,6 +175,7 @@ export interface FileRouteTypes {
     | '/shop'
     | '/api/sw/$'
     | '/shop/parent/$parentSlug'
+    | '/shop/account/orders/$orderId'
   id:
     | '__root__'
     | '/'
@@ -179,6 +191,7 @@ export interface FileRouteTypes {
     | '/shop/'
     | '/api/sw/$'
     | '/shop/parent/$parentSlug'
+    | '/shop/account_/orders/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopParentParentSlugRouteImport
       parentRoute: typeof ShopRoute
     }
+    '/shop/account_/orders/$orderId': {
+      id: '/shop/account_/orders/$orderId'
+      path: '/account/orders/$orderId'
+      fullPath: '/shop/account/orders/$orderId'
+      preLoaderRoute: typeof ShopAccountOrdersOrderIdRouteImport
+      parentRoute: typeof ShopRoute
+    }
   }
 }
 
@@ -294,6 +314,7 @@ interface ShopRouteChildren {
   ShopCartRoute: typeof ShopCartRoute
   ShopIndexRoute: typeof ShopIndexRoute
   ShopParentParentSlugRoute: typeof ShopParentParentSlugRoute
+  ShopAccountOrdersOrderIdRoute: typeof ShopAccountOrdersOrderIdRoute
 }
 
 const ShopRouteChildren: ShopRouteChildren = {
@@ -302,6 +323,7 @@ const ShopRouteChildren: ShopRouteChildren = {
   ShopCartRoute: ShopCartRoute,
   ShopIndexRoute: ShopIndexRoute,
   ShopParentParentSlugRoute: ShopParentParentSlugRoute,
+  ShopAccountOrdersOrderIdRoute: ShopAccountOrdersOrderIdRoute,
 }
 
 const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)

@@ -110,9 +110,7 @@ export function itemImage(item: GridItem, supplierLogo: string | null) {
   return item.product.image ?? supplierLogo
 }
 /** Internal link for an item. */
-export function itemHref(
-  item: GridItem,
-): {
+export function itemHref(item: GridItem): {
   to: '/shop/$slug' | '/shop/parent/$parentSlug'
   params: Record<string, string>
 } | null {
