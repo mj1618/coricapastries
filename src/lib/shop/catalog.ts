@@ -46,7 +46,7 @@ export type GridItem =
       group: VariantGroup
       members: Product[]
       /** First in-stock member, else first member. Used for the card image/price. */
-      lead: Product | null
+      lead: Product
       minPriceCents: number
       maxPriceCents: number
       categoryIds: string[]
@@ -65,7 +65,7 @@ export function gridItems(store: Store): GridItem[] {
       .filter((p): p is Product => !!p)
     if (members.length === 0) continue
     for (const m of members) grouped.add(m.id)
-    const lead = members.find((m) => m.inStock) ?? members[0] ?? null
+    const lead = members.find((m) => m.inStock) ?? members[0]
     const prices = members.map((m) => m.priceCents)
     items.push({
       kind: 'group',
@@ -105,7 +105,7 @@ export function itemInStock(item: GridItem) {
 }
 export function itemImage(item: GridItem, supplierLogo: string | null) {
   if (item.kind === 'group') {
-    return item.lead?.image ?? item.group.image ?? supplierLogo
+    return item.lead.image ?? item.group.image ?? supplierLogo
   }
   return item.product.image ?? supplierLogo
 }
