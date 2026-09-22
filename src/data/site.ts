@@ -48,7 +48,7 @@ export const site = {
       time: '8am – 3pm',
       schema: { dayOfWeek: ['Saturday'], opens: '08:00', closes: '15:00' },
     },
-    { days: 'Sunday & Monday', time: 'Closed', schema: null },
+    { days: 'Sunday, Monday & Public Holidays', time: 'Closed', schema: null },
   ],
   /** One-line summary for the header bar; keep in step with `hours`. */
   openDays: 'Open Tuesday to Saturday',
