@@ -1,7 +1,8 @@
-import { useId, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Ornament } from '#/components/ui'
 import { site } from '#/data/site'
 import { contactSubjects, sendContactEnquiry } from '#/server/contact'
+import { TURNSTILE_SITE_KEY, useTurnstile } from './turnstile'
 
 /**
  * Enquiry form. Native browser validation does the first pass (so the `required`
@@ -9,6 +10,9 @@ import { contactSubjects, sendContactEnquiry } from '#/server/contact'
  * and the result drives one of three states: idle, sent, or "couldn't send".
  *
  * Typed values live in React state so an error never loses what someone wrote.
+ *
+ * Three bot checks, all invisible to people: a honeypot field, the time between
+ * the form mounting and being submitted (`startedAt`), and Cloudflare Turnstile.
  */
 
 type Status = 'idle' | 'pending' | 'error'
@@ -43,6 +47,13 @@ export function ContactForm() {
   const [values, setValues] = useState(EMPTY)
   const [status, setStatus] = useState<Status>('idle')
   const [sent, setSent] = useState(false)
+  const turnstile = useTurnstile()
+
+  // Set on mount rather than at render so the prerendered HTML has no clock in it.
+  const startedAt = useRef(0)
+  useEffect(() => {
+    startedAt.current = Date.now()
+  }, [])
 
   function set(field: keyof typeof EMPTY, value: string) {
     setValues((current) => ({ ...current, [field]: value }))
@@ -54,15 +65,20 @@ export function ContactForm() {
     if (status === 'pending') return
     setStatus('pending')
     try {
-      const result = await sendContactEnquiry({ data: values })
+      const turnstileToken = await turnstile.getToken()
+      const result = await sendContactEnquiry({
+        data: { ...values, startedAt: startedAt.current, turnstileToken },
+      })
       if (result.ok) {
         setSent(true)
         setStatus('idle')
       } else {
+        turnstile.reset()
         setStatus('error')
       }
     } catch {
       // Network failure, cold start, anything else — same calm message.
+      turnstile.reset()
       setStatus('error')
     }
   }
@@ -199,6 +215,23 @@ export function ContactForm() {
           />
         </div>
       </div>
+
+      {/* Turnstile mounts here. Invisible unless Cloudflare wants an interaction. */}
+      {TURNSTILE_SITE_KEY ? (
+        <div className="mt-5 empty:hidden">
+          <div ref={turnstile.containerRef} />
+          {turnstile.failed ? (
+            <p className="mt-2 text-[0.95rem] text-ink-soft italic">
+              Our spam check could not load. If sending fails, please call the
+              shop on{' '}
+              <a href={site.phone.href} className="link-gold whitespace-nowrap">
+                {site.phone.display}
+              </a>
+              .
+            </p>
+          ) : null}
+        </div>
+      ) : null}
 
       <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
         <button

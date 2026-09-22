@@ -126,7 +126,15 @@ the form shows a "please call the shop" message instead of failing silently. Enq
 `info@coricapastries.com.au` by default (`CONTACT_TO_EMAIL` overrides) from
 `noreply@supplywise.com.au` (`CONTACT_FROM_EMAIL` overrides), because the sender must be on a
 domain verified in that Resend account and coricapastries.com.au is not. The shopper's address
-is the reply-to. Bot protection is a honeypot field only.
+is the reply-to.
+
+Bot protection, all invisible to people: a honeypot field, a timing check (the form sends the
+epoch ms it mounted and the server rejects anything under 3 s, `MIN_FILL_MS`), and Cloudflare
+Turnstile (`src/components/contact/turnstile.ts`, `appearance: 'interaction-only'`). Turnstile
+needs `VITE_TURNSTILE_SITE_KEY` (client) and `TURNSTILE_SECRET_KEY` (server); when the secret
+is unset the server skips verification with a warning, so the form still works before the
+Cloudflare widget exists. `vite.config.ts` copies `.env` into `process.env` so server functions
+see it under `npm run dev`; Cloudflare's always-pass test keys are listed in `.env.example`.
 
 ## Screenshots and QA
 
@@ -177,6 +185,7 @@ it: "Order online" in the hero, on every range tile, in the patisserie "How to o
 each range's order card, and in the FAQs, About, Contact and 404 copy. All of it says pickup from
 Aberdeen Street, never delivery.
 
-Still to do: owners to confirm hours and prices, supply higher-resolution photography, move the coricapastries.com.au
+Still to do: owners to confirm hours and prices, supply higher-resolution photography, create a
+Turnstile widget in Cloudflare for the site's domain and set its two keys on Vercel, move the coricapastries.com.au
 domain to Vercel, and register the storefront domain under SupplyWise Settings → Custom Storefront
 (see the Shop section).

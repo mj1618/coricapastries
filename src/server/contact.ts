@@ -28,6 +28,15 @@ export type ContactInput = {
   message: string
   /** Honeypot. Real people never see it, so it must arrive empty. */
   company: string
+  /**
+   * Epoch ms when the form was rendered. People take a while to fill a form
+   * in; scripted submissions arrive within a second of the page loading.
+   * Forgeable by anyone who reads this code, so it only catches generic bots;
+   * Turnstile is the real gate.
+   */
+  startedAt: number
+  /** Cloudflare Turnstile response token (empty when the widget is not set up). */
+  turnstileToken: string
 }
 
 export type ContactResult =
@@ -35,11 +44,18 @@ export type ContactResult =
   /**
    * `invalid`        — required field missing or malformed email (the browser
    *                    normally catches this first; this is the server backstop).
+   * `too-fast`       — submitted within MIN_FILL_MS of the form rendering.
+   * `challenge`      — Turnstile token missing, expired or rejected.
    * `not-configured` — no RESEND_API_KEY on this deployment.
    * `send-failed`    — Resend rejected the request or the network failed.
-   * The UI treats all three the same way: "please call the shop".
+   * The UI shows the same "please try again / call the shop" message for all of
+   * them; the reason is for logs and tests.
    */
-  | { ok: false; reason: 'invalid' | 'not-configured' | 'send-failed' }
+  | {
+      ok: false
+      reason:
+        'invalid' | 'too-fast' | 'challenge' | 'not-configured' | 'send-failed'
+    }
 
 /**
  * Where enquiries land unless CONTACT_TO_EMAIL overrides it.
@@ -52,6 +68,16 @@ const DEFAULT_FROM = 'Corica Pastries Website <noreply@supplywise.com.au>'
 
 /** Deliberately loose: just enough to catch a typo, never enough to reject a real address. */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+/**
+ * Fastest plausible human fill: four required fields plus a click. Browser
+ * autofill can get close, so keep this low; a person who trips it just sees the
+ * "try again" message and their second attempt is later by definition.
+ */
+const MIN_FILL_MS = 3000
+
+const TURNSTILE_VERIFY_URL =
+  'https://challenges.cloudflare.com/turnstile/v0/siteverify'
 
 function trimmed(value: unknown, max: number): string {
   return typeof value === 'string' ? value.trim().slice(0, max) : ''
@@ -73,6 +99,46 @@ function validateContactInput(input: unknown): ContactInput {
     subject: trimmed(raw.subject, 120),
     message: trimmed(raw.message, 5000),
     company: trimmed(raw.company, 120),
+    startedAt: typeof raw.startedAt === 'number' ? raw.startedAt : 0,
+    turnstileToken: trimmed(raw.turnstileToken, 4096),
+  }
+}
+
+/**
+ * Asks Cloudflare whether the widget token is genuine. With no secret configured
+ * (local dev, or before the Cloudflare site is created) verification is skipped
+ * with a warning so the form keeps working; the honeypot and timing check still
+ * apply. Tokens are single-use, so the client resets the widget after any failure.
+ */
+async function verifyTurnstile(token: string): Promise<boolean> {
+  const secret = process.env.TURNSTILE_SECRET_KEY
+  if (!secret) {
+    console.warn(
+      '[contact] TURNSTILE_SECRET_KEY is not set — skipping bot check.',
+    )
+    return true
+  }
+  if (!token) return false
+  try {
+    const response = await fetch(TURNSTILE_VERIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret, response: token }),
+    })
+    const result = (await response.json()) as {
+      success?: boolean
+      'error-codes'?: string[]
+    }
+    if (!result.success) {
+      console.warn(
+        '[contact] Turnstile rejected the token:',
+        result['error-codes'],
+      )
+    }
+    return result.success === true
+  } catch (error) {
+    console.error('[contact] Could not reach Turnstile:', error)
+    return false
   }
 }
 
@@ -108,6 +174,18 @@ export const sendContactEnquiry = createServerFn({ method: 'POST' })
     }
     if (!EMAIL_RE.test(data.email)) {
       return { ok: false, reason: 'invalid' }
+    }
+
+    // A startedAt in the future or missing altogether is as suspicious as a
+    // fast one: the form always sends it.
+    const elapsed = Date.now() - data.startedAt
+    if (!data.startedAt || elapsed < MIN_FILL_MS) {
+      console.warn(`[contact] Rejected a submission ${elapsed}ms after render.`)
+      return { ok: false, reason: 'too-fast' }
+    }
+
+    if (!(await verifyTurnstile(data.turnstileToken))) {
+      return { ok: false, reason: 'challenge' }
     }
 
     const apiKey = process.env.RESEND_API_KEY
