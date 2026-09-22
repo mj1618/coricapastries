@@ -4,4 +4,4 @@ Disallow: /shop/cart
 Disallow: /shop/account
 Disallow: /api/
 
-Sitemap: https://www.coricapastries.com.au/sitemap.xml
+Sitemap: https://coricapastries.com.au/sitemap.xml

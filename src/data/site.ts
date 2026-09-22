@@ -31,15 +31,14 @@ export const site = {
   },
   /** Approximate shop-front coordinates (OpenStreetMap, 2026-09-22) for local-business schema. */
   geo: { latitude: -31.94599, longitude: 115.85819 },
-  // Taken from the current site and unconfirmed by the owners. `schema` is the
-  // same information in machine form for the opening-hours structured data;
-  // a closed day simply has no entry.
+  // Confirmed by the owners on 2026-09-22. `schema` is the same information in
+  // machine form for the opening-hours structured data; a closed day has none.
   hours: [
     {
-      days: 'Monday – Friday',
+      days: 'Tuesday – Friday',
       time: '8am – 5:30pm',
       schema: {
-        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '08:00',
         closes: '17:30',
       },
@@ -49,8 +48,10 @@ export const site = {
       time: '8am – 3pm',
       schema: { dayOfWeek: ['Saturday'], opens: '08:00', closes: '15:00' },
     },
-    { days: 'Sunday & Public Holidays', time: 'Closed', schema: null },
+    { days: 'Sunday & Monday', time: 'Closed', schema: null },
   ],
+  /** One-line summary for the header bar; keep in step with `hours`. */
+  openDays: 'Open Tuesday to Saturday',
   hoursNote: 'Trading hours can differ over festive periods.',
   social: {
     facebook: 'https://www.facebook.com/CoricaPastries/',
@@ -61,13 +62,12 @@ export const site = {
   mapsEmbedUrl:
     'https://www.google.com/maps?q=106+Aberdeen+Street,+Northbridge+WA+6003&output=embed',
   /**
-   * Canonical origin, no trailing slash. The old site lived on www and every
-   * existing inbound link points there, so www stays the canonical host and
-   * the apex redirects to it (Vercel domain settings). Until the domain moves,
-   * the canonical tags on the vercel.app alias point here too, which is
-   * exactly what a staging copy should say.
+   * Canonical origin, no trailing slash. The apex is the canonical host and
+   * www redirects to it (Vercel domain settings), so the old site's www links
+   * land here with one hop. Until the domain moves, the canonical tags on the
+   * vercel.app alias point here too, which is what a staging copy should say.
    */
-  siteUrl: 'https://www.coricapastries.com.au',
+  siteUrl: 'https://coricapastries.com.au',
 } as const
 
 export const nav = [

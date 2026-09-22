@@ -15,8 +15,8 @@ This repo replaces it. The owners chose the "Heritage" direction from six home p
 - Keep copy factual. Do not invent history, awards, family names or product claims. Established
   facts live in `src/data/site.ts` (address, phone, hours) and `src/data/catalogue.ts` (products,
   prices and descriptions scraped from the old site on 2026-09-18). The FAQ answers in
-  `src/data/faqs.ts` are the old site's answers, lightly edited. Hours are from the old site and
-  unconfirmed by the owners.
+  `src/data/faqs.ts` are the old site's answers, lightly edited. Address, phone and hours were
+  confirmed by the owners on 2026-09-22 (closed Sunday and Monday).
 
 ## Stack
 
@@ -121,8 +121,8 @@ store" links will not return to `/shop`, and shopper login will not redirect bac
 
 ## SEO
 
-The canonical origin is `site.siteUrl` = `https://www.coricapastries.com.au` (www, like the old
-site; set the apex to redirect to www in Vercel domain settings). Every page's head comes from
+The canonical origin is `site.siteUrl` = `https://coricapastries.com.au` (apex; www redirects
+to it in Vercel domain settings, so the old site's www links land in one hop). Every page's head comes from
 `seo()` in `src/lib/seo.ts`: title, description (clamped to 158 chars), canonical, Open Graph
 and Twitter tags, optional `noindex`. Pass the full title when it should not end in
 "| Corica Pastries". `jsonLd()` turns a schema.org object into a head `scripts` entry with the
@@ -157,7 +157,6 @@ mandatory `</script` escape; use it for all structured data.
 - **Search Console.** The old site's `google-site-verification` meta is in `__root.tsx`; after
   cutover, submit `/sitemap.xml` in Search Console and use the Change of Address tool only if
   the domain itself changes (it does not).
-- Hours in the Bakery schema come from `site.hours`, which the owners have not confirmed.
 
 ## Analytics
 
@@ -236,8 +235,8 @@ it: "Order online" in the hero, on every range tile, in the patisserie "How to o
 each range's order card, and in the FAQs, About, Contact and 404 copy. All of it says pickup from
 Aberdeen Street, never delivery.
 
-Still to do: owners to confirm hours and prices, supply higher-resolution photography, create a
-Turnstile widget in Cloudflare for the site's domain and set its two keys on Vercel, set apex →
-www redirect in Vercel domains, move the coricapastries.com.au
+Still to do: owners to confirm prices, supply higher-resolution photography, create a
+Turnstile widget in Cloudflare for the site's domain and set its two keys on Vercel, set the
+www → apex redirect in Vercel domains, move the coricapastries.com.au
 domain to Vercel, and register the storefront domain under SupplyWise Settings → Custom Storefront
 (see the Shop section).

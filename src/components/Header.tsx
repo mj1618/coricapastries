@@ -32,7 +32,7 @@ export function Header() {
   return (
     <>
       <div className="bg-green-deep px-4 py-2 text-center text-[0.72rem] uppercase tracking-[0.12em] text-cream sm:text-[0.82rem] sm:tracking-[0.14em]">
-        Open Monday to Saturday
+        {site.openDays}
         <span className="hidden sm:inline">
           &nbsp;<span className="text-gold">&#10022;</span>&nbsp;{' '}
           {site.address.street}, {site.address.suburb}
