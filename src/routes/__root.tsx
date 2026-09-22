@@ -9,12 +9,16 @@ import type { ReactNode } from 'react'
 import { Header } from '#/components/Header'
 import { Footer } from '#/components/Footer'
 import { ButtonLink } from '#/components/ui'
-import { site } from '#/data/site'
+import { analyticsHostPattern, gtmId, site } from '#/data/site'
 import { CartProvider } from '#/lib/shop/cart'
 import appCss from '../styles.css?url'
 
 const fontsHref =
   'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap'
+
+const gtmSnippet = `if (${analyticsHostPattern.toString()}.test(location.hostname)) {
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${gtmId}');
+}`
 
 export const Route = createRootRoute({
   head: () => ({
@@ -38,6 +42,10 @@ export const Route = createRootRoute({
     scripts: [
       // Marks that JS is running so .reveal animations can hide content before fading in.
       { children: "document.documentElement.classList.add('js')" },
+      // Google Tag Manager, guarded by hostname so dev and staging never send hits.
+      // No <noscript> iframe: it cannot be guarded the same way, and GA4's own
+      // history-change tracking covers client-side navigation once gtm.js runs.
+      { children: gtmSnippet },
     ],
   }),
   shellComponent: RootDocument,

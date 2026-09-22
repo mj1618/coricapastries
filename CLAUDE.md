@@ -118,6 +118,16 @@ byte-identical between the authorize call and the token exchange.
 the storefront domain and mark it the default. Until that is done the post-checkout "Back to
 store" links will not return to `/shop`, and shopper login will not redirect back to us.
 
+## Analytics
+
+Google Tag Manager container `GTM-NKFF6BS`, carried over from the old WordPress site
+(`gtmId` in `src/data/site.ts`, snippet in `__root.tsx`). The container, managed in the GTM
+dashboard, currently fires GA4, Google Ads conversion/remarketing tags, a Facebook pixel and a
+dead Universal Analytics tag. The inline snippet only runs when the hostname matches
+`analyticsHostPattern` (coricapastries.com.au and subdomains), so localhost and the vercel.app
+staging alias never send hits; there is deliberately no `<noscript>` iframe for the same reason.
+GA4's history-change enhanced measurement covers client-side navigation.
+
 ## Contact form
 
 `src/server/contact.ts` sends through Resend using plain `fetch`. It needs `RESEND_API_KEY`

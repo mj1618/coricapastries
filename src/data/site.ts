@@ -1,6 +1,16 @@
 // The only established facts about the business. Do not add history, awards,
 // family names or product claims here that the owners have not confirmed.
 
+/**
+ * Google Tag Manager container carried over from the old WordPress site
+ * (2026-09-22). It holds the GA4 property, Google Ads conversion tags and a
+ * Facebook pixel, all managed in the GTM dashboard rather than here.
+ */
+export const gtmId = 'GTM-NKFF6BS'
+
+/** Hostnames analytics may run on. Localhost and the vercel.app staging alias stay out of the data. */
+export const analyticsHostPattern = /(^|\.)coricapastries\.com\.au$/
+
 export const site = {
   name: 'Corica Pastries',
   legalName: 'Giuseppe Corica Pastries',
