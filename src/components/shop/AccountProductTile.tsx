@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { FavouriteButton } from '#/components/shop/FavouriteButton'
+import { groupChoiceLabel } from '#/lib/shop/browse'
 import { optionsFor, parentByProductId } from '#/lib/shop/catalog'
 import { useCart } from '#/lib/shop/cart'
 import { formatCents } from '#/lib/shop/money'
@@ -118,7 +119,7 @@ export function AccountProductTile({
               params={link.params}
               className="btn w-full sm:w-auto"
             >
-              {group ? 'Choose a size' : 'Choose options'}
+              {group ? groupChoiceLabel(group) : 'Choose options'}
             </Link>
           ) : (
             <button
