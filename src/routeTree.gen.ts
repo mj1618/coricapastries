@@ -10,10 +10,12 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as ShopRouteImport } from './routes/shop'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PatisserieIndexRouteImport } from './routes/patisserie/index'
 import { Route as PatisserieCategoryRouteImport } from './routes/patisserie/$category'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
@@ -27,6 +29,11 @@ import { Route as ShopAccountOrdersOrderIdRouteImport } from './routes/shop/acco
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -47,6 +54,11 @@ const FaqsRoute = FaqsRouteImport.update({
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
   path: '/shop',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PatisserieIndexRoute = PatisserieIndexRouteImport.update({
@@ -98,10 +110,12 @@ const ShopAccountOrdersOrderIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/shop': typeof ShopRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
@@ -114,9 +128,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
@@ -130,10 +146,12 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/shop': typeof ShopRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
@@ -148,10 +166,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
     | '/shop'
+    | '/sitemap.xml'
     | '/patisserie/$category'
     | '/shop/$slug'
     | '/shop/account'
@@ -164,9 +184,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
+    | '/sitemap.xml'
     | '/patisserie/$category'
     | '/shop/$slug'
     | '/shop/account'
@@ -179,10 +201,12 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
     | '/shop'
+    | '/sitemap.xml'
     | '/patisserie/$category'
     | '/shop/$slug'
     | '/shop/account'
@@ -196,10 +220,12 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   FaqsRoute: typeof FaqsRoute
   ShopRoute: typeof ShopRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PatisserieCategoryRoute: typeof PatisserieCategoryRoute
   PatisserieIndexRoute: typeof PatisserieIndexRoute
   ApiSwSplatRoute: typeof ApiSwSplatRoute
@@ -212,6 +238,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -240,6 +273,13 @@ declare module '@tanstack/react-router' {
       path: '/shop'
       fullPath: '/shop'
       preLoaderRoute: typeof ShopRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/patisserie/': {
@@ -330,10 +370,12 @@ const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   FaqsRoute: FaqsRoute,
   ShopRoute: ShopRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   PatisserieCategoryRoute: PatisserieCategoryRoute,
   PatisserieIndexRoute: PatisserieIndexRoute,
   ApiSwSplatRoute: ApiSwSplatRoute,

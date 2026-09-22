@@ -24,18 +24,14 @@ export const Route = createFileRoute('/shop/account_/orders/$orderId')({
   // The access token lives in localStorage, so this page can only be rendered in the
   // browser — nothing about it is server-renderable or indexable.
   ssr: false,
-  head: () => {
-    const base = seo({
+  head: ({ params }) =>
+    seo({
       title: 'Your order',
       description:
         'Order details and tax invoice for an order placed with Corica Pastries.',
-      path: '/shop/account',
-    })
-    return {
-      ...base,
-      meta: [...base.meta, { name: 'robots', content: 'noindex, nofollow' }],
-    }
-  },
+      path: `/shop/account/orders/${params.orderId}`,
+      noindex: true,
+    }),
   component: Page,
 })
 

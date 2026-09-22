@@ -21,6 +21,7 @@ export const Route = createFileRoute('/shop/cart')({
       description:
         'Review your Corica Pastries order and check out. Orders are collected from 106 Aberdeen Street, Northbridge.',
       path: '/shop/cart',
+      noindex: true,
     }),
   component: Page,
 })

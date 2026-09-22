@@ -9,9 +9,10 @@ import { seo } from '#/lib/seo'
 export const Route = createFileRoute('/')({
   head: () =>
     seo({
-      title: 'Corica Pastries',
+      title:
+        'Corica Pastries | Apple Strudel & Continental Cakes, Northbridge Perth',
       description:
-        "Corica Pastries has been baking continental cakes and pastries in Northbridge since 1957 — home of Perth's most famous apple strudel. Order online for pickup, visit the shop at 106 Aberdeen Street or call (08) 9328 8196.",
+        "Home of Perth's famous apple strudel. Continental cakes, pastries and biscuits baked in Northbridge since 1957. Order online for pickup or visit 106 Aberdeen Street.",
       path: '/',
     }),
   component: Page,
@@ -112,7 +113,7 @@ function Hero() {
               aria-hidden="true"
             />
             <img
-              src="/img/strudel-hero.png"
+              src="/img/strudel-hero.webp"
               width={1089}
               height={741}
               alt="A Corica apple strudel with a slice cut away, showing layers of flaky pastry, apple, custard and fresh cream"

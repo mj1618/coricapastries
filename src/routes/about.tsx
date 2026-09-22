@@ -8,9 +8,9 @@ import { seo } from '#/lib/seo'
 export const Route = createFileRoute('/about')({
   head: () =>
     seo({
-      title: 'About Us',
+      title: 'About Us | Corica Pastries, Northbridge since 1957',
       description:
-        'Established in 1957 by Giuseppe Corica, Corica Pastries has spent nearly seventy years baking world-famous apple strudels, continental cakes and pastries in Northbridge, Perth.',
+        'Established in 1957 by Giuseppe Corica, Corica Pastries has baked apple strudel, continental cakes and pastries in Northbridge, Perth for nearly seventy years.',
       path: '/about',
     }),
   component: Page,

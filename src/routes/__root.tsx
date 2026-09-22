@@ -10,6 +10,7 @@ import { Header } from '#/components/Header'
 import { Footer } from '#/components/Footer'
 import { ButtonLink } from '#/components/ui'
 import { analyticsHostPattern, gtmId, site } from '#/data/site'
+import { businessGraph, jsonLd } from '#/lib/seo'
 import { CartProvider } from '#/lib/shop/cart'
 import appCss from '../styles.css?url'
 
@@ -26,18 +27,25 @@ export const Route = createRootRoute({
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { name: 'theme-color', content: '#004d3f' },
+      // Search Console ownership, carried over from the old site so it survives the cutover.
+      {
+        name: 'google-site-verification',
+        content: 'zwFsO4GIVMuWRyeYKduMkJbpsXRXX4N3fKZvPe1ZgBQ',
+      },
       { title: `${site.name} | ${site.tagline} — Since ${site.established}` },
     ],
     links: [
-      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-      {
-        rel: 'preconnect',
-        href: 'https://fonts.gstatic.com',
-        crossOrigin: 'anonymous',
-      },
       { rel: 'stylesheet', href: fontsHref },
       { rel: 'stylesheet', href: appCss },
-      { rel: 'icon', href: '/img/logo.png', type: 'image/png' },
+      { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+      {
+        rel: 'icon',
+        href: '/img/icon-192.png',
+        type: 'image/png',
+        sizes: '192x192',
+      },
+      { rel: 'apple-touch-icon', href: '/img/apple-touch-icon.png' },
+      { rel: 'manifest', href: '/site.webmanifest' },
     ],
     scripts: [
       // Marks that JS is running so .reveal animations can hide content before fading in.
@@ -46,6 +54,8 @@ export const Route = createRootRoute({
       // No <noscript> iframe: it cannot be guarded the same way, and GA4's own
       // history-change tracking covers client-side navigation once gtm.js runs.
       { children: gtmSnippet },
+      // The shop as a schema.org Bakery, on every page.
+      jsonLd(businessGraph()),
     ],
   }),
   shellComponent: RootDocument,
@@ -57,6 +67,13 @@ function RootDocument({ children }: { children: ReactNode }) {
   return (
     <html lang="en-AU" suppressHydrationWarning>
       <head>
+        {/* First in the head so the connections open before the font stylesheet is parsed. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <HeadContent />
       </head>
       <body>

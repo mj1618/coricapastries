@@ -21,9 +21,9 @@ export function Footer() {
             </p>
           </div>
           <div>
-            <h5 className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
+            <p className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
               The Patisserie
-            </h5>
+            </p>
             <ul className="space-y-2">
               {catalogue.map((c) => (
                 <li key={c.slug}>
@@ -39,9 +39,9 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h5 className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
+            <p className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
               Visit Us
-            </h5>
+            </p>
             <ul className="space-y-2">
               <li>{site.address.street}</li>
               <li>
@@ -61,9 +61,9 @@ export function Footer() {
             </ul>
           </div>
           <div>
-            <h5 className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
+            <p className="mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
               Follow
-            </h5>
+            </p>
             <ul className="space-y-2">
               <li>
                 <a
@@ -86,9 +86,9 @@ export function Footer() {
                 </a>
               </li>
             </ul>
-            <h5 className="mt-8 mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
+            <p className="mt-8 mb-4 font-body text-[0.75rem] uppercase tracking-[0.28em] text-gold">
               More
-            </h5>
+            </p>
             <ul className="space-y-2">
               <li>
                 <Link to="/about" className="hover:text-gold-soft">

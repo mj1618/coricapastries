@@ -7,12 +7,23 @@ import type { Product } from '#/data/catalogue'
  * These brochure cards are not clickable; adding to a cart happens in /shop,
  * which the range's OrderCard links to.
  */
-export function ProductCard({ product }: { product: Product }) {
+export function ProductCard({
+  product,
+  rangeName,
+}: {
+  product: Product
+  /** The range the card sits in, for image alt text ("Apple Strudel, from the Strudels range at Corica Pastries"). */
+  rangeName?: string
+}) {
   return (
     <article className="flex h-full flex-col border border-gold-soft bg-ivory">
       <img
         src={product.image}
-        alt={product.name}
+        alt={
+          rangeName
+            ? `${product.name}, from the ${rangeName} range at Corica Pastries, Northbridge`
+            : product.name
+        }
         width={800}
         height={800}
         loading="lazy"

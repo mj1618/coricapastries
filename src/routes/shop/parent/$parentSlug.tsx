@@ -12,7 +12,8 @@ import {
 } from '#/lib/shop/browse'
 import { optionsFor, recommendations } from '#/lib/shop/catalog'
 import { htmlToText } from '#/lib/shop/sanitize'
-import { seo } from '#/lib/seo'
+import { breadcrumbs, jsonLd, seo } from '#/lib/seo'
+import { variantGroupSchema } from '#/lib/shop/schema'
 
 const shopRoute = getRouteApi('/shop')
 
@@ -40,16 +41,27 @@ export const Route = createFileRoute('/shop/parent/$parentSlug')({
       htmlToText(parent.description || lead?.description),
     )
     const sizes = parent.products.map((m) => m.displayName).join(', ')
-    return withRemoteOgImage(
+    const path = parent.slug ? `/shop/parent/${parent.slug}` : '/shop'
+    const head = withRemoteOgImage(
       seo({
         title: parent.name,
         description:
           summary ||
           `${parent.name} from Corica Pastries, Northbridge${sizes ? ` — ${sizes}` : ''}. Order online for pickup from 106 Aberdeen Street.`,
-        path: `/shop/parent/${parent.slug ?? ''}`,
+        path,
+        type: 'product',
       }),
       lead?.image ?? parent.image,
     )
+    return {
+      ...head,
+      scripts: [
+        jsonLd(variantGroupSchema(parent, products, path)),
+        jsonLd(
+          breadcrumbs([{ name: 'Shop', path: '/shop' }, { name: parent.name }]),
+        ),
+      ],
+    }
   },
   component: Page,
 })

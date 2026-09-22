@@ -6,7 +6,7 @@ import { ProductCard } from '#/components/patisserie/ProductCard'
 import { PageHero } from '#/components/ui'
 import { catalogue, getCategoryMeta } from '#/data/catalogue'
 import { shopCategory } from '#/data/shopLinks'
-import { seo } from '#/lib/seo'
+import { breadcrumbs, jsonLd, rangeSchema, seo } from '#/lib/seo'
 import type { Category } from '#/data/catalogue'
 
 export const Route = createFileRoute('/patisserie/$category')({
@@ -26,16 +26,29 @@ export const Route = createFileRoute('/patisserie/$category')({
       })
     }
     const meta = getCategoryMeta(category.slug)
-    const names = category.products
-      .slice(0, 4)
-      .map((p) => p.name)
-      .join(', ')
-    return seo({
-      title: category.name,
-      description: `${meta.blurb} Includes ${names}. Baked in Northbridge, and available to order online for pickup, by phone or in store.`,
-      path: `/patisserie/${category.slug}`,
-      image: meta.image,
-    })
+    const path = `/patisserie/${category.slug}`
+    return {
+      ...seo({
+        title: `${meta.title ?? category.name} | Corica Pastries, Northbridge Perth`,
+        description: meta.description,
+        path,
+        image: {
+          path: meta.image,
+          width: 800,
+          height: 800,
+          alt: meta.imageAlt,
+        },
+      }),
+      scripts: [
+        jsonLd(
+          breadcrumbs([
+            { name: 'The Patisserie', path: '/patisserie' },
+            { name: category.name },
+          ]),
+        ),
+        jsonLd(rangeSchema(category)),
+      ],
+    }
   },
   component: Page,
 })
@@ -60,6 +73,7 @@ function Page() {
         <div className="wrap">
           <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12">
             <div>
+              <h2 className="sr-only">Products in the {category.name} range</h2>
               <p className="text-[0.95rem] text-ink-soft">
                 {category.products.length}{' '}
                 {category.products.length === 1 ? 'product' : 'products'} in the{' '}
@@ -73,7 +87,7 @@ function Page() {
                     delay={(i % 3) * 0.08}
                     className="h-full"
                   >
-                    <ProductCard product={product} />
+                    <ProductCard product={product} rangeName={category.name} />
                   </Reveal>
                 ))}
               </div>

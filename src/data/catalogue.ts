@@ -1064,10 +1064,17 @@ export type CategoryMeta = {
   blurb: string
   image: string
   imageAlt: string
+  /** Search-result title (the site name and suburb are appended). Defaults to the range name. */
+  title?: string
+  /** Meta description, under 158 characters. */
+  description: string
 }
 
 export const categoryMeta: Record<string, CategoryMeta> = {
   strudels: {
+    title: 'Apple Strudel',
+    description:
+      "Corica's world-famous apple strudel: flaky puff pastry, Italian custard, fresh apple and cream, in half and full sizes. Order for pickup in Northbridge.",
     blurb:
       'The world-famous apple strudel that made our name: layers of flaky puff pastry, Italian custard, fresh apple and fresh cream.',
     image: '/img/products/apple-strudel.jpg',
@@ -1075,6 +1082,9 @@ export const categoryMeta: Record<string, CategoryMeta> = {
       'A Corica apple strudel, its flaky puff pastry layered with apple, custard and cream',
   },
   'birthday-cakes': {
+    title: 'Birthday Cakes & Tortas',
+    description:
+      'Continental birthday tortas of sponge, custard, buttercream and liqueur in five sizes from ten to eighty serves. Baked in Northbridge, Perth; order for pickup.',
     blurb:
       'Continental tortas of sponge, custard, buttercream and liqueur, in five sizes from ten serves up to eighty.',
     image: '/img/products/black-forrest-torta.jpg',
@@ -1082,18 +1092,26 @@ export const categoryMeta: Record<string, CategoryMeta> = {
       'A Black Forrest torta finished with piped cream, chocolate flake and maraschino cherries',
   },
   'special-occasions': {
+    title: 'Special Occasion Cakes',
+    description:
+      'Cheesecakes, honey cakes, fruit flans and croquembouche towers for the occasions worth baking for, from Corica Pastries in Northbridge, Perth. Order for pickup.',
     blurb:
       'Cheesecakes, honey cakes, fruit flans and croquembouche towers for the occasions worth baking for.',
     image: '/img/products/mixed-fruit-cheesecake.jpg',
     imageAlt: 'A mixed fruit cheesecake topped with glazed seasonal fruit',
   },
   'mini-range': {
+    title: 'Mini Pastries',
+    description:
+      "Corica's pastries in bite size: mini éclairs, profiteroles, cannoli and tarts, priced individually for platters and functions. Pickup from Northbridge, Perth.",
     blurb:
       'Our pastries in bite size — éclairs, profiteroles, cannoli and tarts, priced individually for platters and functions.',
     image: '/img/products/mini-sicilian-cannoli.jpg',
     imageAlt: 'Two mini Sicilian cannoli filled with custard',
   },
   'small-pastries': {
+    description:
+      'Single-serve slices, tarts and pastries made fresh at Corica Pastries in Northbridge, Perth, from the almond slice to the chocolate horn. Order for pickup.',
     blurb:
       'The single-serve counter: slices, tarts and pastries made fresh, from the almond slice to the chocolate horn.',
     image: '/img/products/amore.jpg',
@@ -1101,6 +1119,9 @@ export const categoryMeta: Record<string, CategoryMeta> = {
       'Three Amore pastries, layers of shortbread biscuit filled with buttercream',
   },
   biscuits: {
+    title: 'Italian Biscuits',
+    description:
+      'Traditional Italian biscuits by the packet: cantucci, palmiers, meringues, shortbread and paste secche, baked at Corica Pastries in Northbridge, Perth.',
     blurb:
       'Traditional Italian biscuits by the packet: cantucci, palmiers, meringues, shortbread and paste secche.',
     image: '/img/products/mixed-shortbread.jpg',
@@ -1108,6 +1129,9 @@ export const categoryMeta: Record<string, CategoryMeta> = {
       'An assortment of Corica shortbread biscuits with jam, chocolate and glacé cherry toppings',
   },
   'gluten-free': {
+    title: 'Gluten Free Cakes & Pastries',
+    description:
+      'Gluten free tarts and loaves made with almonds, plus dairy free and gluten free paste secche, from Corica Pastries in Northbridge, Perth. Order for pickup.',
     blurb:
       'Gluten free tarts and loaves made with almonds, alongside our dairy free and gluten free paste secche.',
     image: '/img/products/gf-pear-tart.jpg',
@@ -1115,6 +1139,9 @@ export const categoryMeta: Record<string, CategoryMeta> = {
       'A gluten free pear and almond tart glazed and topped with sliced pear',
   },
   christmas: {
+    title: 'Christmas Cakes & Pastries',
+    description:
+      "Corica's Christmas range: fruit mince pies, gingerbread, shortbread trees and yule logs, baked in Northbridge, Perth. Seasonal, so please call to check availability.",
     blurb:
       'Our seasonal range — fruit mince pies, gingerbread, shortbread trees and yule logs. Please call to check availability.',
     image: '/img/products/gingerbread.jpg',
@@ -1134,6 +1161,7 @@ export function getCategoryMeta(slug: string): CategoryMeta {
   return (
     categoryMeta[slug] ?? {
       blurb: '',
+      description: 'A range baked at Corica Pastries in Northbridge, Perth.',
       image: '/img/products/apple-strudel.jpg',
       imageAlt: 'A Corica pastry',
     }

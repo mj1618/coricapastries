@@ -26,15 +26,30 @@ import type { SortKey } from '#/lib/shop/browse'
 
 const shopRoute = getRouteApi('/shop')
 
+/** `gluten-free-range` → `Gluten Free Range`, for the tab title of a filtered view. */
+function titleCase(slug: string): string {
+  return slug
+    .split('-')
+    .filter(Boolean)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(' ')
+}
+
 export const Route = createFileRoute('/shop/')({
   validateSearch: validateShopSearch,
-  head: () =>
-    seo({
-      title: 'Shop',
-      description:
-        'Order Corica Pastries online for pickup from 106 Aberdeen Street, Northbridge. Strudels, tortas, cheesecakes, small pastries and biscuits, with your pickup day chosen at checkout.',
+  // A filtered view gets its own title for tabs and history, but canonicals to
+  // /shop: the brochure /patisserie pages are the indexable range pages.
+  head: ({ match }) => {
+    const category = match.search.category
+    const range = category ? titleCase(category) : null
+    return seo({
+      title: range ? `${range} — Order Online` : 'Order Online for Pickup',
+      description: range
+        ? `Order ${range.toLowerCase()} from Corica Pastries online for pickup from 106 Aberdeen Street, Northbridge. Choose your pickup day at checkout.`
+        : 'Order Corica Pastries online for pickup from 106 Aberdeen Street, Northbridge. Strudels, tortas, cheesecakes, pastries and biscuits, pickup day chosen at checkout.',
       path: '/shop',
-    }),
+    })
+  },
   component: Page,
 })
 

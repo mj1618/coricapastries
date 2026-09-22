@@ -10,7 +10,8 @@ import { ApiError, getProduct } from '#/lib/shop/api'
 import { truncate, withRemoteOgImage } from '#/lib/shop/browse'
 import { recommendations } from '#/lib/shop/catalog'
 import { htmlToText } from '#/lib/shop/sanitize'
-import { seo } from '#/lib/seo'
+import { breadcrumbs, jsonLd, seo } from '#/lib/seo'
+import { productSchema } from '#/lib/shop/schema'
 
 const shopRoute = getRouteApi('/shop')
 
@@ -33,16 +34,30 @@ export const Route = createFileRoute('/shop/$slug')({
       })
     }
     const summary = truncate(htmlToText(product.description))
-    return withRemoteOgImage(
+    const path = product.slug ? `/shop/${product.slug}` : '/shop'
+    const head = withRemoteOgImage(
       seo({
         title: product.name,
         description:
           summary ||
           `${product.name} from Corica Pastries, Northbridge. Order online for pickup from 106 Aberdeen Street.`,
-        path: `/shop/${product.slug ?? ''}`,
+        path,
+        type: 'product',
       }),
       product.image,
     )
+    return {
+      ...head,
+      scripts: [
+        jsonLd(productSchema(product, path)),
+        jsonLd(
+          breadcrumbs([
+            { name: 'Shop', path: '/shop' },
+            { name: product.name },
+          ]),
+        ),
+      ],
+    }
   },
   component: Page,
 })

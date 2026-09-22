@@ -22,19 +22,15 @@ import { seo } from '#/lib/seo'
 const shopRoute = getRouteApi('/shop')
 
 export const Route = createFileRoute('/shop/account')({
-  head: () => {
-    const base = seo({
+  // A shopper's account page should never be indexed.
+  head: () =>
+    seo({
       title: 'Your account',
       description:
         'Log in to see your saved favourites, past orders and invoices, and to manage your repeat orders from Corica Pastries.',
       path: '/shop/account',
-    })
-    // A shopper's account page should never be indexed.
-    return {
-      ...base,
-      meta: [...base.meta, { name: 'robots', content: 'noindex, nofollow' }],
-    }
-  },
+      noindex: true,
+    }),
   component: Page,
 })
 

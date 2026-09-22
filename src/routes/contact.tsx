@@ -8,8 +8,8 @@ import { seo } from '#/lib/seo'
 export const Route = createFileRoute('/contact')({
   head: () =>
     seo({
-      title: 'Contact Us',
-      description: `Visit Corica Pastries at ${fullAddress}, or call the shop on ${site.phone.display}. Trading hours, directions, parking and an enquiry form for orders, custom cakes and wholesale.`,
+      title: 'Contact Us | Corica Pastries, Northbridge',
+      description: `Visit Corica Pastries at ${fullAddress} or call ${site.phone.display}. Trading hours, directions, parking and an enquiry form for orders and wholesale.`,
       path: '/contact',
     }),
   component: Page,

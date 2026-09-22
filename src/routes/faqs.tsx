@@ -10,9 +10,9 @@ import { seo } from '#/lib/seo'
 export const Route = createFileRoute('/faqs')({
   head: () =>
     seo({
-      title: 'FAQs',
+      title: 'FAQs | Corica Pastries',
       description:
-        'Answers to the questions we are asked most: how long the apple strudel keeps, how many it serves, ordering and custom cakes, wholesale, parking and our Northbridge trading hours.',
+        'How long the apple strudel keeps, how many it serves, ordering and custom cakes, wholesale, parking and trading hours at our Northbridge shop.',
       path: '/faqs',
     }),
   component: Page,
