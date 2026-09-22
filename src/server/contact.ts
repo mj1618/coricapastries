@@ -35,13 +35,20 @@ export type ContactResult =
   /**
    * `invalid`        — required field missing or malformed email (the browser
    *                    normally catches this first; this is the server backstop).
-   * `not-configured` — no RESEND_API_KEY / CONTACT_TO_EMAIL on this deployment.
+   * `not-configured` — no RESEND_API_KEY on this deployment.
    * `send-failed`    — Resend rejected the request or the network failed.
    * The UI treats all three the same way: "please call the shop".
    */
   | { ok: false; reason: 'invalid' | 'not-configured' | 'send-failed' }
 
-const DEFAULT_FROM = 'Corica Pastries Website <onboarding@resend.dev>'
+/**
+ * Where enquiries land unless CONTACT_TO_EMAIL overrides it.
+ * The sender has to be on a domain verified in the Resend account (the
+ * SupplyWise one), so it is a supplywise.com.au address; replies go to the
+ * shopper because of `reply_to`.
+ */
+const DEFAULT_TO = 'info@coricapastries.com.au'
+const DEFAULT_FROM = 'Corica Pastries Website <noreply@supplywise.com.au>'
 
 /** Deliberately loose: just enough to catch a typo, never enough to reject a real address. */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -104,12 +111,12 @@ export const sendContactEnquiry = createServerFn({ method: 'POST' })
     }
 
     const apiKey = process.env.RESEND_API_KEY
-    const to = process.env.CONTACT_TO_EMAIL
+    const to = process.env.CONTACT_TO_EMAIL || DEFAULT_TO
     const from = process.env.CONTACT_FROM_EMAIL || DEFAULT_FROM
 
-    if (!apiKey || !to) {
+    if (!apiKey) {
       console.warn(
-        '[contact] RESEND_API_KEY and/or CONTACT_TO_EMAIL are not set — enquiry was not delivered. See .env.example.',
+        '[contact] RESEND_API_KEY is not set — enquiry was not delivered. See .env.example.',
       )
       return { ok: false, reason: 'not-configured' }
     }

@@ -121,8 +121,12 @@ store" links will not return to `/shop`, and shopper login will not redirect bac
 ## Contact form
 
 `src/server/contact.ts` sends through Resend using plain `fetch`. It needs `RESEND_API_KEY`
-and `CONTACT_TO_EMAIL` (see `.env.example`) set in the Vercel project. Without them the form
-shows a "please call the shop" message instead of failing silently.
+(the SupplyWise Resend account's key, set in the Vercel project on 2026-09-22) and without it
+the form shows a "please call the shop" message instead of failing silently. Enquiries go to
+`info@coricapastries.com.au` by default (`CONTACT_TO_EMAIL` overrides) from
+`noreply@supplywise.com.au` (`CONTACT_FROM_EMAIL` overrides), because the sender must be on a
+domain verified in that Resend account and coricapastries.com.au is not. The shopper's address
+is the reply-to. Bot protection is a honeypot field only.
 
 ## Screenshots and QA
 
@@ -173,7 +177,6 @@ it: "Order online" in the hero, on every range tile, in the patisserie "How to o
 each range's order card, and in the FAQs, About, Contact and 404 copy. All of it says pickup from
 Aberdeen Street, never delivery.
 
-Still to do: owners to confirm hours and prices, supply higher-resolution photography, provide the
-enquiry recipient address (and a Resend key) for the contact form, move the coricapastries.com.au
+Still to do: owners to confirm hours and prices, supply higher-resolution photography, move the coricapastries.com.au
 domain to Vercel, and register the storefront domain under SupplyWise Settings → Custom Storefront
 (see the Shop section).
