@@ -22,7 +22,7 @@ function Page() {
       <PageHero
         eyebrow="Our story"
         title="Perfected since 1957."
-        lede="Nearly seventy years of apple strudels, continental cakes and pastries, baked in the heart of Northbridge."
+        lede="Nearly seventy years of Apple Strudels, Continental Tortes and Pastries, baked in the heart of Northbridge."
       />
       <Story />
       <Values />
