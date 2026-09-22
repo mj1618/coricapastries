@@ -33,6 +33,7 @@ src/routes/about.tsx         About Us
 src/routes/patisserie/       Range overview (index.tsx) and category listings ($category.tsx)
 src/routes/faqs.tsx          FAQs (data in src/data/faqs.ts)
 src/routes/contact.tsx       Contact: cards, map embed, enquiry form
+src/routes/privacy.tsx       Privacy policy (describes what the site actually does; keep in sync)
 src/routes/shop.tsx          Shop layout route: loads the store snapshot for every /shop page
 src/routes/shop/             index.tsx (grid, ?category=), $slug.tsx (product),
                              parent/$parentSlug.tsx (variant group), cart.tsx, account.tsx
@@ -138,16 +139,16 @@ mandatory `</script` escape; use it for all structured data.
 - **Crawl control.** `public/robots.txt` (disallows cart, account, api), `/sitemap.xml` (server
   route `src/routes/sitemap[.]xml.ts`: brochure pages, ranges, products, `/shop`; shop product
   URLs are left out while SupplyWise still has duplicated `-copy` slugs). Cart, account and
-  order pages are `noindex`. Unknown URLs return a real 404 status but inherit the root
-  title (a route that throws `notFound()` never runs its own `head()`, and the root head runs
-  before the child loader throws); search engines drop 404 responses regardless.
+  order pages are `noindex`. Unknown URLs return a 404 status; their "Page not found" title and
+  noindex come from the root `head()`, which checks the matches for the router's `_notFound`
+  flag (a route that throws `notFound()` never runs its own `head()`).
   `vercel.json` sends `X-Robots-Tag: noindex` only when the host is not coricapastries.com.au,
   so staging is never indexed and cutover needs no config change. `trailingSlash: false`.
 - **Redirects.** `vercel.json` holds 112 permanent redirects from the old WordPress URLs
   (`/about-us`, `/contact-us`, `/catering` → contact, `/product-category/<slug>` including the
   misspelt `bisucits`, all 79 `/product/<slug>` URLs → the matching `/patisserie/<range>/<product>`
-  page or the range page when the product is gone, the blog posts, WooCommerce cart/account
-  pages, and the Rank Math sitemaps). Sources use `{/}?` so old trailing-slash URLs match in
+  page or the range page when the product is gone, the blog posts, `/privacy-policy-2` →
+  `/privacy`, WooCommerce cart/account pages, and the Rank Math sitemaps). Sources use `{/}?` so old trailing-slash URLs match in
   one hop. Vercel compiles sources with path-to-regexp; test new ones with
   `@vercel/routing-utils`' `sourceToRegex`.
 - **Social card.** `public/img/og-card.jpg` is a 1200×630 JPEG (rendered from an HTML

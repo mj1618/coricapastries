@@ -100,6 +100,11 @@ export function Footer() {
                   FAQs
                 </Link>
               </li>
+              <li>
+                <Link to="/privacy" className="hover:text-gold-soft">
+                  Privacy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

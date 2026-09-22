@@ -26,6 +26,7 @@ const PAGES: Array<{ path: string; priority: string; changefreq: string }> = [
   { path: '/about', priority: '0.6', changefreq: 'yearly' },
   { path: '/faqs', priority: '0.6', changefreq: 'monthly' },
   { path: '/contact', priority: '0.6', changefreq: 'yearly' },
+  { path: '/privacy', priority: '0.2', changefreq: 'yearly' },
 ]
 
 function xml(): string {

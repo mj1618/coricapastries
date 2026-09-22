@@ -42,7 +42,7 @@
     },
     {
       "source": "/privacy-policy-2{/}?",
-      "destination": "/",
+      "destination": "/privacy",
       "permanent": true
     },
     {

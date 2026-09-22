@@ -22,7 +22,11 @@ const gtmSnippet = `if (${analyticsHostPattern.toString()}.test(location.hostnam
 }`
 
 export const Route = createRootRoute({
-  head: () => ({
+  // A route that throws notFound() never runs its own head(), and when the
+  // root's notFoundComponent is the boundary the router marks the root match
+  // with `_notFound` rather than a status. So the 404 title and noindex live
+  // here. The HTTP status is already 404.
+  head: ({ matches }) => ({
     meta: [
       { charSet: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -32,7 +36,16 @@ export const Route = createRootRoute({
         name: 'google-site-verification',
         content: 'zwFsO4GIVMuWRyeYKduMkJbpsXRXX4N3fKZvPe1ZgBQ',
       },
-      { title: `${site.name} | ${site.tagline} — Since ${site.established}` },
+      ...(matches.some((m) => m._notFound || m.status === 'notFound')
+        ? [
+            { title: `Page not found | ${site.name}` },
+            { name: 'robots', content: 'noindex, nofollow' },
+          ]
+        : [
+            {
+              title: `${site.name} | ${site.tagline} — Since ${site.established}`,
+            },
+          ]),
     ],
     links: [
       { rel: 'stylesheet', href: fontsHref },
