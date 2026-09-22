@@ -7,6 +7,7 @@ import { ButtonLink } from '#/components/ui'
 import { ApiError, getParent } from '#/lib/shop/api'
 import {
   defaultVariantId,
+  groupChoiceLabel,
   truncate,
   withRemoteOgImage,
 } from '#/lib/shop/browse'
@@ -108,7 +109,7 @@ function Page() {
         categories={categories}
         variantPicker={
           <VariantPicker
-            label={parent.selectionLabel?.trim() || 'Choose a size'}
+            label={groupChoiceLabel(parent)}
             members={products}
             selectedId={selected.id}
             onSelect={setSelectedId}

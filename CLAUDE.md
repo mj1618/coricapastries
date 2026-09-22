@@ -92,6 +92,13 @@ special-occasion, gluten-free-range, birthday-cakes, christmas`.
 the prerender filter in `vite.config.ts`, so they render on request (SSR on the first hit) and
 prices and stock stay live.
 
+**Variant picker wording.** Groups are a "Choose a size" choice by default, but some are
+flavours: SupplyWise publishes every group's `selectionLabel` empty, so the handful that need
+different wording are mapped by group name in `GROUP_CHOICE_LABELS` in `src/lib/shop/browse.ts`
+(currently `Torta Slice → Choose a flavour`). `groupChoiceLabel()` there is the single source of
+that wording, used by the grid card, the group detail page and the account tiles. If SupplyWise
+later sets a real `selectionLabel`, it wins over the map.
+
 **Proxy.** `src/routes/api/sw/$.ts` forwards `/api/sw/*` to
 `https://actions.supplywise.com.au/api/retail/v1/coricapastries`, passing method, query, body,
 `Content-Type` and `Authorization` through unchanged. The browser only ever talks to our own

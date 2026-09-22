@@ -14,7 +14,7 @@ import {
 } from './catalog'
 import type { GridItem } from './catalog'
 import type { seo } from '#/lib/seo'
-import type { Filter, Product, Store, Tag } from './types'
+import type { Filter, Product, Store, Tag, VariantGroup } from './types'
 
 /* ----------------------------------------------------------------- search */
 
@@ -299,11 +299,27 @@ export function quickAddProduct(store: Store, item: GridItem): Product | null {
   return p
 }
 
+/**
+ * Wording for a variant group whose members are a choice the supplier has not described
+ * in SupplyWise (they all have an empty `selectionLabel`). Keyed on the group name.
+ * Some groups are a flavour choice rather than a size: the Torta Slice group is
+ * Moka, Rum, Black Forrest, Hazelnut and Ganache slices.
+ */
+const GROUP_CHOICE_LABELS: Record<string, string> = {
+  'torta slice': 'Choose a flavour',
+}
+
+/** The noun for what the shopper is choosing within a group: its own label, else "size". */
+export function groupChoiceLabel(group: VariantGroup): string {
+  const own = group.selectionLabel?.trim()
+  if (own) return own
+  return GROUP_CHOICE_LABELS[group.name.trim().toLowerCase()] ?? 'Choose a size'
+}
+
 /** Call-to-action wording for an item that cannot be added straight from the card. */
 export function itemChooseLabel(store: Store, item: GridItem): string {
   if (item.kind === 'group') {
-    const label = item.group.selectionLabel?.trim()
-    return label ? label : 'Choose a size'
+    return groupChoiceLabel(item.group)
   }
   const options = optionsFor(store, item.product.id)
   const first = options[0]
