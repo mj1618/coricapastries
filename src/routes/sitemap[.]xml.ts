@@ -15,6 +15,13 @@ const PAGES: Array<{ path: string; priority: string; changefreq: string }> = [
     priority: '0.8',
     changefreq: 'monthly',
   })),
+  ...catalogue.flatMap((c) =>
+    c.products.map((p) => ({
+      path: `/patisserie/${c.slug}/${p.slug}`,
+      priority: '0.7',
+      changefreq: 'monthly',
+    })),
+  ),
   { path: '/shop', priority: '0.8', changefreq: 'daily' },
   { path: '/about', priority: '0.6', changefreq: 'yearly' },
   { path: '/faqs', priority: '0.6', changefreq: 'monthly' },

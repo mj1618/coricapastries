@@ -118,6 +118,46 @@ byte-identical between the authorize call and the token exchange.
 the storefront domain and mark it the default. Until that is done the post-checkout "Back to
 store" links will not return to `/shop`, and shopper login will not redirect back to us.
 
+## SEO
+
+The canonical origin is `site.siteUrl` = `https://www.coricapastries.com.au` (www, like the old
+site; set the apex to redirect to www in Vercel domain settings). Every page's head comes from
+`seo()` in `src/lib/seo.ts`: title, description (clamped to 158 chars), canonical, Open Graph
+and Twitter tags, optional `noindex`. Pass the full title when it should not end in
+"| Corica Pastries". `jsonLd()` turns a schema.org object into a head `scripts` entry with the
+mandatory `</script` escape; use it for all structured data.
+
+- **Structured data.** `businessGraph()` (Bakery + WebSite, from `site.ts` including `geo` and the
+  machine-readable `hours[].schema`) is emitted from `__root.tsx` on every page. Range pages
+  add BreadcrumbList + ItemList of Products; brochure product pages add Product + breadcrumbs;
+  shop product pages add Product/AggregateOffer (`src/lib/shop/schema.ts`); FAQs add FAQPage.
+- **Titles and descriptions.** Per-range title/description live in `categoryMeta` in
+  `src/data/catalogue.ts`. Range and product pages carry "Northbridge Perth" in the title.
+  The shop's `?category=` views get their own title but canonical to `/shop`; the brochure
+  `/patisserie` pages are the indexable range pages.
+- **Crawl control.** `public/robots.txt` (disallows cart, account, api), `/sitemap.xml` (server
+  route `src/routes/sitemap[.]xml.ts`: brochure pages, ranges, products, `/shop`; shop product
+  URLs are left out while SupplyWise still has duplicated `-copy` slugs). Cart, account and
+  order pages are `noindex`. Unknown URLs return a real 404 status but inherit the root
+  title (a route that throws `notFound()` never runs its own `head()`, and the root head runs
+  before the child loader throws); search engines drop 404 responses regardless.
+  `vercel.json` sends `X-Robots-Tag: noindex` only when the host is not coricapastries.com.au,
+  so staging is never indexed and cutover needs no config change. `trailingSlash: false`.
+- **Redirects.** `vercel.json` holds 112 permanent redirects from the old WordPress URLs
+  (`/about-us`, `/contact-us`, `/catering` → contact, `/product-category/<slug>` including the
+  misspelt `bisucits`, all 79 `/product/<slug>` URLs → the matching `/patisserie/<range>/<product>`
+  page or the range page when the product is gone, the blog posts, WooCommerce cart/account
+  pages, and the Rank Math sitemaps). Sources use `{/}?` so old trailing-slash URLs match in
+  one hop. Vercel compiles sources with path-to-regexp; test new ones with
+  `@vercel/routing-utils`' `sourceToRegex`.
+- **Social card.** `public/img/og-card.jpg` is a 1200×630 JPEG (rendered from an HTML
+  composition with headless Chrome; the hero PNG is transparent and unsuitable on its own).
+  Range and product pages override it with their 800×800 photo.
+- **Search Console.** The old site's `google-site-verification` meta is in `__root.tsx`; after
+  cutover, submit `/sitemap.xml` in Search Console and use the Change of Address tool only if
+  the domain itself changes (it does not).
+- Hours in the Bakery schema come from `site.hours`, which the owners have not confirmed.
+
 ## Analytics
 
 Google Tag Manager container `GTM-NKFF6BS`, carried over from the old WordPress site
@@ -196,6 +236,7 @@ each range's order card, and in the FAQs, About, Contact and 404 copy. All of it
 Aberdeen Street, never delivery.
 
 Still to do: owners to confirm hours and prices, supply higher-resolution photography, create a
-Turnstile widget in Cloudflare for the site's domain and set its two keys on Vercel, move the coricapastries.com.au
+Turnstile widget in Cloudflare for the site's domain and set its two keys on Vercel, set apex →
+www redirect in Vercel domains, move the coricapastries.com.au
 domain to Vercel, and register the storefront domain under SupplyWise Settings → Custom Storefront
 (see the Shop section).

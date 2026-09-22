@@ -1,38 +1,62 @@
+import { Link } from '@tanstack/react-router'
 import { formatPrice, prettyLabel } from '#/data/catalogue'
 import type { Product } from '#/data/catalogue'
 
 /**
  * One product in a range listing: square photo, name, description, price
  * (a single figure, or a list of sizes/options) and any allergen notice.
- * These brochure cards are not clickable; adding to a cart happens in /shop,
- * which the range's OrderCard links to.
+ * The photo and the name link to the product's own page; adding to a cart
+ * happens in /shop, which the range's OrderCard links to.
  */
+/** "Strudels" → "Strudels range"; "Gluten Free Range" already says it. */
+export function rangeLabel(name: string): string {
+  return /\brange$/i.test(name) ? name : `${name} range`
+}
+
 export function ProductCard({
   product,
+  categorySlug,
   rangeName,
 }: {
   product: Product
+  /** The range's catalogue slug, for the link to the product page. */
+  categorySlug: string
   /** The range the card sits in, for image alt text ("Apple Strudel, from the Strudels range at Corica Pastries"). */
   rangeName?: string
 }) {
+  const params = { category: categorySlug, product: product.slug }
   return (
     <article className="flex h-full flex-col border border-gold-soft bg-ivory">
-      <img
-        src={product.image}
-        alt={
-          rangeName
-            ? `${product.name}, from the ${rangeName} range at Corica Pastries, Northbridge`
-            : product.name
-        }
-        width={800}
-        height={800}
-        loading="lazy"
-        decoding="async"
-        className="aspect-square w-full border-b border-gold-soft bg-white object-cover"
-      />
+      <Link
+        to="/patisserie/$category/$product"
+        params={params}
+        className="group block overflow-hidden"
+      >
+        <img
+          src={product.image}
+          alt={
+            rangeName
+              ? `${product.name}, from the ${rangeLabel(rangeName)} at Corica Pastries, Northbridge`
+              : product.name
+          }
+          width={800}
+          height={800}
+          loading="lazy"
+          decoding="async"
+          className="aspect-square w-full border-b border-gold-soft bg-white object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+      </Link>
 
       <div className="flex flex-1 flex-col px-5 pt-5 pb-6 text-center sm:px-6">
-        <h3 className="text-[1.5rem] text-balance">{product.name}</h3>
+        <h3 className="text-[1.5rem] text-balance">
+          <Link
+            to="/patisserie/$category/$product"
+            params={params}
+            className="transition-colors hover:text-red"
+          >
+            {product.name}
+          </Link>
+        </h3>
 
         {product.description ? (
           <p className="mt-2 text-[1rem] leading-relaxed text-pretty text-ink-soft">
@@ -52,7 +76,8 @@ export function ProductCard({
   )
 }
 
-function PriceBlock({ product }: { product: Product }) {
+/** The published price: one figure, or a list of sizes/options each with its own. */
+export function PriceBlock({ product }: { product: Product }) {
   const { variants, optionLabel, priceFrom } = product
   const prices = variants.map((v) => v.price)
   const oneprice = prices.length > 0 && prices.every((p) => p === prices[0])

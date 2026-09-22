@@ -87,7 +87,11 @@ function Page() {
                     delay={(i % 3) * 0.08}
                     className="h-full"
                   >
-                    <ProductCard product={product} rangeName={category.name} />
+                    <ProductCard
+                      product={product}
+                      categorySlug={category.slug}
+                      rangeName={category.name}
+                    />
                   </Reveal>
                 ))}
               </div>

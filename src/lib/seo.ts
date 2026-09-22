@@ -1,5 +1,5 @@
 import { catalogue } from '#/data/catalogue'
-import type { Category } from '#/data/catalogue'
+import type { Category, Product } from '#/data/catalogue'
 import { site } from '#/data/site'
 
 /**
@@ -196,10 +196,47 @@ export function breadcrumbs(
   }
 }
 
+/** The page a single catalogue product lives on. */
+export function productPath(categorySlug: string, productSlug: string): string {
+  return `/patisserie/${categorySlug}/${productSlug}`
+}
+
+/**
+ * The published price of a catalogue product as a schema.org offer: a plain
+ * Offer when every variant costs the same (or the product only quotes a single
+ * "from" price), an AggregateOffer across the variant prices otherwise, and
+ * `undefined` when no price is published at all. `url` is the page the offer is
+ * made on, which schema.org wants on the Offer itself.
+ */
+export function productOffers(
+  product: Product,
+  url?: string,
+): JsonLd | undefined {
+  const prices = product.variants.map((v) => v.price)
+  const low = prices.length ? Math.min(...prices) : product.priceFrom
+  const high = prices.length ? Math.max(...prices) : (product.priceTo ?? low)
+  if (low == null) return undefined
+  const shared = {
+    priceCurrency: 'AUD',
+    availability: 'https://schema.org/InStock',
+    ...(url ? { url } : {}),
+    seller: { '@id': BUSINESS_ID },
+  }
+  return low === high
+    ? { '@type': 'Offer', price: low.toFixed(2), ...shared }
+    : {
+        '@type': 'AggregateOffer',
+        lowPrice: low.toFixed(2),
+        highPrice: (high ?? low).toFixed(2),
+        offerCount: Math.max(prices.length, 1),
+        ...shared,
+      }
+}
+
 /**
  * A brochure range as an ItemList of Products with their published prices.
  * Everything listed is baked for the counter and orderable for pickup, so the
- * offers are real; `priceRange` products get an AggregateOffer.
+ * offers are real; products sold in several sizes get an AggregateOffer.
  */
 export function rangeSchema(category: Category): JsonLd {
   return {
@@ -209,43 +246,43 @@ export function rangeSchema(category: Category): JsonLd {
     url: absoluteUrl(`/patisserie/${category.slug}`),
     numberOfItems: category.products.length,
     itemListElement: category.products.map((product, i) => {
-      const prices = product.variants.map((v) => v.price)
-      const low = prices.length ? Math.min(...prices) : product.priceFrom
-      const high = prices.length
-        ? Math.max(...prices)
-        : (product.priceTo ?? low)
-      const offers =
-        low == null
-          ? undefined
-          : low === high
-            ? {
-                '@type': 'Offer',
-                price: low.toFixed(2),
-                priceCurrency: 'AUD',
-                availability: 'https://schema.org/InStock',
-                seller: { '@id': BUSINESS_ID },
-              }
-            : {
-                '@type': 'AggregateOffer',
-                lowPrice: low.toFixed(2),
-                highPrice: (high ?? low).toFixed(2),
-                priceCurrency: 'AUD',
-                offerCount: Math.max(prices.length, 1),
-                availability: 'https://schema.org/InStock',
-                seller: { '@id': BUSINESS_ID },
-              }
+      const url = absoluteUrl(productPath(category.slug, product.slug))
+      const offers = productOffers(product, url)
       return {
         '@type': 'ListItem',
         position: i + 1,
+        url,
         item: {
           '@type': 'Product',
           name: product.name,
           description: product.description || undefined,
           image: absoluteUrl(product.image),
           brand: { '@type': 'Brand', name: site.name },
+          url,
           ...(offers ? { offers } : {}),
         },
       }
     }),
+  }
+}
+
+/** One catalogue product as a schema.org Product, for its own page. */
+export function productSchema(
+  category: Category,
+  product: Product,
+  description: string,
+): JsonLd {
+  const url = absoluteUrl(productPath(category.slug, product.slug))
+  const offers = productOffers(product, url)
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    description,
+    image: absoluteUrl(product.image),
+    brand: { '@type': 'Brand', name: site.name },
+    category: category.name,
+    url,
+    ...(offers ? { offers } : {}),
   }
 }

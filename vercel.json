@@ -5,8 +5,580 @@
   "headers": [
     {
       "source": "/(.*)",
-      "missing": [{ "type": "host", "value": "(www\\.)?coricapastries\\.com\\.au" }],
-      "headers": [{ "key": "X-Robots-Tag", "value": "noindex" }]
+      "missing": [
+        {
+          "type": "host",
+          "value": "(www\\.)?coricapastries\\.com\\.au"
+        }
+      ],
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/about-us{/}?",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/contact-us{/}?",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/catering{/}?",
+      "destination": "/contact",
+      "permanent": true
+    },
+    {
+      "source": "/blogs{/}?",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/privacy-policy-2{/}?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/category/uncategorized{/}?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/cart{/}?",
+      "destination": "/shop/cart",
+      "permanent": true
+    },
+    {
+      "source": "/checkout{/}?",
+      "destination": "/shop/cart",
+      "permanent": true
+    },
+    {
+      "source": "/my-account{/}?",
+      "destination": "/shop/account",
+      "permanent": true
+    },
+    {
+      "source": "/lost-password{/}?",
+      "destination": "/shop/account",
+      "permanent": true
+    },
+    {
+      "source": "/shop2{/}?",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/products{/}?",
+      "destination": "/patisserie",
+      "permanent": true
+    },
+    {
+      "source": "/top-5-pastries-to-try-at-corica-pastries{/}?",
+      "destination": "/patisserie",
+      "permanent": true
+    },
+    {
+      "source": "/apple-strudel-history{/}?",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/apple-strudel-what-makes-it-so-good{/}?",
+      "destination": "/patisserie/strudels/apple-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/the-best-drinks-to-pair-with-an-apple-strudel{/}?",
+      "destination": "/patisserie/strudels/apple-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/travelling-with-your-apple-strudel-this-school-holidays{/}?",
+      "destination": "/patisserie/strudels/apple-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap_index.xml{/}?",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/wp-sitemap.xml{/}?",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/:name(post|page|product|category|local)-sitemap.xml{/}?",
+      "destination": "/sitemap.xml",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/birthday-cakes{/}?",
+      "destination": "/patisserie/birthday-cakes",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/bisucits{/}?",
+      "destination": "/patisserie/biscuits",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/biscuits{/}?",
+      "destination": "/patisserie/biscuits",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/christmas{/}?",
+      "destination": "/patisserie/christmas",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/gluten-free-range{/}?",
+      "destination": "/patisserie/gluten-free",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/mini-range{/}?",
+      "destination": "/patisserie/mini-range",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/small-pastries{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/special-occasions{/}?",
+      "destination": "/patisserie/special-occasions",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/strudels{/}?",
+      "destination": "/patisserie/strudels",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/cakes{/}?",
+      "destination": "/patisserie/birthday-cakes",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/strudeles{/}?",
+      "destination": "/patisserie/strudels",
+      "permanent": true
+    },
+    {
+      "source": "/product/almond-slice{/}?",
+      "destination": "/patisserie/small-pastries/almond-slice",
+      "permanent": true
+    },
+    {
+      "source": "/product/amore{/}?",
+      "destination": "/patisserie/small-pastries/amore",
+      "permanent": true
+    },
+    {
+      "source": "/product/baked-ricotta-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/baked-ricotta-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/baked-ricotta-slice{/}?",
+      "destination": "/patisserie/small-pastries/baked-ricotta-slice",
+      "permanent": true
+    },
+    {
+      "source": "/product/black-forrest-torta{/}?",
+      "destination": "/patisserie/birthday-cakes/black-forrest-torta",
+      "permanent": true
+    },
+    {
+      "source": "/product/blueberry-and-apple-strudel{/}?",
+      "destination": "/patisserie/strudels/blueberry-apple-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/product/blueberry-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/blueberry-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/blueberry-tart{/}?",
+      "destination": "/patisserie/small-pastries/blueberry-tart",
+      "permanent": true
+    },
+    {
+      "source": "/product/cantucci{/}?",
+      "destination": "/patisserie/biscuits/cantucci",
+      "permanent": true
+    },
+    {
+      "source": "/product/carrot-cake{/}?",
+      "destination": "/patisserie/small-pastries/carrot-cake",
+      "permanent": true
+    },
+    {
+      "source": "/product/cats-tongue{/}?",
+      "destination": "/patisserie/biscuits/cats-tongue",
+      "permanent": true
+    },
+    {
+      "source": "/product/cheese-biscuit{/}?",
+      "destination": "/patisserie/biscuits/cheese-biscuit",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-ganache{/}?",
+      "destination": "/patisserie/birthday-cakes/chocolate-ganache",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-horn{/}?",
+      "destination": "/patisserie/small-pastries/chocolate-horn",
+      "permanent": true
+    },
+    {
+      "source": "/product/coffee-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/coffee-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/cornflake-cookies{/}?",
+      "destination": "/patisserie/biscuits/cornflake-cookies",
+      "permanent": true
+    },
+    {
+      "source": "/product/croque-em-bouche{/}?",
+      "destination": "/patisserie/special-occasions/croque-em-bouche",
+      "permanent": true
+    },
+    {
+      "source": "/product/easter-bunny{/}?",
+      "destination": "/patisserie/special-occasions/easter-bunny",
+      "permanent": true
+    },
+    {
+      "source": "/product/fans{/}?",
+      "destination": "/patisserie/biscuits/fans",
+      "permanent": true
+    },
+    {
+      "source": "/product/fruit-flan{/}?",
+      "destination": "/patisserie/special-occasions/fruit-flan",
+      "permanent": true
+    },
+    {
+      "source": "/product/gf-blueberry-tart{/}?",
+      "destination": "/patisserie/gluten-free/gf-blueberry-tart",
+      "permanent": true
+    },
+    {
+      "source": "/product/gf-choc-orange-and-almond-loaf{/}?",
+      "destination": "/patisserie/gluten-free/gf-choc-orange-and-almond-loaf",
+      "permanent": true
+    },
+    {
+      "source": "/product/gf-pear-coconut-and-almond-loaf{/}?",
+      "destination": "/patisserie/gluten-free/gf-pear-coconut-and-almond-loaf",
+      "permanent": true
+    },
+    {
+      "source": "/product/gf-pear-tart{/}?",
+      "destination": "/patisserie/gluten-free/gf-pear-tart",
+      "permanent": true
+    },
+    {
+      "source": "/product/heart-single{/}?",
+      "destination": "/patisserie/birthday-cakes/heart-torta",
+      "permanent": true
+    },
+    {
+      "source": "/product/honey-cake-log{/}?",
+      "destination": "/patisserie/special-occasions/honey-cake-log",
+      "permanent": true
+    },
+    {
+      "source": "/product/honey-cake-round{/}?",
+      "destination": "/patisserie/special-occasions/honey-cake-round",
+      "permanent": true
+    },
+    {
+      "source": "/product/key{/}?",
+      "destination": "/patisserie/birthday-cakes/key",
+      "permanent": true
+    },
+    {
+      "source": "/product/medium-fruit-flan{/}?",
+      "destination": "/patisserie/special-occasions/fruit-flan",
+      "permanent": true
+    },
+    {
+      "source": "/product/meringue-biscuits{/}?",
+      "destination": "/patisserie/biscuits/meringue-biscuits",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-blueberry-cheesecake{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-blueberry",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-cannoli{/}?",
+      "destination": "/patisserie/mini-range/mini-sicilian-cannoli",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-chocolate-cheesecake{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-chocolate",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-eclair{/}?",
+      "destination": "/patisserie/mini-range/mini-eclair",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-espresso-mousse{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-espresso",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-fruit-flan{/}?",
+      "destination": "/patisserie/mini-range/mini-fruit-flan",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-fruit-mince-pies{/}?",
+      "destination": "/patisserie/christmas/fruit-mince-pies-mini",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-heart-strudel{/}?",
+      "destination": "/patisserie/mini-range/mini-heart-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-maid-of-honour{/}?",
+      "destination": "/patisserie/mini-range/mini-maid-of-honour",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-passionfruit-cheesecake{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-passionfruit",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-profiterole{/}?",
+      "destination": "/patisserie/mini-range/mini-profiterole",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-strawberry-cheesecake{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-strawberry",
+      "permanent": true
+    },
+    {
+      "source": "/product/mini-white-chocolate-mousse{/}?",
+      "destination": "/patisserie/small-pastries/cheesecake-slice-white-chocolate",
+      "permanent": true
+    },
+    {
+      "source": "/product/mixed-fruit-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/mixed-fruit-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/mixed-shortbread{/}?",
+      "destination": "/patisserie/biscuits/mixed-shortbread",
+      "permanent": true
+    },
+    {
+      "source": "/product/palmier{/}?",
+      "destination": "/patisserie/biscuits/palmier",
+      "permanent": true
+    },
+    {
+      "source": "/product/passionfruit-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/passionfruit-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/paste-secche{/}?",
+      "destination": "/patisserie/gluten-free/paste-secche",
+      "permanent": true
+    },
+    {
+      "source": "/product/santas-sleigh-loaf{/}?",
+      "destination": "/patisserie/christmas/santa-s-sleigh-loaf",
+      "permanent": true
+    },
+    {
+      "source": "/product/small-chocolate-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/chocolate-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/small-continental-torta{/}?",
+      "destination": "/patisserie/birthday-cakes/continental-torta",
+      "permanent": true
+    },
+    {
+      "source": "/product/small-hazelnut-torta{/}?",
+      "destination": "/patisserie/birthday-cakes/hazelnut-torta",
+      "permanent": true
+    },
+    {
+      "source": "/product/small-rum-torta{/}?",
+      "destination": "/patisserie/birthday-cakes/rum-torta",
+      "permanent": true
+    },
+    {
+      "source": "/product/small-strawberry-cheesecake{/}?",
+      "destination": "/patisserie/special-occasions/strawberry-cheesecake",
+      "permanent": true
+    },
+    {
+      "source": "/product/st-honore{/}?",
+      "destination": "/patisserie/birthday-cakes/st-honore",
+      "permanent": true
+    },
+    {
+      "source": "/product/swiss-roll-log{/}?",
+      "destination": "/patisserie/christmas/swiss-roll-yules",
+      "permanent": true
+    },
+    {
+      "source": "/product/whole-apple-strudel{/}?",
+      "destination": "/patisserie/strudels/apple-strudel",
+      "permanent": true
+    },
+    {
+      "source": "/product/xmas-fruit-mince{/}?",
+      "destination": "/patisserie/christmas/fruit-mince-pies-reg",
+      "permanent": true
+    },
+    {
+      "source": "/product/xmas-gingerbread{/}?",
+      "destination": "/patisserie/christmas/gingerbread",
+      "permanent": true
+    },
+    {
+      "source": "/product/xmas-shortbread-tree{/}?",
+      "destination": "/patisserie/christmas/shortbread-tree",
+      "permanent": true
+    },
+    {
+      "source": "/product/sicilian-cannoli{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/dusted-profiterole{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-puff{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-profiterole{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-mudcake{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/toffee-profiterole{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/eccle{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/coffee-eclair{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/custard-horn{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/frangipani{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/hazelnut-caramel-brownie-slice{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/honey-cake-slice{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/chocolate-tarlet{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/moka-slice{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/puff{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/strip{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/vanilla-slice{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/continental-eclair{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/florentine{/}?",
+      "destination": "/patisserie/small-pastries",
+      "permanent": true
+    },
+    {
+      "source": "/product/:slug{/}?",
+      "destination": "/patisserie",
+      "permanent": true
+    },
+    {
+      "source": "/product-category/:slug{/}?",
+      "destination": "/patisserie",
+      "permanent": true
     }
   ]
 }

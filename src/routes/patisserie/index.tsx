@@ -10,7 +10,7 @@ import { seo } from '#/lib/seo'
 export const Route = createFileRoute('/patisserie/')({
   head: () =>
     seo({
-      title: 'The Patisserie | Cakes, Pastries & Biscuits, Northbridge Perth',
+      title: 'The Patisserie | Corica Pastries, Northbridge Perth',
       description:
         'Every range Corica bakes in Northbridge: apple strudels, birthday tortas, cheesecakes, mini pastries, Italian biscuits, gluten free and Christmas. Order for pickup.',
       path: '/patisserie',

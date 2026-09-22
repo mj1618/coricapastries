@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as SplatRouteImport } from './routes/$'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqsRouteImport } from './routes/faqs'
@@ -23,17 +22,13 @@ import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
 import { Route as ShopAccountRouteImport } from './routes/shop/account'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
 import { Route as ApiSwSplatRouteImport } from './routes/api/sw/$'
+import { Route as PatisserieCategoryProductRouteImport } from './routes/patisserie/$category_.$product'
 import { Route as ShopParentParentSlugRouteImport } from './routes/shop/parent/$parentSlug'
 import { Route as ShopAccountOrdersOrderIdRouteImport } from './routes/shop/account_.orders.$orderId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SplatRoute = SplatRouteImport.update({
-  id: '/$',
-  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -96,6 +91,12 @@ const ApiSwSplatRoute = ApiSwSplatRouteImport.update({
   path: '/api/sw/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PatisserieCategoryProductRoute =
+  PatisserieCategoryProductRouteImport.update({
+    id: '/patisserie/$category_/$product',
+    path: '/patisserie/$category/$product',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ShopParentParentSlugRoute = ShopParentParentSlugRouteImport.update({
   id: '/parent/$parentSlug',
   path: '/parent/$parentSlug',
@@ -110,7 +111,6 @@ const ShopAccountOrdersOrderIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
@@ -123,12 +123,12 @@ export interface FileRoutesByFullPath {
   '/patisserie/': typeof PatisserieIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
+  '/patisserie/$category/$product': typeof PatisserieCategoryProductRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
   '/shop/account/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
@@ -140,13 +140,13 @@ export interface FileRoutesByTo {
   '/patisserie': typeof PatisserieIndexRoute
   '/shop': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
+  '/patisserie/$category/$product': typeof PatisserieCategoryProductRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
   '/shop/account/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$': typeof SplatRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
@@ -159,6 +159,7 @@ export interface FileRoutesById {
   '/patisserie/': typeof PatisserieIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
+  '/patisserie/$category_/$product': typeof PatisserieCategoryProductRoute
   '/shop/parent/$parentSlug': typeof ShopParentParentSlugRoute
   '/shop/account_/orders/$orderId': typeof ShopAccountOrdersOrderIdRoute
 }
@@ -166,7 +167,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
@@ -179,12 +179,12 @@ export interface FileRouteTypes {
     | '/patisserie/'
     | '/shop/'
     | '/api/sw/$'
+    | '/patisserie/$category/$product'
     | '/shop/parent/$parentSlug'
     | '/shop/account/orders/$orderId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
@@ -196,12 +196,12 @@ export interface FileRouteTypes {
     | '/patisserie'
     | '/shop'
     | '/api/sw/$'
+    | '/patisserie/$category/$product'
     | '/shop/parent/$parentSlug'
     | '/shop/account/orders/$orderId'
   id:
     | '__root__'
     | '/'
-    | '/$'
     | '/about'
     | '/contact'
     | '/faqs'
@@ -214,13 +214,13 @@ export interface FileRouteTypes {
     | '/patisserie/'
     | '/shop/'
     | '/api/sw/$'
+    | '/patisserie/$category_/$product'
     | '/shop/parent/$parentSlug'
     | '/shop/account_/orders/$orderId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  SplatRoute: typeof SplatRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   FaqsRoute: typeof FaqsRoute
@@ -229,6 +229,7 @@ export interface RootRouteChildren {
   PatisserieCategoryRoute: typeof PatisserieCategoryRoute
   PatisserieIndexRoute: typeof PatisserieIndexRoute
   ApiSwSplatRoute: typeof ApiSwSplatRoute
+  PatisserieCategoryProductRoute: typeof PatisserieCategoryProductRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -238,13 +239,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$': {
-      id: '/$'
-      path: '/$'
-      fullPath: '/$'
-      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -331,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiSwSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/patisserie/$category_/$product': {
+      id: '/patisserie/$category_/$product'
+      path: '/patisserie/$category/$product'
+      fullPath: '/patisserie/$category/$product'
+      preLoaderRoute: typeof PatisserieCategoryProductRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/shop/parent/$parentSlug': {
       id: '/shop/parent/$parentSlug'
       path: '/parent/$parentSlug'
@@ -370,7 +371,6 @@ const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  SplatRoute: SplatRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   FaqsRoute: FaqsRoute,
@@ -379,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   PatisserieCategoryRoute: PatisserieCategoryRoute,
   PatisserieIndexRoute: PatisserieIndexRoute,
   ApiSwSplatRoute: ApiSwSplatRoute,
+  PatisserieCategoryProductRoute: PatisserieCategoryProductRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
