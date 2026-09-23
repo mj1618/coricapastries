@@ -181,7 +181,7 @@ GA4's history-change enhanced measurement covers client-side navigation.
 `src/server/contact.ts` sends through Resend using plain `fetch`. It needs `RESEND_API_KEY`
 (the SupplyWise Resend account's key, set in the Vercel project on 2026-09-22) and without it
 the form shows a "please call the shop" message instead of failing silently. Enquiries go to
-`info@coricapastries.com.au` by default (`CONTACT_TO_EMAIL` overrides) from
+`enquiries@corica.com.au` by default (`CONTACT_TO_EMAIL` overrides) from
 `noreply@supplywise.com.au` (`CONTACT_FROM_EMAIL` overrides), because the sender must be on a
 domain verified in that Resend account and coricapastries.com.au is not. The shopper's address
 is the reply-to.

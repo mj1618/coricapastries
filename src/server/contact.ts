@@ -63,7 +63,7 @@ export type ContactResult =
  * SupplyWise one), so it is a supplywise.com.au address; replies go to the
  * shopper because of `reply_to`.
  */
-const DEFAULT_TO = 'info@coricapastries.com.au'
+const DEFAULT_TO = 'enquiries@corica.com.au'
 const DEFAULT_FROM = 'Corica Pastries Website <noreply@supplywise.com.au>'
 
 /** Deliberately loose: just enough to catch a typo, never enough to reject a real address. */
