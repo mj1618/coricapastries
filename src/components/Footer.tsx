@@ -113,7 +113,7 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {site.name}. All rights reserved.
           </span>
           <span>
-            {site.legalName} &middot; {site.address.suburb}, Western Australia
+            {site.name} &middot; {site.address.suburb}, Western Australia
             &middot; Est. {site.established}
           </span>
         </div>
