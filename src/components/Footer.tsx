@@ -101,6 +101,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <a href={site.wholesaleUrl} className="hover:text-gold-soft">
+                  Wholesale
+                </a>
+              </li>
+              <li>
                 <Link to="/privacy" className="hover:text-gold-soft">
                   Privacy
                 </Link>

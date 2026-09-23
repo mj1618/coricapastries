@@ -11,6 +11,9 @@ const desktopLink =
   "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gold after:origin-left after:scale-x-0 after:transition-transform after:duration-300 after:content-[''] " +
   'hover:after:scale-x-100 [&.active]:after:scale-x-100'
 
+const mobileLink =
+  'block border-b border-gold-soft px-6 py-4 text-[0.9rem] uppercase tracking-[0.2em] text-green'
+
 export function Header() {
   const [open, setOpen] = useState(false)
   const cart = useCart()
@@ -20,6 +23,23 @@ export function Header() {
         {cart.count}
       </span>
     ) : null
+
+  const desktopItem = (item: (typeof nav)[number]) =>
+    'href' in item ? (
+      <a key={item.href} href={item.href} className={desktopLink}>
+        {item.label}
+      </a>
+    ) : (
+      <Link
+        key={item.to}
+        to={item.to}
+        className={desktopLink}
+        activeOptions={{ exact: item.to === '/' }}
+      >
+        {item.label}
+        {badge(item.to)}
+      </Link>
+    )
 
   // Close the mobile menu on Escape.
   useEffect(() => {
@@ -47,21 +67,12 @@ export function Header() {
       </div>
 
       <header className="sticky top-0 z-50 border-b border-gold-soft bg-cream">
-        <div className="wrap grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-4 md:min-h-24 md:grid-cols-[1fr_auto_1fr] md:gap-11">
+        <div className="wrap grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-4 md:min-h-24 md:grid-cols-[1fr_auto_1fr] md:gap-6 lg:gap-11">
           <nav
-            className="hidden justify-end gap-9 md:flex"
+            className="hidden justify-end gap-5 md:flex lg:gap-9"
             aria-label="Primary"
           >
-            {left.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={desktopLink}
-                activeOptions={{ exact: item.to === '/' }}
-              >
-                {item.label}
-              </Link>
-            ))}
+            {left.map(desktopItem)}
           </nav>
 
           <Link
@@ -80,15 +91,10 @@ export function Header() {
           </Link>
 
           <nav
-            className="hidden justify-start gap-9 md:flex"
+            className="hidden justify-start gap-5 md:flex lg:gap-9"
             aria-label="Secondary"
           >
-            {right.map((item) => (
-              <Link key={item.to} to={item.to} className={desktopLink}>
-                {item.label}
-                {badge(item.to)}
-              </Link>
-            ))}
+            {right.map(desktopItem)}
           </nav>
 
           <button
@@ -107,18 +113,24 @@ export function Header() {
           aria-label="Mobile"
           className={`${open ? 'block' : 'hidden'} border-t border-gold-soft bg-cream md:hidden`}
         >
-          {nav.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="block border-b border-gold-soft px-6 py-4 text-[0.9rem] uppercase tracking-[0.2em] text-green [&.active]:bg-ivory"
-              activeOptions={{ exact: item.to === '/' }}
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-              {badge(item.to)}
-            </Link>
-          ))}
+          {nav.map((item) =>
+            'href' in item ? (
+              <a key={item.href} href={item.href} className={mobileLink}>
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`${mobileLink} [&.active]:bg-ivory`}
+                activeOptions={{ exact: item.to === '/' }}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+                {badge(item.to)}
+              </Link>
+            ),
+          )}
         </nav>
       </header>
     </>

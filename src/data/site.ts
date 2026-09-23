@@ -58,6 +58,8 @@ export const site = {
     facebook: 'https://www.facebook.com/CoricaPastries/',
     instagram: 'https://www.instagram.com/coricapastriesau/',
   },
+  /** Trade customers order through SupplyWise's hosted wholesale portal, not the retail /shop. */
+  wholesaleUrl: 'https://supplywise.com.au/coricapastries/wholesale',
   mapsUrl:
     'https://www.google.com/maps/search/?api=1&query=Corica+Pastries+106+Aberdeen+Street+Northbridge+WA+6003',
   mapsEmbedUrl:
@@ -71,11 +73,13 @@ export const site = {
   siteUrl: 'https://coricapastries.com.au',
 } as const
 
+/** Items with `href` leave the site; the rest are internal routes. */
 export const nav = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
   { to: '/patisserie', label: 'The Patisserie' },
   { to: '/shop', label: 'Shop' },
+  { href: site.wholesaleUrl, label: 'Wholesale' },
   { to: '/faqs', label: 'FAQs' },
   { to: '/contact', label: 'Contact Us' },
 ] as const
