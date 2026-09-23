@@ -49,11 +49,11 @@ export const site = {
       time: '8am – 3pm',
       schema: { dayOfWeek: ['Saturday'], opens: '08:00', closes: '15:00' },
     },
-    { days: 'Sunday & Public Holidays', time: 'Closed', schema: null },
+    { days: 'Sunday', time: 'Closed', schema: null },
   ],
   /** One-line summary for the header bar; keep in step with `hours`. */
   openDays: 'Open Monday to Saturday',
-  hoursNote: 'Trading hours can differ over festive periods.',
+  hoursNote: 'Hours vary on public holidays and over festive periods.',
   social: {
     facebook: 'https://www.facebook.com/CoricaPastries/',
     instagram: 'https://www.instagram.com/coricapastriesau/',

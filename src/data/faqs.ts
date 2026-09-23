@@ -147,7 +147,7 @@ export const faqs: FaqGroup[] = [
       {
         id: 'hours',
         q: 'What are your trading hours?',
-        a: '{hours}\n\nTrading hours can differ over festive periods, so please call us on {phone} if you are unsure.',
+        a: '{hours}\n\nHours vary on public holidays and over festive periods, so please call us on {phone} if you are unsure.',
       },
     ],
   },

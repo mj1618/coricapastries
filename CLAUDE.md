@@ -17,7 +17,7 @@ This repo replaces it. The owners chose the "Heritage" direction from six home p
   prices and descriptions scraped from the old site on 2026-09-18). The FAQ answers in
   `src/data/faqs.ts` are the old site's answers, lightly edited. Address, phone and hours were
   confirmed by the owners on 2026-09-22 and updated on 2026-09-23: open Monday to Friday
-  8am–5:30pm and Saturday 8am–3pm, closed Sunday and public holidays.
+  8am–5:30pm and Saturday 8am–3pm, closed Sunday. Public holiday opening varies, so the site does not say closed on public holidays.
 
 ## Stack
 
