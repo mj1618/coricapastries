@@ -31,14 +31,15 @@ export const site = {
   },
   /** Approximate shop-front coordinates (OpenStreetMap, 2026-09-22) for local-business schema. */
   geo: { latitude: -31.94599, longitude: 115.85819 },
-  // Confirmed by the owners on 2026-09-22. `schema` is the same information in
-  // machine form for the opening-hours structured data; a closed day has none.
+  // Confirmed by the owners on 2026-09-22, updated by the owners on 2026-09-23
+  // (open Monday to Friday as well). `schema` is the same information in machine
+  // form for the opening-hours structured data; a closed day has none.
   hours: [
     {
-      days: 'Tuesday – Friday',
+      days: 'Monday – Friday',
       time: '8am – 5:30pm',
       schema: {
-        dayOfWeek: ['Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
         opens: '08:00',
         closes: '17:30',
       },
@@ -48,10 +49,10 @@ export const site = {
       time: '8am – 3pm',
       schema: { dayOfWeek: ['Saturday'], opens: '08:00', closes: '15:00' },
     },
-    { days: 'Sunday, Monday & Public Holidays', time: 'Closed', schema: null },
+    { days: 'Sunday & Public Holidays', time: 'Closed', schema: null },
   ],
   /** One-line summary for the header bar; keep in step with `hours`. */
-  openDays: 'Open Tuesday to Saturday',
+  openDays: 'Open Monday to Saturday',
   hoursNote: 'Trading hours can differ over festive periods.',
   social: {
     facebook: 'https://www.facebook.com/CoricaPastries/',
