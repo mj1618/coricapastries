@@ -16,7 +16,8 @@ This repo replaces it. The owners chose the "Heritage" direction from six home p
   facts live in `src/data/site.ts` (address, phone, hours) and `src/data/catalogue.ts` (products,
   prices and descriptions scraped from the old site on 2026-09-18). The FAQ answers in
   `src/data/faqs.ts` are the old site's answers, lightly edited. Address, phone and hours were
-  confirmed by the owners on 2026-09-22 (closed Sunday, Monday and public holidays).
+  confirmed by the owners on 2026-09-22 and updated on 2026-09-23: open Monday to Friday
+  8am–5:30pm and Saturday 8am–3pm, closed Sunday and public holidays.
 
 ## Stack
 
