@@ -111,7 +111,11 @@ export function ShopCard({
               Sold out
             </span>
           ) : quickAdd ? (
-            <QuickAdd productId={quickAdd.id} name={quickAdd.name} />
+            <QuickAdd
+              productId={quickAdd.id}
+              name={quickAdd.name}
+              image={quickAdd.image}
+            />
           ) : (
             <span className="inline-block border-b border-gold pb-0.5 text-[0.7rem] tracking-nav text-green uppercase transition-colors group-hover:text-red">
               {itemChooseLabel(store, item)}
@@ -144,7 +148,15 @@ function TagRow({ tags }: { tags: Tag[] }) {
 }
 
 /** Adds a no-choices product to the cart without leaving the grid. */
-function QuickAdd({ productId, name }: { productId: string; name: string }) {
+function QuickAdd({
+  productId,
+  name,
+  image,
+}: {
+  productId: string
+  name: string
+  image: string | null
+}) {
   const { add, hydrated } = useCart()
   const [added, setAdded] = useState(false)
 
@@ -153,7 +165,7 @@ function QuickAdd({ productId, name }: { productId: string; name: string }) {
       type="button"
       disabled={!hydrated}
       onClick={() => {
-        add({ productId, quantity: 1 })
+        add({ productId, quantity: 1 }, { name, image })
         setAdded(true)
         window.setTimeout(() => setAdded(false), 2200)
       }}

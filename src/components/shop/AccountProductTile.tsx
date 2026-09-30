@@ -126,7 +126,10 @@ export function AccountProductTile({
               type="button"
               className="btn btn-solid w-full sm:w-auto"
               onClick={() => {
-                add({ productId: product.id })
+                add(
+                  { productId: product.id },
+                  { name: title, image: product.image },
+                )
                 setAdded(true)
                 window.setTimeout(() => setAdded(false), 2000)
               }}

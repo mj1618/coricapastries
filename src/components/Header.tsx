@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
 import { nav, site } from '#/data/site'
+import { CartNotification } from '#/components/shop/CartNotification'
 import { useCart } from '#/lib/shop/cart'
 
 const left = nav.slice(0, 3)
@@ -17,12 +18,7 @@ const mobileLink =
 export function Header() {
   const [open, setOpen] = useState(false)
   const cart = useCart()
-  const badge = (to: string) =>
-    to === '/shop' && cart.hydrated && cart.count > 0 ? (
-      <span className="ml-1.5 inline-flex min-w-[1.35rem] items-center justify-center rounded-full bg-green px-1 text-[0.62rem] leading-[1.35rem] tracking-normal text-cream">
-        {cart.count}
-      </span>
-    ) : null
+  const count = cart.hydrated ? cart.count : 0
 
   const desktopItem = (item: (typeof nav)[number]) =>
     'href' in item ? (
@@ -37,7 +33,6 @@ export function Header() {
         activeOptions={{ exact: item.to === '/' }}
       >
         {item.label}
-        {badge(item.to)}
       </Link>
     )
 
@@ -67,9 +62,9 @@ export function Header() {
       </div>
 
       <header className="sticky top-0 z-50 border-b border-gold-soft bg-cream">
-        <div className="wrap grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-4 md:min-h-24 md:grid-cols-[1fr_auto_1fr] md:gap-6 lg:gap-11">
+        <div className="wrap grid min-h-20 grid-cols-[auto_1fr_auto] items-center gap-4 md:min-h-24 md:grid-cols-[1fr_auto_1fr] md:gap-6 lg:gap-8 xl:gap-11">
           <nav
-            className="hidden justify-end gap-5 md:flex lg:gap-9"
+            className="hidden justify-end gap-5 md:flex lg:gap-6 xl:gap-9"
             aria-label="Primary"
           >
             {left.map(desktopItem)}
@@ -90,23 +85,56 @@ export function Header() {
             />
           </Link>
 
-          <nav
-            className="hidden justify-start gap-5 md:flex lg:gap-9"
-            aria-label="Secondary"
-          >
-            {right.map(desktopItem)}
-          </nav>
+          <div className="col-start-3 flex items-center justify-end gap-3 md:justify-between lg:gap-3">
+            <nav
+              className="hidden justify-start gap-5 md:flex lg:gap-6 xl:gap-9"
+              aria-label="Secondary"
+            >
+              {right.map(desktopItem)}
+            </nav>
 
-          <button
-            type="button"
-            className="col-start-3 justify-self-end border border-green px-3.5 py-2 text-[0.72rem] uppercase tracking-[0.2em] text-green md:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen((o) => !o)}
-          >
-            {open ? 'Close' : 'Menu'}
-          </button>
+            <Link
+              to="/shop/cart"
+              className="relative -m-1.5 p-2 text-green hover:text-red"
+              aria-label={
+                count > 0
+                  ? `Cart, ${count} ${count === 1 ? 'item' : 'items'}`
+                  : 'Cart'
+              }
+              onClick={() => setOpen(false)}
+            >
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinejoin="round"
+              >
+                <path d="M5 8h14l-1.2 12.2a1 1 0 0 1-1 .8H7.2a1 1 0 0 1-1-.8L5 8Z" />
+                <path d="M9 10V6.5a3 3 0 0 1 6 0V10" strokeLinecap="round" />
+              </svg>
+              {count > 0 ? (
+                <span className="absolute top-0 -right-0.5 inline-flex h-[1.15rem] min-w-[1.15rem] items-center justify-center rounded-full bg-green px-1 text-[0.62rem] leading-none text-cream">
+                  {count}
+                </span>
+              ) : null}
+            </Link>
+
+            <button
+              type="button"
+              className="border border-green px-3.5 py-2 text-[0.72rem] uppercase tracking-[0.2em] text-green md:hidden"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen((o) => !o)}
+            >
+              {open ? 'Close' : 'Menu'}
+            </button>
+          </div>
         </div>
+
+        <CartNotification />
 
         <nav
           id="mobile-nav"
@@ -127,7 +155,6 @@ export function Header() {
                 onClick={() => setOpen(false)}
               >
                 {item.label}
-                {badge(item.to)}
               </Link>
             ),
           )}

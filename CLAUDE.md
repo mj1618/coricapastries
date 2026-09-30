@@ -108,8 +108,11 @@ calls SupplyWise directly (`SW_DIRECT_BASE`); `apiBase()` in `src/lib/shop/confi
 
 **Cart and favourites.** Client-only, in `localStorage`: the cart under `sw_cart_coricapastries`
 and favourites under `sw_favourites_coricapastries` (`STORAGE_KEYS` in `src/lib/shop/config.ts`).
-`CartProvider` is mounted in `__root.tsx`, so the Header cart badge works on every page; it only
-reads storage after mount (`cart.hydrated`) to avoid a hydration mismatch.
+`CartProvider` is mounted in `__root.tsx`, so the Header cart icon (count bubble, links to
+`/shop/cart`) works on every page; it only reads storage after mount (`cart.hydrated`) to avoid a
+hydration mismatch. Passing a second `{ name, image, details }` argument to `cart.add()` opens the
+"Added to your cart" pop-down under the header (`components/shop/CartNotification.tsx`, modelled
+on Shopify's Dawn cart notification); every Add button should pass it.
 
 **Checkout hand-off.** We never take payment. `createCheckout()` POSTs the cart to `/checkout`
 and gets back `{ token, checkoutUrl }`; the shopper is redirected to SupplyWise's hosted

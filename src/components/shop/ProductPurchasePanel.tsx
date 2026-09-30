@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router'
 import { useId, useState } from 'react'
 import { useCart } from '#/lib/shop/cart'
 import { formatCents } from '#/lib/shop/money'
@@ -39,7 +38,7 @@ export function ProductPurchasePanel({
   product: Product
   options: ProductOption[]
   subscribable: boolean
-  /** Variant wording for the confirmation, e.g. "Black Forrest Torta — Medium". */
+  /** Variant wording for the cart notification, e.g. "Black Forrest Torta — Medium". */
   displayName?: string
 }) {
   const { add, hydrated } = useCart()
@@ -47,7 +46,6 @@ export function ProductPurchasePanel({
   const [frequency, setFrequency] = useState<'once' | SubscriptionFrequency>(
     'once',
   )
-  const [added, setAdded] = useState<{ quantity: number } | null>(null)
 
   // Reset the option choices whenever the product (or its option set) changes.
   const signature = `${product.id}:${options.map((o) => o.id).join('|')}`
@@ -56,7 +54,6 @@ export function ProductPurchasePanel({
   if (signatureSeen !== signature) {
     setSignatureSeen(signature)
     setSelections(defaultSelections(options))
-    setAdded(null)
   }
 
   const optionsSelected = buildOptionsSelected(options, selections)
@@ -116,46 +113,28 @@ export function ProductPurchasePanel({
         type="button"
         disabled={!product.inStock || !hydrated}
         onClick={() => {
-          add({
-            productId: product.id,
-            quantity,
-            optionsSelected,
-            subscriptionFrequency: frequency === 'once' ? undefined : frequency,
-          })
-          setAdded({ quantity })
+          const repeat = FREQUENCIES.find((f) => f.value === frequency)
+          add(
+            {
+              productId: product.id,
+              quantity,
+              optionsSelected,
+              subscriptionFrequency: repeat?.value,
+            },
+            {
+              name,
+              image: product.image,
+              details: [
+                ...optionsSelected.map((o) => `${o.name}: ${o.value}`),
+                ...(repeat ? [`Repeats ${repeat.label.toLowerCase()}`] : []),
+              ],
+            },
+          )
         }}
         className="btn btn-solid mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50"
       >
         {product.inStock ? 'Add to cart' : 'Sold out'}
       </button>
-
-      {added ? (
-        <div
-          role="status"
-          className="mt-4 border border-gold-soft bg-green-soft/60 px-4 py-4 text-center"
-        >
-          <p className="font-display text-[1.25rem] text-green">
-            Added to your cart
-          </p>
-          <p className="mt-1 text-[0.95rem] text-ink-soft">
-            {added.quantity} × {name}
-          </p>
-          <div className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[0.75rem] tracking-nav uppercase">
-            <Link
-              to="/shop/cart"
-              className="border-b border-gold pb-0.5 text-green hover:text-red"
-            >
-              View cart
-            </Link>
-            <Link
-              to="/shop"
-              className="border-b border-gold pb-0.5 text-green hover:text-red"
-            >
-              Continue shopping
-            </Link>
-          </div>
-        </div>
-      ) : null}
     </div>
   )
 }

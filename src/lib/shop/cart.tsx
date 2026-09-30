@@ -17,16 +17,32 @@ import type {
 
 type CartState = { lines: CartLine[]; promoCode: string | null }
 
+/** What the "Added to your cart" notification shows about the item just added. */
+export type AddedItem = {
+  name: string
+  image?: string | null
+  /** Option and subscription lines, e.g. "Size: Medium". */
+  details?: string[]
+}
+
+export type LastAdded = AddedItem & { quantity: number; id: number }
+
 type CartApi = CartState & {
   /** True once localStorage has been read (avoids SSR/hydration mismatch). */
   hydrated: boolean
   count: number
-  add: (line: {
-    productId: string
-    quantity?: number
-    optionsSelected?: OptionSelected[]
-    subscriptionFrequency?: SubscriptionFrequency
-  }) => void
+  /** Passing `item` opens the header's "Added to your cart" notification. */
+  add: (
+    line: {
+      productId: string
+      quantity?: number
+      optionsSelected?: OptionSelected[]
+      subscriptionFrequency?: SubscriptionFrequency
+    },
+    item?: AddedItem,
+  ) => void
+  lastAdded: LastAdded | null
+  dismissAdded: () => void
   setQuantity: (key: string, quantity: number) => void
   remove: (key: string) => void
   clear: () => void
@@ -71,6 +87,7 @@ function write(state: CartState) {
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<CartState>(EMPTY)
   const [hydrated, setHydrated] = useState(false)
+  const [lastAdded, setLastAdded] = useState<LastAdded | null>(null)
 
   useEffect(() => {
     setState(read())
@@ -91,12 +108,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const add = useCallback<CartApi['add']>(
-    ({
-      productId,
-      quantity = 1,
-      optionsSelected = [],
-      subscriptionFrequency,
-    }) => {
+    (
+      { productId, quantity = 1, optionsSelected = [], subscriptionFrequency },
+      item,
+    ) => {
+      if (item) setLastAdded({ ...item, quantity, id: Date.now() })
       const key = lineKey(productId, optionsSelected, subscriptionFrequency)
       update((s) => {
         const existing = s.lines.find((l) => l.key === key)
@@ -140,6 +156,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     [update],
   )
   const clear = useCallback(() => update(() => EMPTY), [update])
+  const dismissAdded = useCallback(() => setLastAdded(null), [])
   const setPromoCode = useCallback(
     (promoCode: string | null) => update((s) => ({ ...s, promoCode })),
     [update],
@@ -155,8 +172,20 @@ export function CartProvider({ children }: { children: ReactNode }) {
       remove,
       clear,
       setPromoCode,
+      lastAdded,
+      dismissAdded,
     }),
-    [state, hydrated, add, setQuantity, remove, clear, setPromoCode],
+    [
+      state,
+      hydrated,
+      add,
+      setQuantity,
+      remove,
+      clear,
+      setPromoCode,
+      lastAdded,
+      dismissAdded,
+    ],
   )
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>
