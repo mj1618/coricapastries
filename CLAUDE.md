@@ -196,8 +196,10 @@ epoch ms it mounted and the server rejects anything under 3 s, `MIN_FILL_MS`), a
 Turnstile. The honeypot's DOM field must stay neutral — a meaningless `name` and no `<label>` —
 because browser and password-manager autofill treats a field called "company" (or labelled
 "Company") as a real organisation box, fills it in for ordinary customers, and the server then
-discards the enquiry while still reporting success. `autoComplete="off"` does not prevent this;
-the `data-*-ignore` attributes in `ContactForm.tsx` help. The server logs every honeypot hit.
+discarded the enquiry while still reporting success (2026-10-01). `autoComplete="off"` does not
+prevent this; the `data-*-ignore` attributes in `ContactForm.tsx` help. As a backstop the server
+never discards a honeypot hit: it sends the enquiry with a "[Possible spam]" subject and logs the
+hit (without the field's value, which autofill fills with customers' own details).
 
 Turnstile (`src/components/contact/turnstile.ts`, `appearance: 'interaction-only'`). Turnstile
 needs `VITE_TURNSTILE_SITE_KEY` (client) and `TURNSTILE_SECRET_KEY` (server); when the secret

@@ -113,7 +113,7 @@ export function ContactForm() {
         be called "company" in the DOM and must not have a "Company" label:
         browsers and password managers treat those as a real organisation field
         and fill them in for customers who use autofill, which made the server
-        bin genuine enquiries as spam. Hence the meaningless field name, no
+        bin genuine enquiries as spam (it now flags them instead). Hence the meaningless field name, no
         label, and the password-manager opt-outs. `autoComplete="off"` alone is
         not enough — Chrome ignores it for profile autofill.
       */}

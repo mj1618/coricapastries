@@ -26,7 +26,10 @@ export type ContactInput = {
   phone: string
   subject: string
   message: string
-  /** Honeypot. Real people never see it, so it must arrive empty. */
+  /**
+   * Honeypot. Real people never see it, so it should arrive empty; when it
+   * does not, the enquiry is still sent but flagged as possible spam.
+   */
   company: string
   /**
    * Epoch ms when the form was rendered. People take a while to fill a form
@@ -146,9 +149,17 @@ function buildEmail(data: ContactInput) {
   const subject = SUBJECTS.includes(data.subject as ContactSubject)
     ? data.subject
     : 'General enquiry'
+  const flagged = Boolean(data.company)
   return {
-    subject: `Website enquiry — ${subject} — ${data.name}`,
+    subject: `${flagged ? '[Possible spam] ' : ''}Website enquiry — ${subject} — ${data.name}`,
     text: [
+      ...(flagged
+        ? [
+            'This enquiry filled in a hidden anti-spam field, so it may be from a bot.',
+            'Browser autofill can do the same for real customers, so please check it.',
+            '',
+          ]
+        : []),
       `Subject:  ${subject}`,
       `Name:     ${data.name}`,
       `Email:    ${data.email}`,
@@ -166,16 +177,16 @@ function buildEmail(data: ContactInput) {
 export const sendContactEnquiry = createServerFn({ method: 'POST' })
   .validator(validateContactInput)
   .handler(async ({ data }): Promise<ContactResult> => {
-    // Honeypot: report success so bots get no signal about what tripped them.
-    // Logged because a hit is otherwise invisible: the sender is told the
-    // message was sent while nothing is emailed. That is how a honeypot field
-    // that browser autofill treats as a real "Company" box once swallowed
-    // genuine enquiries without anyone noticing — see ContactForm.tsx.
+    // Honeypot: a filled field flags the enquiry ("[Possible spam]" subject)
+    // but never discards it. Discarding while reporting success once swallowed
+    // genuine enquiries without anyone noticing, because browser autofill
+    // filled the field for real customers — see ContactForm.tsx. The timing
+    // check and Turnstile below still stop most bots outright. The value is
+    // not logged: autofill puts customers' own details in it.
     if (data.company) {
       console.warn(
-        `[contact] Honeypot field was filled ("${data.company.slice(0, 60)}") — submission discarded without sending.`,
+        '[contact] Honeypot field was filled — sending flagged as possible spam.',
       )
-      return { ok: true }
     }
 
     if (!data.name || !data.email || !data.phone || !data.subject) {
