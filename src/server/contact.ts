@@ -64,13 +64,11 @@ export type ContactResult =
  * Where enquiries land unless CONTACT_TO_EMAIL overrides it.
  * The sender has to be on a domain verified in the Resend account (the
  * SupplyWise one), so it is a supplywise.com.au address; replies go to the
- * shopper because of `reply_to`. It is the address SupplyWise's order emails
- * already reach the shop from, so it shares their standing with the shop's
- * Microsoft 365 junk filter; it is not a "noreply" address, which Resend warns
+ * shopper because of `reply_to`. Never a "noreply" address: Resend warns it
  * lowers inbox placement.
  */
 const DEFAULT_TO = 'enquiries@corica.com.au'
-const DEFAULT_FROM = 'Corica Pastries Website <orders@supplywise.com.au>'
+const DEFAULT_FROM = 'Corica Pastries Website <support@supplywise.com.au>'
 
 /** Deliberately loose: just enough to catch a typo, never enough to reject a real address. */
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/

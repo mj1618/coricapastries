@@ -187,11 +187,10 @@ GA4's history-change enhanced measurement covers client-side navigation.
 (the SupplyWise Resend account's key, set in the Vercel project on 2026-09-22) and without it
 the form shows a "please call the shop" message instead of failing silently. Enquiries go to
 `enquiries@corica.com.au` by default (`CONTACT_TO_EMAIL` overrides) from
-`orders@supplywise.com.au` (`CONTACT_FROM_EMAIL` overrides), because the sender must be on a
-domain verified in that Resend account and coricapastries.com.au is not. It is the address
-SupplyWise's order emails reach the shop from, so enquiries share their standing with the shop's
-Microsoft 365 junk filter; never use a `noreply@` sender (Resend flags it as hurting inbox
-placement; it was `noreply@` until 2026-10-01). The shopper's address is the reply-to.
+`support@supplywise.com.au` (`CONTACT_FROM_EMAIL` overrides), because the sender must be on a
+domain verified in that Resend account and coricapastries.com.au is not. Never use a `noreply@`
+sender (Resend flags it as hurting inbox placement; it was `noreply@` until 2026-10-01). The
+shopper's address is the reply-to.
 
 Bot protection, all invisible to people: a honeypot field, a timing check (the form sends the
 epoch ms it mounted and the server rejects anything under 3 s, `MIN_FILL_MS`), and Cloudflare
