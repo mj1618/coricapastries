@@ -241,11 +241,15 @@ export const sendContactEnquiry = createServerFn({ method: 'POST' })
         // Body is logged for the operator only; the client just sees `send-failed`.
         const detail = await response.text().catch(() => '')
         console.error(
-          `[contact] Resend responded ${response.status}: ${detail.slice(0, 500)}`,
+          `[contact] Resend responded ${response.status} sending to ${to}: ${detail.slice(0, 500)}`,
         )
         return { ok: false, reason: 'send-failed' }
       }
 
+      // Accepted by Resend is not the same as landing in the shop's inbox
+      // (Microsoft 365 can still junk or quarantine it), so the destination is
+      // logged for whoever is chasing a missing enquiry.
+      console.info(`[contact] Enquiry accepted by Resend for ${to}.`)
       return { ok: true }
     } catch (error) {
       console.error('[contact] Could not reach Resend:', error)

@@ -193,9 +193,10 @@ is the reply-to.
 
 Bot protection, all invisible to people: a honeypot field, a timing check (the form sends the
 epoch ms it mounted and the server rejects anything under 3 s, `MIN_FILL_MS`), and Cloudflare
-Turnstile. The honeypot's DOM field must stay neutral — a meaningless `name` and no `<label>` —
-because browser and password-manager autofill treats a field called "company" (or labelled
-"Company") as a real organisation box, fills it in for ordinary customers, and the server then
+Turnstile. The honeypot's DOM field must stay neutral and hidden — a meaningless `name`, no
+`<label>`, and a `display: none` wrapper — because browser and password-manager autofill treats
+a field called "company" (or labelled "Company") as a real organisation box and fills it in for
+ordinary customers (Chrome skips undisplayed fields but fills off-screen ones), and the server then
 discarded the enquiry while still reporting success (2026-10-01). `autoComplete="off"` does not
 prevent this; the `data-*-ignore` attributes in `ContactForm.tsx` help. As a backstop the server
 never discards a honeypot hit: it sends the enquiry with a "[Possible spam]" subject and logs the

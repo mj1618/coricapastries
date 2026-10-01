@@ -113,15 +113,16 @@ export function ContactForm() {
         be called "company" in the DOM and must not have a "Company" label:
         browsers and password managers treat those as a real organisation field
         and fill them in for customers who use autofill, which made the server
-        bin genuine enquiries as spam (it now flags them instead). Hence the meaningless field name, no
-        label, and the password-manager opt-outs. `autoComplete="off"` alone is
-        not enough — Chrome ignores it for profile autofill.
+        bin genuine enquiries as spam (it now flags them instead). Hence the
+        meaningless field name, no label, and the password-manager opt-outs.
+        `autoComplete="off"` alone is not enough — Chrome ignores it for
+        profile autofill.
+
+        `display: none` matters as much as the name: Chrome autofill skips
+        fields it cannot lay out, but still fills an off-screen, transparent
+        one (which is what this used to be). Bots reading the HTML still see it.
       */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute h-px w-px overflow-hidden opacity-0"
-        style={{ left: '-9999px' }}
-      >
+      <div aria-hidden="true" style={{ display: 'none' }}>
         <input
           id={`${id}-hp`}
           name="corica_reference_notes"
