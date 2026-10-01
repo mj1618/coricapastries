@@ -167,7 +167,16 @@ export const sendContactEnquiry = createServerFn({ method: 'POST' })
   .validator(validateContactInput)
   .handler(async ({ data }): Promise<ContactResult> => {
     // Honeypot: report success so bots get no signal about what tripped them.
-    if (data.company) return { ok: true }
+    // Logged because a hit is otherwise invisible: the sender is told the
+    // message was sent while nothing is emailed. That is how a honeypot field
+    // that browser autofill treats as a real "Company" box once swallowed
+    // genuine enquiries without anyone noticing — see ContactForm.tsx.
+    if (data.company) {
+      console.warn(
+        `[contact] Honeypot field was filled ("${data.company.slice(0, 60)}") — submission discarded without sending.`,
+      )
+      return { ok: true }
+    }
 
     if (!data.name || !data.email || !data.phone || !data.subject) {
       return { ok: false, reason: 'invalid' }
