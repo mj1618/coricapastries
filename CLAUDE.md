@@ -156,14 +156,20 @@ mandatory `</script` escape; use it for all structured data.
   noindex come from the root `head()`, which checks the matches for the router's `_notFound`
   flag (a route that throws `notFound()` never runs its own `head()`).
   `vercel.json` sends `X-Robots-Tag: noindex` only when the host is not coricapastries.com.au,
-  so staging is never indexed and cutover needs no config change. `trailingSlash: false`.
-- **Redirects.** `vercel.json` holds 112 permanent redirects from the old WordPress URLs
+  so staging is never indexed and cutover needs no config change.
+- **Redirects.** `vercel.json` holds 116 permanent redirects from the old WordPress URLs
   (`/about-us`, `/contact-us`, `/catering` → contact, `/product-category/<slug>` including the
-  misspelt `bisucits`, all 79 `/product/<slug>` URLs → the matching `/patisserie/<range>/<product>`
-  page or the range page when the product is gone, the blog posts, `/privacy-policy-2` →
-  `/privacy`, WooCommerce cart/account pages, and the Rank Math sitemaps). Sources use `{/}?` so old trailing-slash URLs match in
-  one hop. Vercel compiles sources with path-to-regexp; test new ones with
-  `@vercel/routing-utils`' `sourceToRegex`.
+  misspelt `bisucits` and its `/page/<n>` pagination, all 79 `/product/<slug>` URLs → the matching
+  `/patisserie/<range>/<product>` page or the range page when the product is gone, the blog posts,
+  `/blogs`, `/category/*`, `/page/<n>`, `/shop/page/<n>`, `/privacy-policy-2` → `/privacy`,
+  WooCommerce cart/account pages, and the Rank Math sitemaps), then one last catch-all
+  `/:path+/` → `/:path+` that strips trailing slashes from every other URL. There is deliberately
+  no `trailingSlash` setting: Vercel emits that redirect before all custom ones, so `/about-us/`
+  took two hops (`/about-us`, then `/about`). Now sources end in `{/}?` and an old URL with or
+  without the slash reaches its destination in one hop (two from www). First match wins, so new
+  redirects go above the catch-all. Query strings carry over. Vercel compiles sources with
+  path-to-regexp; test with `@vercel/routing-utils` (`getTransformedRoutes` gives the real order)
+  that both `/x` and `/x/` hit the intended rule and new-site `/x/` hits only the catch-all.
 - **Social card.** `public/img/og-card.jpg` is a 1200×630 JPEG (rendered from an HTML
   composition with headless Chrome; the hero PNG is transparent and unsuitable on its own).
   Range and product pages override it with their 800×800 photo.
@@ -233,12 +239,18 @@ timeout 60 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --head
 - GitHub: `mj1618/coricapastries` (public), branch `main`.
 - Vercel: project `corica-website` in team "SupplyWise projects" (scope `supplywise-projects-e7d2d05f`).
   Production alias: https://corica-website.vercel.app . `vercel.json` sets
-  `"framework": "tanstack-start"` and a global `X-Robots-Tag: noindex` header.
+  `"framework": "tanstack-start"` and an `X-Robots-Tag: noindex` header for non-production hosts.
 - The Vercel project is Git-connected, so a push to `main` auto-deploys. To deploy immediately:
   `timeout 600 vercel deploy --prod --yes` from the repo root (needs `.vercel/project.json`,
   which is gitignored; `vercel link --project corica-website --scope supplywise-projects-e7d2d05f --yes` recreates it).
-- Remove the `X-Robots-Tag` header from `vercel.json` when the real domain is pointed at Vercel.
-  Until then the vercel.app URL must not be indexed as a duplicate of the live site.
+- Functions (`/shop*` misses, `/api/*`, 404s) run in Vercel's default `iad1`; static pages and
+  cached `/shop` come from the Sydney edge. Kept on purpose (2026-10-01): SupplyWise's API is
+  Convex behind Cloudflare, ~300 ms from Perth even for a 204, so it is not in Australia. `syd1`
+  would put every server→SupplyWise call (up to two per product page) across the Pacific
+  instead of the one user→iad1 hop. Nitro writes no `regions` to `.vc-config.json`; set
+  `"regions"` in `vercel.json` if SupplyWise ever moves.
+- coricapastries.com.au is live on Vercel (Search Console property `sc-domain:coricapastries.com.au`).
+  The `X-Robots-Tag` header stays: it keeps the vercel.app alias from being indexed as a duplicate.
 
 ### Vercel CLI gotcha
 

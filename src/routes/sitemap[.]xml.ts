@@ -1,9 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { catalogue } from '#/data/catalogue'
 import { site } from '#/data/site'
+import { isCanonicalProduct, productPath } from '#/lib/seo'
 
 /**
- * The XML sitemap: the brochure pages and the shop front. Shop product URLs
+ * The XML sitemap: the brochure pages (canonical URLs only) and the shop front. Shop product URLs
  * are left out on purpose (their slugs come from supplier data that still
  * has duplicates) and the cart and account pages are noindex.
  */
@@ -15,12 +16,15 @@ const PAGES: Array<{ path: string; priority: string; changefreq: string }> = [
     priority: '0.8',
     changefreq: 'monthly',
   })),
+  // A product listed in two ranges appears once, at its canonical page.
   ...catalogue.flatMap((c) =>
-    c.products.map((p) => ({
-      path: `/patisserie/${c.slug}/${p.slug}`,
-      priority: '0.7',
-      changefreq: 'monthly',
-    })),
+    c.products
+      .filter((p) => isCanonicalProduct(c.slug, p.slug))
+      .map((p) => ({
+        path: productPath(c.slug, p.slug),
+        priority: '0.7',
+        changefreq: 'monthly',
+      })),
   ),
   { path: '/shop', priority: '0.8', changefreq: 'daily' },
   { path: '/about', priority: '0.6', changefreq: 'yearly' },

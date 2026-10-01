@@ -1072,7 +1072,8 @@ export type CategoryMeta = {
 
 export const categoryMeta: Record<string, CategoryMeta> = {
   strudels: {
-    title: 'Apple Strudel',
+    // Not plain "Apple Strudel": that is the apple-strudel product page's title.
+    title: 'Apple & Blueberry Strudels',
     description:
       "Corica's world-famous apple strudel: flaky puff pastry, Italian custard, fresh apple and cream, in half and full sizes. Order for pickup in Northbridge.",
     blurb:
@@ -1084,7 +1085,7 @@ export const categoryMeta: Record<string, CategoryMeta> = {
   'birthday-cakes': {
     title: 'Birthday Cakes & Tortas',
     description:
-      'Continental birthday tortas of sponge, custard, buttercream and liqueur in five sizes from ten to eighty serves. Baked in Northbridge, Perth; order for pickup.',
+      'Continental birthday tortas of sponge, custard, buttercream and liqueur in five sizes from 10 to 80 serves. Baked in Northbridge, Perth; order for pickup.',
     blurb:
       'Continental tortas of sponge, custard, buttercream and liqueur, in five sizes from ten serves up to eighty.',
     image: '/img/products/black-forrest-torta.jpg',
@@ -1094,7 +1095,7 @@ export const categoryMeta: Record<string, CategoryMeta> = {
   'special-occasions': {
     title: 'Special Occasion Cakes',
     description:
-      'Cheesecakes, honey cakes, fruit flans and croquembouche towers for the occasions worth baking for, from Corica Pastries in Northbridge, Perth. Order for pickup.',
+      'Cheesecakes, honey cakes, fruit flans and croquembouche towers for special occasions, from Corica Pastries in Northbridge, Perth. Order for pickup.',
     blurb:
       'Cheesecakes, honey cakes, fruit flans and croquembouche towers for the occasions worth baking for.',
     image: '/img/products/mixed-fruit-cheesecake.jpg',
@@ -1141,7 +1142,7 @@ export const categoryMeta: Record<string, CategoryMeta> = {
   christmas: {
     title: 'Christmas Cakes & Pastries',
     description:
-      "Corica's Christmas range: fruit mince pies, gingerbread, shortbread trees and yule logs, baked in Northbridge, Perth. Seasonal, so please call to check availability.",
+      "Corica's Christmas range: fruit mince pies, gingerbread, shortbread trees and yule logs, baked in Northbridge, Perth. Seasonal; call to check availability.",
     blurb:
       'Our seasonal range — fruit mince pies, gingerbread, shortbread trees and yule logs. Please call to check availability.',
     image: '/img/products/gingerbread.jpg',

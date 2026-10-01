@@ -10,7 +10,7 @@ export const Route = createFileRoute('/about')({
     seo({
       title: 'About Us | Corica Pastries, Northbridge since 1957',
       description:
-        'Established in 1957 by Giuseppe Corica, Corica Pastries has baked apple strudel, continental cakes and pastries in Northbridge, Perth for nearly seventy years.',
+        'Established in 1957 by Giuseppe Corica, Corica Pastries has baked apple strudel, continental cakes and pastries in Northbridge, Perth for nearly 70 years.',
       path: '/about',
     }),
   component: Page,

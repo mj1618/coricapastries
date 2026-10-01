@@ -9,7 +9,7 @@ export const Route = createFileRoute('/contact')({
   head: () =>
     seo({
       title: 'Contact Us | Corica Pastries, Northbridge',
-      description: `Visit Corica Pastries at ${fullAddress} or call ${site.phone.display}. Trading hours, directions, parking and an enquiry form for orders and wholesale.`,
+      description: `Visit Corica Pastries at ${fullAddress} or call ${site.phone.display}. Hours, directions, parking and an enquiry form.`,
       path: '/contact',
     }),
   component: Page,

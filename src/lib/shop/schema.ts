@@ -1,5 +1,5 @@
 import { site } from '#/data/site'
-import { BUSINESS_ID, absoluteUrl } from '#/lib/seo'
+import { BUSINESS_ID, absoluteUrl, productMetaDescription } from '#/lib/seo'
 import { htmlToText } from '#/lib/shop/sanitize'
 import type { JsonLd } from '#/lib/seo'
 import type { Product, VariantGroup } from '#/lib/shop/types'
@@ -21,7 +21,12 @@ function base(name: string, description: string | null, image: string | null) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name,
-    ...(description ? { description: htmlToText(description) } : {}),
+    // Google's merchant listings want a description on every Product; a
+    // missing or one-line SupplyWise description is padded with plain facts.
+    description: productMetaDescription(
+      name,
+      description ? htmlToText(description) : '',
+    ),
     ...(image ? { image } : {}),
     brand: { '@type': 'Brand', name: site.name },
   }

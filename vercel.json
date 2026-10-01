@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "tanstack-start",
-  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*)",
@@ -41,12 +40,22 @@
       "permanent": true
     },
     {
+      "source": "/blogs/page/:n(\\d+){/}?",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
       "source": "/privacy-policy-2{/}?",
       "destination": "/privacy",
       "permanent": true
     },
     {
       "source": "/category/uncategorized{/}?",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/category/:path+{/}?",
       "destination": "/",
       "permanent": true
     },
@@ -73,6 +82,16 @@
     {
       "source": "/shop2{/}?",
       "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/shop/page/:n(\\d+){/}?",
+      "destination": "/shop",
+      "permanent": true
+    },
+    {
+      "source": "/page/:n(\\d+){/}?",
+      "destination": "/",
       "permanent": true
     },
     {
@@ -121,57 +140,57 @@
       "permanent": true
     },
     {
-      "source": "/product-category/birthday-cakes{/}?",
+      "source": "/product-category/birthday-cakes{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/birthday-cakes",
       "permanent": true
     },
     {
-      "source": "/product-category/bisucits{/}?",
+      "source": "/product-category/bisucits{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/biscuits",
       "permanent": true
     },
     {
-      "source": "/product-category/biscuits{/}?",
+      "source": "/product-category/biscuits{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/biscuits",
       "permanent": true
     },
     {
-      "source": "/product-category/christmas{/}?",
+      "source": "/product-category/christmas{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/christmas",
       "permanent": true
     },
     {
-      "source": "/product-category/gluten-free-range{/}?",
+      "source": "/product-category/gluten-free-range{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/gluten-free",
       "permanent": true
     },
     {
-      "source": "/product-category/mini-range{/}?",
+      "source": "/product-category/mini-range{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/mini-range",
       "permanent": true
     },
     {
-      "source": "/product-category/small-pastries{/}?",
+      "source": "/product-category/small-pastries{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/small-pastries",
       "permanent": true
     },
     {
-      "source": "/product-category/special-occasions{/}?",
+      "source": "/product-category/special-occasions{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/special-occasions",
       "permanent": true
     },
     {
-      "source": "/product-category/strudels{/}?",
+      "source": "/product-category/strudels{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/strudels",
       "permanent": true
     },
     {
-      "source": "/product-category/cakes{/}?",
+      "source": "/product-category/cakes{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/birthday-cakes",
       "permanent": true
     },
     {
-      "source": "/product-category/strudeles{/}?",
+      "source": "/product-category/strudeles{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie/strudels",
       "permanent": true
     },
@@ -576,8 +595,13 @@
       "permanent": true
     },
     {
-      "source": "/product-category/:slug{/}?",
+      "source": "/product-category/:slug{/page/:n(\\d+)}?{/}?",
       "destination": "/patisserie",
+      "permanent": true
+    },
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
       "permanent": true
     }
   ]

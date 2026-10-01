@@ -10,7 +10,15 @@ import { Eyebrow, Ornament } from '#/components/ui'
 import { catalogue } from '#/data/catalogue'
 import { shopCategory } from '#/data/shopLinks'
 import { site } from '#/data/site'
-import { breadcrumbs, jsonLd, productPath, productSchema, seo } from '#/lib/seo'
+import {
+  breadcrumbs,
+  canonicalProductPath,
+  jsonLd,
+  pageTitle,
+  productMetaDescription,
+  productSchema,
+  seo,
+} from '#/lib/seo'
 import type { Category, Product } from '#/data/catalogue'
 
 /**
@@ -37,11 +45,12 @@ export const Route = createFileRoute('/patisserie/$category_/$product')({
       })
     }
     const { category, product } = loaderData
-    const path = productPath(category.slug, product.slug)
+    // A product listed in two ranges canonicalises to its first range's page.
+    const path = canonicalProductPath(category.slug, product.slug)
     const description = productDescription(category, product)
     return {
       ...seo({
-        title: `${product.name} | Corica Pastries, Northbridge Perth`,
+        title: pageTitle(product.name),
         description,
         path,
         type: 'product',
@@ -67,11 +76,15 @@ export const Route = createFileRoute('/patisserie/$category_/$product')({
   component: Page,
 })
 
-/** The product's own words where we have them, otherwise a plain factual line. */
+/**
+ * The product's own words where we have them (padded with plain facts when
+ * they are too short to stand alone), otherwise a plain factual line.
+ */
 function productDescription(category: Category, product: Product): string {
-  return (
+  return productMetaDescription(
+    product.name,
     product.description ||
-    `${product.name} — ${category.name} baked at ${site.name}. Order online for pickup from ${site.address.street}, ${site.address.suburb}.`
+      `${product.name} — ${category.name} baked at ${site.name}. Order online for pickup from ${site.address.street}, ${site.address.suburb}.`,
   )
 }
 

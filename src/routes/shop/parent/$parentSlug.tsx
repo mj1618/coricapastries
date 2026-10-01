@@ -13,7 +13,7 @@ import {
 } from '#/lib/shop/browse'
 import { optionsFor, recommendations } from '#/lib/shop/catalog'
 import { htmlToText } from '#/lib/shop/sanitize'
-import { breadcrumbs, jsonLd, seo } from '#/lib/seo'
+import { breadcrumbs, jsonLd, productMetaDescription, seo } from '#/lib/seo'
 import { variantGroupSchema } from '#/lib/shop/schema'
 
 const shopRoute = getRouteApi('/shop')
@@ -46,9 +46,10 @@ export const Route = createFileRoute('/shop/parent/$parentSlug')({
     const head = withRemoteOgImage(
       seo({
         title: parent.name,
-        description:
-          summary ||
-          `${parent.name} from Corica Pastries, Northbridge${sizes ? ` — ${sizes}` : ''}. Order online for pickup from 106 Aberdeen Street.`,
+        description: productMetaDescription(
+          parent.name,
+          summary || (sizes ? `Options: ${sizes}.` : ''),
+        ),
         path,
         type: 'product',
       }),

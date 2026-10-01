@@ -6,7 +6,7 @@ import { ProductCard } from '#/components/patisserie/ProductCard'
 import { PageHero } from '#/components/ui'
 import { catalogue, getCategoryMeta } from '#/data/catalogue'
 import { shopCategory } from '#/data/shopLinks'
-import { breadcrumbs, jsonLd, rangeSchema, seo } from '#/lib/seo'
+import { breadcrumbs, jsonLd, pageTitle, rangeSchema, seo } from '#/lib/seo'
 import type { Category } from '#/data/catalogue'
 
 export const Route = createFileRoute('/patisserie/$category')({
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/patisserie/$category')({
     const path = `/patisserie/${category.slug}`
     return {
       ...seo({
-        title: `${meta.title ?? category.name} | Corica Pastries, Northbridge Perth`,
+        title: pageTitle(meta.title ?? category.name),
         description: meta.description,
         path,
         image: {

@@ -14,6 +14,19 @@ import { site } from '#/data/site'
 /** Google truncates descriptions around 155–160 characters; keep ours under. */
 const MAX_DESCRIPTION = 158
 
+/** Descriptions shorter than this read as thin; product pages pad them with facts. */
+const MIN_DESCRIPTION = 70
+
+/** Google truncates titles past roughly 60–65 characters. */
+const MAX_TITLE = 65
+
+/** Longest to shortest; `pageTitle()` uses the first that keeps the title in bounds. */
+const TITLE_SUFFIXES = [
+  `${site.name}, ${site.address.suburb} Perth`,
+  `${site.name} Perth`,
+  site.name,
+]
+
 /** The branded 1200×630 social card (JPEG, no transparency) used unless a page overrides it. */
 export const DEFAULT_OG_IMAGE = {
   path: '/img/og-card.jpg',
@@ -42,6 +55,45 @@ export function clampDescription(text: string, max = MAX_DESCRIPTION): string {
   if (clean.length <= max) return clean
   const cut = clean.slice(0, max - 1)
   return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), 60))}…`
+}
+
+/**
+ * "<name> | Corica Pastries, Northbridge Perth", falling back to a shorter
+ * suffix when the full one would push the title past what Google shows.
+ */
+export function pageTitle(name: string): string {
+  for (const suffix of TITLE_SUFFIXES) {
+    const title = `${name} | ${suffix}`
+    if (title.length <= MAX_TITLE) return title
+  }
+  return `${name} | ${site.name}`
+}
+
+/**
+ * A product's meta description, padded with plain facts (who bakes it, where,
+ * and how to order) when its own words are too short to describe the page.
+ * Never adds product claims: only the name, the shop and the ordering options.
+ */
+export function productMetaDescription(
+  name: string,
+  description: string | null | undefined,
+): string {
+  const own = (description ?? '').replace(/\s+/g, ' ').trim()
+  if (own.length >= MIN_DESCRIPTION) return own
+  const sentence = own && !/[.!?…]$/.test(own) ? `${own}.` : own
+  // Longest wording first; the first that fits needs no ellipsis.
+  const leads = [
+    `${name} from ${site.name}, ${site.address.suburb} Perth.`,
+    `${name} from ${site.name}, ${site.address.suburb}.`,
+  ]
+  const tails = [
+    'Order online for pickup, by phone or in store.',
+    'Order online for pickup.',
+  ]
+  const options = leads.flatMap((lead) =>
+    tails.map((tail) => [lead, sentence, tail].filter(Boolean).join(' ')),
+  )
+  return options.find((text) => text.length <= MAX_DESCRIPTION) ?? options[0]
 }
 
 export function seo({
@@ -160,11 +212,19 @@ export function businessGraph(): JsonLd {
               ]
             : [],
         ),
-        makesOffer: catalogue.map((category) => ({
-          '@type': 'Offer',
-          itemOffered: { '@type': 'Product', name: category.name },
-          url: absoluteUrl(`/patisserie/${category.slug}`),
-        })),
+        // The ranges as an OfferCatalog rather than Offers of Products: a
+        // Product node needs offers/review/rating of its own, and a range is
+        // not a product, so Google flagged every page when they were typed so.
+        hasOfferCatalog: {
+          '@type': 'OfferCatalog',
+          name: 'The Patisserie',
+          url: absoluteUrl('/patisserie'),
+          itemListElement: catalogue.map((category) => ({
+            '@type': 'OfferCatalog',
+            name: category.name,
+            url: absoluteUrl(`/patisserie/${category.slug}`),
+          })),
+        },
       },
       {
         '@type': 'WebSite',
@@ -202,6 +262,33 @@ export function productPath(categorySlug: string, productSlug: string): string {
 }
 
 /**
+ * The canonical page for a catalogue product. A product listed in more than
+ * one range (Paste Secche is in Biscuits and Gluten Free) has a live page in
+ * each, but they are the same content, so every copy canonicalises to the
+ * first range in catalogue order that lists it.
+ */
+export function canonicalProductPath(
+  categorySlug: string,
+  productSlug: string,
+): string {
+  const primary = catalogue.find((c) =>
+    c.products.some((p) => p.slug === productSlug),
+  )
+  return productPath(primary?.slug ?? categorySlug, productSlug)
+}
+
+/** True when this range's copy of the product is the canonical one. */
+export function isCanonicalProduct(
+  categorySlug: string,
+  productSlug: string,
+): boolean {
+  return (
+    canonicalProductPath(categorySlug, productSlug) ===
+    productPath(categorySlug, productSlug)
+  )
+}
+
+/**
  * The published price of a catalogue product as a schema.org offer: a plain
  * Offer when every variant costs the same (or the product only quotes a single
  * "from" price), an AggregateOffer across the variant prices otherwise, and
@@ -234,9 +321,9 @@ export function productOffers(
 }
 
 /**
- * A brochure range as an ItemList of Products with their published prices.
- * Everything listed is baked for the counter and orderable for pickup, so the
- * offers are real; products sold in several sizes get an AggregateOffer.
+ * A brochure range as an ItemList of links to its product pages (Google's
+ * "summary page" form). The Product markup, with its offers, lives on each
+ * product's own page; nesting Products here duplicated it.
  */
 export function rangeSchema(category: Category): JsonLd {
   return {
@@ -245,24 +332,12 @@ export function rangeSchema(category: Category): JsonLd {
     name: `${category.name} — ${site.name}`,
     url: absoluteUrl(`/patisserie/${category.slug}`),
     numberOfItems: category.products.length,
-    itemListElement: category.products.map((product, i) => {
-      const url = absoluteUrl(productPath(category.slug, product.slug))
-      const offers = productOffers(product, url)
-      return {
-        '@type': 'ListItem',
-        position: i + 1,
-        url,
-        item: {
-          '@type': 'Product',
-          name: product.name,
-          description: product.description || undefined,
-          image: absoluteUrl(product.image),
-          brand: { '@type': 'Brand', name: site.name },
-          url,
-          ...(offers ? { offers } : {}),
-        },
-      }
-    }),
+    itemListElement: category.products.map((product, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: product.name,
+      url: absoluteUrl(canonicalProductPath(category.slug, product.slug)),
+    })),
   }
 }
 
@@ -272,7 +347,7 @@ export function productSchema(
   product: Product,
   description: string,
 ): JsonLd {
-  const url = absoluteUrl(productPath(category.slug, product.slug))
+  const url = absoluteUrl(canonicalProductPath(category.slug, product.slug))
   const offers = productOffers(product, url)
   return {
     '@context': 'https://schema.org',

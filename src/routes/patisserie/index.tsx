@@ -12,7 +12,7 @@ export const Route = createFileRoute('/patisserie/')({
     seo({
       title: 'The Patisserie | Corica Pastries, Northbridge Perth',
       description:
-        'Every range Corica bakes in Northbridge: apple strudels, birthday tortas, cheesecakes, mini pastries, Italian biscuits, gluten free and Christmas. Order for pickup.',
+        'Every range Corica bakes in Northbridge: apple strudels, birthday tortas, cheesecakes, mini pastries, Italian biscuits, gluten free and Christmas.',
       path: '/patisserie',
     }),
   component: Page,
