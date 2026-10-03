@@ -504,7 +504,7 @@ export const catalogue: Category[] = [
         "name": "Cannoli Tower",
         "image": "/img/products/mini-sicilian-cannoli.jpg",
         "description": "Contains 45 regular cannoli with your choice of fillings and ribbon colour. Message Plaque included.",
-        "note": "Requires a bond and only suitable for same day consumption.",
+        "note": "Requires a board bond and only suitable for same day consumption.",
         "priceFrom": 300.0,
         "priceTo": null,
         "optionLabel": null,
