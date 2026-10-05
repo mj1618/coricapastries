@@ -7,7 +7,7 @@ import { ProductPurchasePanel } from '#/components/shop/ProductPurchasePanel'
 import { Ornament } from '#/components/ui'
 import { categorySlug } from '#/lib/shop/catalog'
 import { formatCents } from '#/lib/shop/money'
-import { site } from '#/data/site'
+import { StoreAvailability } from '#/components/shop/StoreAvailability'
 import type { Category, Product, ProductOption } from '#/lib/shop/types'
 
 /**
@@ -138,10 +138,7 @@ export function ProductDetailView({
               displayName={displayName}
             />
 
-            <p className="mt-5 text-[0.9rem] text-ink-soft">
-              Pickup only. Collect from {site.address.street},{' '}
-              {site.address.suburb} — you choose your pickup day at checkout.
-            </p>
+            <StoreAvailability product={product} />
           </div>
         </div>
       </div>
