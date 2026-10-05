@@ -1,3 +1,4 @@
+import { useNavigate } from '@tanstack/react-router'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Ornament } from '#/components/ui'
 import { site } from '#/data/site'
@@ -49,6 +50,7 @@ export function ContactForm() {
   const [status, setStatus] = useState<Status>('idle')
   const [sent, setSent] = useState(false)
   const turnstile = useTurnstile()
+  const navigate = useNavigate()
 
   // Set on mount rather than at render so the prerendered HTML has no clock in it.
   const startedAt = useRef(0)
@@ -72,6 +74,13 @@ export function ContactForm() {
       })
       if (result.ok) {
         trackContactFormSubmit()
+        // GA4 counts this history change as a page view of /contact?sent=1, and a
+        // custom event in the GA4 property turns that into `form_submit`.
+        void navigate({
+          to: '/contact',
+          search: { sent: 1 } as never,
+          resetScroll: false,
+        })
         setSent(true)
         setStatus('idle')
       } else {

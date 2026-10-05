@@ -191,7 +191,11 @@ Events are pushed to `dataLayer` from `src/lib/analytics.ts` (2026-10-05): the G
 events `view_item_list`, `select_item`, `view_item`, `add_to_cart`, `remove_from_cart`,
 `view_cart` and `begin_checkout` (items carry the SupplyWise product id, the Merchant Center
 offer id), which the container's existing GA4 ecommerce tag forwards, and `contact_form_submit`
-when an enquiry is sent. There is no `purchase` event: payment happens on SupplyWise's hosted
+when an enquiry is sent. Nobody on our side has access to the GTM container (it is not under
+the coricapastriesau Google account), and its form trigger still looks for the old WordPress
+form fields, so nothing in GTM listens for `contact_form_submit` yet. Instead the form moves to
+`/contact?sent=1` on success and a GA4 custom event (Admin → Events → Create event) turns that
+page view into the `form_submit` key event; if GTM is ever fixed, remove one of the two. There is no `purchase` event: payment happens on SupplyWise's hosted
 checkout on another domain, so `begin_checkout` is the conversion (owner's call, 2026-10-05).
 `cart.add()` reports `add_to_cart` only when its second argument carries `unitCents`. React
 StrictMode doubles the view events in `npm run dev` only.
