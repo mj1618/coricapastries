@@ -5,6 +5,7 @@ import type { CartRow } from '#/components/shop/CartLineItem'
 import { CartPickupPanel } from '#/components/shop/CartPickupPanel'
 import { CartSummary } from '#/components/shop/CartSummary'
 import { ButtonLink, Eyebrow, PageHero } from '#/components/ui'
+import { cartItems, trackEcommerce } from '#/lib/analytics'
 import { seo } from '#/lib/seo'
 import { parentByProductId } from '#/lib/shop/catalog'
 import { useCart } from '#/lib/shop/cart'
@@ -71,6 +72,23 @@ function Page() {
     [cart.lines, byId, parents],
   )
 
+  // Once per visit to the cart page, as soon as the stored cart has been read.
+  const hydrated = cart.hydrated
+  useEffect(() => {
+    if (hydrated) trackEcommerce('view_cart', cartItems(cart.lines, byId))
+  }, [hydrated])
+
+  function remove(key: string) {
+    trackEcommerce(
+      'remove_from_cart',
+      cartItems(
+        cart.lines.filter((l) => l.key === key),
+        byId,
+      ),
+    )
+    cart.remove(key)
+  }
+
   const noticeDays = maxNoticeDays(
     rows.filter((r) => r.status === 'ok').map((r) => r.line),
     byId,
@@ -106,7 +124,7 @@ function Page() {
                       row={row}
                       supplierLogo={store.supplier.image}
                       onQuantity={cart.setQuantity}
-                      onRemove={cart.remove}
+                      onRemove={remove}
                     />
                   ))}
                 </ul>

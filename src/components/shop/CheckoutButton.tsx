@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { cartItems, trackEcommerce } from '#/lib/analytics'
 import { createCheckout, getProducts } from '#/lib/shop/api'
 import { checkoutErrorMessage, reconcile } from '#/lib/shop/checkout'
 import type { CartChange, Fulfilment } from '#/lib/shop/checkout'
@@ -71,6 +72,7 @@ export function CheckoutButton({
         return
       }
 
+      trackEcommerce('begin_checkout', cartItems(lines, byId))
       const checkout = await createCheckout({
         items: lines.map(({ key: _key, ...item }) => item),
         promoCode: promoCode ?? undefined,

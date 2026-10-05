@@ -2,9 +2,11 @@ import { Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { FavouriteButton } from '#/components/shop/FavouriteButton'
 import { ShopImage } from '#/components/shop/ShopImage'
+import { trackEcommerce } from '#/lib/analytics'
 import { useCart } from '#/lib/shop/cart'
 import { itemHref, itemImage, itemInStock, itemName } from '#/lib/shop/catalog'
 import {
+  gridAnalyticsItem,
   itemChooseLabel,
   itemPricing,
   itemTags,
@@ -24,10 +26,13 @@ export function ShopCard({
   item,
   store,
   compact = false,
+  listName = 'Shop',
 }: {
   item: GridItem
   store: Store
   compact?: boolean
+  /** Which list this tile sits in, for the analytics `select_item` event. */
+  listName?: string
 }) {
   const href = itemHref(item)
   const name = itemName(item)
@@ -81,6 +86,13 @@ export function ShopCard({
               to={href.to}
               params={href.params as never}
               className="after:absolute after:inset-0 hover:text-red"
+              onClick={() =>
+                trackEcommerce(
+                  'select_item',
+                  [gridAnalyticsItem(item, { item_list_name: listName })],
+                  { item_list_name: listName },
+                )
+              }
             >
               {name}
             </Link>
@@ -115,6 +127,7 @@ export function ShopCard({
               productId={quickAdd.id}
               name={quickAdd.name}
               image={quickAdd.image}
+              unitCents={quickAdd.priceCents}
             />
           ) : (
             <span className="inline-block border-b border-gold pb-0.5 text-[0.7rem] tracking-nav text-green uppercase transition-colors group-hover:text-red">
@@ -152,10 +165,12 @@ function QuickAdd({
   productId,
   name,
   image,
+  unitCents,
 }: {
   productId: string
   name: string
   image: string | null
+  unitCents: number
 }) {
   const { add, hydrated } = useCart()
   const [added, setAdded] = useState(false)
@@ -165,7 +180,7 @@ function QuickAdd({
       type="button"
       disabled={!hydrated}
       onClick={() => {
-        add({ productId, quantity: 1 }, { name, image })
+        add({ productId, quantity: 1 }, { name, image, unitCents })
         setAdded(true)
         window.setTimeout(() => setAdded(false), 2200)
       }}

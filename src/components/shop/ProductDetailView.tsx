@@ -1,10 +1,12 @@
 import { Link } from '@tanstack/react-router'
+import { useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { FavouriteButton } from '#/components/shop/FavouriteButton'
 import { GalleryViewer } from '#/components/shop/GalleryViewer'
 import { ProductDescription } from '#/components/shop/ProductDescription'
 import { ProductPurchasePanel } from '#/components/shop/ProductPurchasePanel'
 import { Ornament } from '#/components/ui'
+import { analyticsItem, trackEcommerce } from '#/lib/analytics'
 import { categorySlug } from '#/lib/shop/catalog'
 import { formatCents } from '#/lib/shop/money'
 import { StoreAvailability } from '#/components/shop/StoreAvailability'
@@ -39,6 +41,17 @@ export function ProductDetailView({
   variantPicker?: ReactNode
   belowDescription?: ReactNode
 }) {
+  // Re-fires when a different variant is picked: each is its own product.
+  const categoryName = categories.at(0)?.name
+  const itemName = displayName ?? title
+  useEffect(() => {
+    trackEcommerce('view_item', [
+      analyticsItem({ id: product.id, name: itemName }, product.priceCents, {
+        item_category: categoryName,
+      }),
+    ])
+  }, [product.id, product.priceCents, itemName, categoryName])
+
   return (
     <section className="pt-8 pb-16 md:pt-12 md:pb-20">
       <div className="wrap">

@@ -29,7 +29,12 @@ export function RecommendRow({
         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {items.map((item, i) => (
             <Reveal key={item.key} delay={(i % 4) * 0.06} className="h-full">
-              <ShopCard item={item} store={store} compact />
+              <ShopCard
+                item={item}
+                store={store}
+                compact
+                listName="You may also like"
+              />
             </Reveal>
           ))}
         </div>

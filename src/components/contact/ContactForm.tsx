@@ -1,6 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Ornament } from '#/components/ui'
 import { site } from '#/data/site'
+import { trackContactFormSubmit } from '#/lib/analytics'
 import { contactSubjects, sendContactEnquiry } from '#/server/contact'
 import { TURNSTILE_SITE_KEY, useTurnstile } from './turnstile'
 
@@ -70,6 +71,7 @@ export function ContactForm() {
         data: { ...values, startedAt: startedAt.current, turnstileToken },
       })
       if (result.ok) {
+        trackContactFormSubmit()
         setSent(true)
         setStatus('idle')
       } else {

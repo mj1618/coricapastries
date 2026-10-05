@@ -10,10 +10,12 @@ import { ShopCard } from '#/components/shop/ShopCard'
 import { ShopCategoryNav } from '#/components/shop/ShopCategoryNav'
 import { PageHero } from '#/components/ui'
 import { site } from '#/data/site'
+import { trackEcommerce } from '#/lib/analytics'
 import {
   SORT_OPTIONS,
   availableFilters,
   browseItems,
+  gridAnalyticsItem,
   categoryChips,
   itemsInCategory,
   parseFilterSelection,
@@ -25,6 +27,9 @@ import { seo } from '#/lib/seo'
 import type { SortKey } from '#/lib/shop/browse'
 
 const shopRoute = getRouteApi('/shop')
+
+/** GA4 drops long hits; the first screens of the grid are enough to describe a list view. */
+const LIST_EVENT_ITEMS = 24
 
 /** `gluten-free-range` → `Gluten Free Range`, for the tab title of a filtered view. */
 function titleCase(slug: string): string {
@@ -65,6 +70,20 @@ function Page() {
   const items = browseItems(store, search)
   const sort: SortKey = search.sort ?? 'featured'
   const gstInclusive = store.products.every((p) => p.chargeGst)
+
+  // One list view per category; typing in the search box or re-sorting is not a new list.
+  const listName = category?.name ?? 'Shop'
+  useEffect(() => {
+    trackEcommerce(
+      'view_item_list',
+      items
+        .slice(0, LIST_EVENT_ITEMS)
+        .map((item, index) =>
+          gridAnalyticsItem(item, { item_list_name: listName, index }),
+        ),
+      { item_list_name: listName },
+    )
+  }, [listName])
 
   // Facets are scoped to a chosen category. This supplier publishes none today, so
   // `filterGroups` is empty and nothing renders — the rules live in browse.ts.
@@ -112,7 +131,7 @@ function Page() {
                   delay={(i % 4) * 0.05}
                   className="h-full"
                 >
-                  <ShopCard item={item} store={store} />
+                  <ShopCard item={item} store={store} listName={listName} />
                 </Reveal>
               ))}
             </div>

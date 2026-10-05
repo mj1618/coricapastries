@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react'
 import type { ReactNode } from 'react'
+import { analyticsItem, trackEcommerce } from '#/lib/analytics'
 import { STORAGE_KEYS } from './config'
 import type {
   CartLine,
@@ -23,6 +24,8 @@ export type AddedItem = {
   image?: string | null
   /** Option and subscription lines, e.g. "Size: Medium". */
   details?: string[]
+  /** Unit price including option fees; when given, the add is reported to analytics. */
+  unitCents?: number
 }
 
 export type LastAdded = AddedItem & { quantity: number; id: number }
@@ -113,6 +116,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       item,
     ) => {
       if (item) setLastAdded({ ...item, quantity, id: Date.now() })
+      if (item?.unitCents != null) {
+        trackEcommerce('add_to_cart', [
+          analyticsItem({ id: productId, name: item.name }, item.unitCents, {
+            quantity,
+          }),
+        ])
+      }
       const key = lineKey(productId, optionsSelected, subscriptionFrequency)
       update((s) => {
         const existing = s.lines.find((l) => l.key === key)

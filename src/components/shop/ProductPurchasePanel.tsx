@@ -124,6 +124,7 @@ export function ProductPurchasePanel({
             {
               name,
               image: product.image,
+              unitCents,
               details: [
                 ...optionsSelected.map((o) => `${o.name}: ${o.value}`),
                 ...(repeat ? [`Repeats ${repeat.label.toLowerCase()}`] : []),

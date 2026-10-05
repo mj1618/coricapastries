@@ -187,6 +187,15 @@ dead Universal Analytics tag. The inline snippet only runs when the hostname mat
 staging alias never send hits; there is deliberately no `<noscript>` iframe for the same reason.
 GA4's history-change enhanced measurement covers client-side navigation.
 
+Events are pushed to `dataLayer` from `src/lib/analytics.ts` (2026-10-05): the GA4 ecommerce
+events `view_item_list`, `select_item`, `view_item`, `add_to_cart`, `remove_from_cart`,
+`view_cart` and `begin_checkout` (items carry the SupplyWise product id, the Merchant Center
+offer id), which the container's existing GA4 ecommerce tag forwards, and `contact_form_submit`
+when an enquiry is sent. There is no `purchase` event: payment happens on SupplyWise's hosted
+checkout on another domain, so `begin_checkout` is the conversion (owner's call, 2026-10-05).
+`cart.add()` reports `add_to_cart` only when its second argument carries `unitCents`. React
+StrictMode doubles the view events in `npm run dev` only.
+
 ## Contact form
 
 `src/server/contact.ts` sends through Resend using plain `fetch`. It needs `RESEND_API_KEY`

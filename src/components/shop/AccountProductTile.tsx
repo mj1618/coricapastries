@@ -128,7 +128,11 @@ export function AccountProductTile({
               onClick={() => {
                 add(
                   { productId: product.id },
-                  { name: title, image: product.image },
+                  {
+                    name: title,
+                    image: product.image,
+                    unitCents: product.priceCents,
+                  },
                 )
                 setAdded(true)
                 window.setTimeout(() => setAdded(false), 2000)

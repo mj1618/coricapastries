@@ -12,6 +12,8 @@ import {
   optionsFor,
   sortedCategories,
 } from './catalog'
+import { analyticsItem } from '#/lib/analytics'
+import type { AnalyticsItem } from '#/lib/analytics'
 import type { GridItem } from './catalog'
 import type { seo } from '#/lib/seo'
 import type { Filter, Product, Store, Tag, VariantGroup } from './types'
@@ -369,3 +371,17 @@ export function truncate(text: string, max = 150) {
 }
 
 export { itemInStock }
+
+/** A grid tile as an analytics item: a group is reported as its lead member under the group's name. */
+export function gridAnalyticsItem(
+  item: GridItem,
+  extra: Partial<AnalyticsItem> = {},
+): AnalyticsItem {
+  return item.kind === 'product'
+    ? analyticsItem(item.product, item.product.priceCents, extra)
+    : analyticsItem(
+        { id: item.lead.id, name: item.group.name },
+        item.minPriceCents,
+        extra,
+      )
+}
