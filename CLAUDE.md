@@ -150,8 +150,9 @@ mandatory `</script` escape; use it for all structured data.
   The shop's `?category=` views get their own title but canonical to `/shop`; the brochure
   `/patisserie` pages are the indexable range pages.
 - **Crawl control.** `public/robots.txt` (disallows cart, account, api), `/sitemap.xml` (server
-  route `src/routes/sitemap[.]xml.ts`: brochure pages, ranges, products, `/shop`; shop product
-  URLs are left out while SupplyWise still has duplicated `-copy` slugs). Cart, account and
+  route `src/routes/sitemap[.]xml.ts`: brochure pages, ranges, products, `/shop`, and the live
+  shop product and variant-group URLs). SupplyWise slugs had `-copy` suffixes until 2026-10-05;
+  the shop loaders 301 an old `-copy` URL that now 404s to its clean slug (`legacyCopySlug`). Cart, account and
   order pages are `noindex`. Unknown URLs return a 404 status; their "Page not found" title and
   noindex come from the root `head()`, which checks the matches for the router's `_notFound`
   flag (a route that throws `notFound()` never runs its own `head()`).

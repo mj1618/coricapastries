@@ -1,4 +1,9 @@
-import { createFileRoute, getRouteApi, notFound } from '@tanstack/react-router'
+import {
+  createFileRoute,
+  getRouteApi,
+  notFound,
+  redirect,
+} from '@tanstack/react-router'
 import { useState } from 'react'
 import { ProductDetailView } from '#/components/shop/ProductDetailView'
 import { RecommendRow } from '#/components/shop/RecommendRow'
@@ -12,6 +17,7 @@ import {
   withRemoteOgImage,
 } from '#/lib/shop/browse'
 import { optionsFor, recommendations } from '#/lib/shop/catalog'
+import { legacyCopySlug } from '#/lib/shop/config'
 import { htmlToText } from '#/lib/shop/sanitize'
 import { breadcrumbs, jsonLd, productMetaDescription, seo } from '#/lib/seo'
 import { variantGroupSchema } from '#/lib/shop/schema'
@@ -23,7 +29,17 @@ export const Route = createFileRoute('/shop/parent/$parentSlug')({
     try {
       return { detail: await getParent(params.parentSlug) }
     } catch (err) {
-      if (err instanceof ApiError && err.status === 404) throw notFound()
+      if (err instanceof ApiError && err.status === 404) {
+        const parentSlug = legacyCopySlug(params.parentSlug)
+        if (parentSlug) {
+          throw redirect({
+            to: '/shop/parent/$parentSlug',
+            params: { parentSlug },
+            statusCode: 301,
+          })
+        }
+        throw notFound()
+      }
       throw err
     }
   },

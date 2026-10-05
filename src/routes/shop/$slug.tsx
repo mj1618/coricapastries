@@ -3,12 +3,14 @@ import {
   createFileRoute,
   getRouteApi,
   notFound,
+  redirect,
 } from '@tanstack/react-router'
 import { ProductDetailView } from '#/components/shop/ProductDetailView'
 import { RecommendRow } from '#/components/shop/RecommendRow'
 import { ApiError, getProduct } from '#/lib/shop/api'
 import { truncate, withRemoteOgImage } from '#/lib/shop/browse'
 import { recommendations } from '#/lib/shop/catalog'
+import { legacyCopySlug } from '#/lib/shop/config'
 import { htmlToText } from '#/lib/shop/sanitize'
 import { breadcrumbs, jsonLd, productMetaDescription, seo } from '#/lib/seo'
 import { productSchema } from '#/lib/shop/schema'
@@ -20,7 +22,17 @@ export const Route = createFileRoute('/shop/$slug')({
     try {
       return { detail: await getProduct(params.slug) }
     } catch (err) {
-      if (err instanceof ApiError && err.status === 404) throw notFound()
+      if (err instanceof ApiError && err.status === 404) {
+        const slug = legacyCopySlug(params.slug)
+        if (slug) {
+          throw redirect({
+            to: '/shop/$slug',
+            params: { slug },
+            statusCode: 301,
+          })
+        }
+        throw notFound()
+      }
       throw err
     }
   },
