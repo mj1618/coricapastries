@@ -22,12 +22,3 @@ export const STORAGE_KEYS = {
   tokens: 'sw_retail_tokens',
   pkce: 'sw_pkce',
 } as const
-
-/**
- * SupplyWise slugs carried a `-copy` / `-copy-2` suffix until 2026-10-05, and those
- * URLs went to Merchant Center and Google. Returns the clean slug for one, else null.
- */
-export function legacyCopySlug(slug: string): string | null {
-  const clean = slug.replace(/-copy(-\d+)?$/, '')
-  return clean && clean !== slug ? clean : null
-}

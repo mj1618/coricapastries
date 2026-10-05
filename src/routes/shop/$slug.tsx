@@ -10,7 +10,7 @@ import { RecommendRow } from '#/components/shop/RecommendRow'
 import { ApiError, getProduct } from '#/lib/shop/api'
 import { truncate, withRemoteOgImage } from '#/lib/shop/browse'
 import { recommendations } from '#/lib/shop/catalog'
-import { legacyCopySlug } from '#/lib/shop/config'
+import { legacyProductSlug } from '#/lib/shop/legacySlugs'
 import { htmlToText } from '#/lib/shop/sanitize'
 import { breadcrumbs, jsonLd, productMetaDescription, seo } from '#/lib/seo'
 import { productSchema } from '#/lib/shop/schema'
@@ -23,7 +23,7 @@ export const Route = createFileRoute('/shop/$slug')({
       return { detail: await getProduct(params.slug) }
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
-        const slug = legacyCopySlug(params.slug)
+        const slug = legacyProductSlug(params.slug)
         if (slug) {
           throw redirect({
             to: '/shop/$slug',
