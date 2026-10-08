@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { cartItems, trackEcommerce } from '#/lib/analytics'
 import { createCheckout, getProducts } from '#/lib/shop/api'
 import { checkoutErrorMessage, reconcile } from '#/lib/shop/checkout'
 import type { CartChange, Fulfilment } from '#/lib/shop/checkout'
 import { formatCents } from '#/lib/shop/money'
+import { Eyebrow } from '#/components/ui'
 import { site } from '#/data/site'
 import type { CartLine, Product } from '#/lib/shop/types'
 
@@ -104,37 +105,24 @@ export function CheckoutButton({
 
   return (
     <div className="mt-5">
-      {phase === 'notify' && notification ? (
-        <div className="border border-gold-soft bg-cream-deep/60 p-4 text-[0.95rem]">
-          <p className="text-ink">{notification}</p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              className="btn btn-solid flex-1"
-              onClick={() => void run()}
-            >
-              Continue
-            </button>
-            <button
-              type="button"
-              className="btn flex-1"
-              onClick={() => setPhase('idle')}
-            >
-              Not yet
-            </button>
-          </div>
-        </div>
-      ) : (
-        <button
-          type="button"
-          className="btn btn-solid w-full disabled:cursor-not-allowed disabled:opacity-50"
-          onClick={start}
-          disabled={busy || !!blockedReason}
-          aria-describedby="checkout-status"
-        >
-          {label}
-        </button>
-      )}
+      <button
+        type="button"
+        className="btn btn-solid w-full disabled:cursor-not-allowed disabled:opacity-50"
+        onClick={start}
+        disabled={busy || !!blockedReason}
+        aria-describedby="checkout-status"
+      >
+        {label}
+      </button>
+
+      {notification ? (
+        <NoticeDialog
+          open={phase === 'notify'}
+          text={notification}
+          onContinue={() => void run()}
+          onCancel={() => setPhase('idle')}
+        />
+      ) : null}
 
       <div id="checkout-status" aria-live="polite" className="empty:hidden">
         {blockedReason ? (
@@ -185,5 +173,74 @@ export function CheckoutButton({
         ordering system. Your cart stays here if you come back.
       </p>
     </div>
+  )
+}
+
+/**
+ * The supplier's pre-order notice as a modal. It used to open inline under the
+ * cart summary, where a long notice ran below the fold and shoppers missed it.
+ * A native <dialog> gives the focus trap, Escape and backdrop for free.
+ */
+function NoticeDialog({
+  open,
+  text,
+  onContinue,
+  onCancel,
+}: {
+  open: boolean
+  text: string
+  onContinue: () => void
+  onCancel: () => void
+}) {
+  const ref = useRef<HTMLDialogElement>(null)
+
+  useEffect(() => {
+    const dialog = ref.current
+    if (!dialog) return
+    if (open && !dialog.open) dialog.showModal()
+    if (!open && dialog.open) dialog.close()
+  }, [open])
+
+  return (
+    <dialog
+      ref={ref}
+      aria-labelledby="checkout-notice-title"
+      // Escape closes the dialog natively; keep the phase in step with it.
+      onClose={() => {
+        if (open) onCancel()
+      }}
+      // A click on the dialog element itself is a click on the backdrop.
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onCancel()
+      }}
+      className="m-auto w-[min(34rem,calc(100vw-2rem))] border border-gold-soft bg-ivory p-0 text-ink shadow-2xl backdrop:bg-green-deep/60"
+    >
+      <div className="flex max-h-[calc(100dvh-2rem)] flex-col">
+        <div className="overflow-y-auto px-6 pt-7 pb-5 sm:px-9">
+          <div className="text-center">
+            <Eyebrow>Before you order</Eyebrow>
+            <h2
+              id="checkout-notice-title"
+              className="mt-2 text-[clamp(1.5rem,3vw,1.9rem)]"
+            >
+              Please note
+            </h2>
+          </div>
+          <p className="mt-4 text-[1.05rem] whitespace-pre-line">{text}</p>
+        </div>
+        <div className="flex flex-col gap-3 border-t border-gold-soft px-6 py-4 sm:flex-row sm:px-9">
+          <button
+            type="button"
+            className="btn btn-solid flex-1"
+            onClick={onContinue}
+          >
+            Continue to checkout
+          </button>
+          <button type="button" className="btn flex-1" onClick={onCancel}>
+            Not yet
+          </button>
+        </div>
+      </div>
+    </dialog>
   )
 }
