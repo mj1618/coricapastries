@@ -7,7 +7,7 @@ import {
   rangeLabel,
 } from '#/components/patisserie/ProductCard'
 import { Eyebrow, Ornament } from '#/components/ui'
-import { catalogue } from '#/data/catalogue'
+import { catalogue, productMeta } from '#/data/catalogue'
 import { shopCategory } from '#/data/shopLinks'
 import { site } from '#/data/site'
 import {
@@ -50,7 +50,7 @@ export const Route = createFileRoute('/patisserie/$category_/$product')({
     const description = productDescription(category, product)
     return {
       ...seo({
-        title: pageTitle(product.name),
+        title: pageTitle(productMeta[product.slug]?.title ?? product.name),
         description,
         path,
         type: 'product',
@@ -81,6 +81,8 @@ export const Route = createFileRoute('/patisserie/$category_/$product')({
  * they are too short to stand alone), otherwise a plain factual line.
  */
 function productDescription(category: Category, product: Product): string {
+  const override = productMeta[product.slug]?.description
+  if (override) return override
   return productMetaDescription(
     product.name,
     product.description ||

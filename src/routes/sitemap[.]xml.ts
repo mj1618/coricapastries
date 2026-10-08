@@ -32,6 +32,7 @@ const PAGES: Page[] = [
   ),
   { path: '/shop', priority: '0.8', changefreq: 'daily' },
   { path: '/about', priority: '0.6', changefreq: 'yearly' },
+  { path: '/apple-strudel-history', priority: '0.6', changefreq: 'yearly' },
   { path: '/faqs', priority: '0.6', changefreq: 'monthly' },
   { path: '/contact', priority: '0.6', changefreq: 'yearly' },
   { path: '/privacy', priority: '0.2', changefreq: 'yearly' },

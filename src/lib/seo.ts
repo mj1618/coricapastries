@@ -289,6 +289,17 @@ export function isCanonicalProduct(
 }
 
 /**
+ * The shop's return policy, for every Offer: fresh food made to order is not
+ * returnable (owners, 2026-10-02). Google's merchant listings ask for one on
+ * each offer. There is no `shippingDetails` because the shop is pickup only.
+ */
+export const RETURN_POLICY: JsonLd = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: 'AU',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+}
+
+/**
  * The published price of a catalogue product as a schema.org offer: a plain
  * Offer when every variant costs the same (or the product only quotes a single
  * "from" price), an AggregateOffer across the variant prices otherwise, and
@@ -308,6 +319,7 @@ export function productOffers(
     availability: 'https://schema.org/InStock',
     ...(url ? { url } : {}),
     seller: { '@id': BUSINESS_ID },
+    hasMerchantReturnPolicy: RETURN_POLICY,
   }
   return low === high
     ? { '@type': 'Offer', price: low.toFixed(2), ...shared }

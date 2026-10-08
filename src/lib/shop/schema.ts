@@ -1,5 +1,10 @@
 import { site } from '#/data/site'
-import { BUSINESS_ID, absoluteUrl, productMetaDescription } from '#/lib/seo'
+import {
+  BUSINESS_ID,
+  RETURN_POLICY,
+  absoluteUrl,
+  productMetaDescription,
+} from '#/lib/seo'
 import { htmlToText } from '#/lib/shop/sanitize'
 import type { JsonLd } from '#/lib/seo'
 import type { Product, VariantGroup } from '#/lib/shop/types'
@@ -43,6 +48,7 @@ export function productSchema(product: Product, path: string): JsonLd {
       priceCurrency: 'AUD',
       availability: product.inStock ? IN_STOCK : OUT_OF_STOCK,
       seller: { '@id': BUSINESS_ID },
+      hasMerchantReturnPolicy: RETURN_POLICY,
     },
   }
 }
@@ -75,6 +81,7 @@ export function variantGroupSchema(
               ? IN_STOCK
               : OUT_OF_STOCK,
             seller: { '@id': BUSINESS_ID },
+            hasMerchantReturnPolicy: RETURN_POLICY,
           }
         : undefined,
   }

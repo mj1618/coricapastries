@@ -105,11 +105,6 @@
       "permanent": true
     },
     {
-      "source": "/apple-strudel-history{/}?",
-      "destination": "/about",
-      "permanent": true
-    },
-    {
       "source": "/apple-strudel-what-makes-it-so-good{/}?",
       "destination": "/patisserie/strudels/apple-strudel",
       "permanent": true
@@ -551,7 +546,7 @@
     },
     {
       "source": "/product/honey-cake-slice{/}?",
-      "destination": "/patisserie/small-pastries",
+      "destination": "/shop/honey-cake-slice",
       "permanent": true
     },
     {

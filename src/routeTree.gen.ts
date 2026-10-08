@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AppleStrudelHistoryRouteImport } from './routes/apple-strudel-history'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqsRouteImport } from './routes/faqs'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppleStrudelHistoryRoute = AppleStrudelHistoryRouteImport.update({
+  id: '/apple-strudel-history',
+  path: '/apple-strudel-history',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -118,6 +124,7 @@ const ShopAccountOrdersOrderIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/privacy': typeof PrivacyRoute
@@ -137,6 +144,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/privacy': typeof PrivacyRoute
@@ -156,6 +164,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
   '/privacy': typeof PrivacyRoute
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
     | '/privacy'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
     | '/privacy'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
     | '/privacy'
@@ -234,6 +246,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AppleStrudelHistoryRoute: typeof AppleStrudelHistoryRoute
   ContactRoute: typeof ContactRoute
   FaqsRoute: typeof FaqsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/apple-strudel-history': {
+      id: '/apple-strudel-history'
+      path: '/apple-strudel-history'
+      fullPath: '/apple-strudel-history'
+      preLoaderRoute: typeof AppleStrudelHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -392,6 +412,7 @@ const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AppleStrudelHistoryRoute: AppleStrudelHistoryRoute,
   ContactRoute: ContactRoute,
   FaqsRoute: FaqsRoute,
   PrivacyRoute: PrivacyRoute,

@@ -92,6 +92,11 @@ function Story() {
             the best place to meet them is still the bright green building on
             the corner of Aberdeen Street and Lake Street.
           </p>
+          <p className="mt-4 text-[1.15rem]">
+            <Link to="/apple-strudel-history" className="link-gold">
+              Read the story of our apple strudel
+            </Link>
+          </p>
           <ButtonLink to="/patisserie" className="mt-8">
             View the Patisserie
           </ButtonLink>

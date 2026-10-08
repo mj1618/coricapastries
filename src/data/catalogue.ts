@@ -1063,6 +1063,35 @@ export const catalogue: Category[] = [
 ]
 
 /* -------------------------------------------------------------------------
+   Search-result wording for individual products, keyed by product slug.
+
+   Most product pages build their title and meta description from the name and
+   description above. A product listed here overrides either, for pages whose
+   search snippet needs to say more (what it is, how many it serves, how to
+   order). Use only facts from the product's own entry.
+   ------------------------------------------------------------------------- */
+
+export type ProductMeta = {
+  /** Search-result title (the site name and suburb are appended). Defaults to the product name. */
+  title?: string
+  /** Meta description, under 158 characters. Defaults to the product description. */
+  description?: string
+}
+
+export const productMeta: Partial<Record<string, ProductMeta>> = {
+  'honey-cake-log': {
+    title: 'Honey Cake Log, Serves 6',
+    description:
+      "Corica's honey cake log: layers of spiced honey sponge and caramel, serving about 6. Order online for pickup from Northbridge, Perth, or call the shop.",
+  },
+  'honey-cake-round': {
+    title: 'Honey Cake Round, Serves 12',
+    description:
+      "Corica's round honey cake: layers of spiced honey sponge and caramel, serving about 12. Order online for pickup from Northbridge, Perth. 48 hours' notice.",
+  },
+}
+
+/* -------------------------------------------------------------------------
    Presentation metadata for the eight ranges.
 
    `blurb` doubles as the one-line description on the /patisserie tiles and as
