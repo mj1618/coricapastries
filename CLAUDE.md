@@ -146,7 +146,8 @@ mandatory `</script` escape; use it for all structured data.
   machine-readable `hours[].schema`) is emitted from `__root.tsx` on every page. Range pages
   add BreadcrumbList + ItemList of Products; brochure product pages add Product + breadcrumbs;
   shop product pages add Product/AggregateOffer (`src/lib/shop/schema.ts`); FAQs add FAQPage.
-  Every Offer carries `RETURN_POLICY` from `seo.ts` (no returns, owners 2026-10-02); there is no
+  Every Offer carries `RETURN_POLICY` from `seo.ts` (no returns, owners 2026-10-02; the customer
+  wording is the `returns` FAQ, which Merchant Center's return policy links to); there is no
   `shippingDetails` because the shop is pickup only.
 - **Titles and descriptions.** Per-range title/description live in `categoryMeta` in
   `src/data/catalogue.ts`. Range and product pages carry "Northbridge Perth" in the title.

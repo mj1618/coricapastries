@@ -85,6 +85,12 @@ export const faqs: FaqGroup[] = [
         cta: { to: '/shop', label: 'Visit the shop' },
       },
       {
+        // Merchant Center's return policy links here (/faqs#returns); keep the id.
+        id: 'returns',
+        q: 'Can I return or exchange my order?',
+        a: 'Everything we make is fresh food, so we cannot accept returns or exchanges for a change of mind.\n\nIf something is not right with your order, please call us on {phone} as soon as you can so we can sort it out with you. This does not affect your rights under the Australian Consumer Law.',
+      },
+      {
         id: 'notice',
         q: 'How far in advance should I place my order?',
         a: 'It depends on the products and the quantity — the more notice you can give us, the better. Some products need 48 to 72 hours.\n\nThe online shop shows the notice period for each product and lets you choose a pickup day that suits.\n\nIf something pops up unexpectedly, give us a ring anyway and we will do our best.',
