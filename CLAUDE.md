@@ -33,6 +33,7 @@ server code is the contact form's server function and the SupplyWise proxy.
 src/routes/__root.tsx        HTML shell, fonts, global meta, CartProvider, Header/Footer, 404
 src/routes/index.tsx         Home
 src/routes/about.tsx         About Us
+src/routes/apple-strudel-history.tsx  The strudel's story (the old blog post's URL, kept because it ranks)
 src/routes/patisserie/       Range overview (index.tsx) and category listings ($category.tsx)
 src/routes/faqs.tsx          FAQs (data in src/data/faqs.ts)
 src/routes/contact.tsx       Contact: cards, map embed, enquiry form
@@ -145,8 +146,12 @@ mandatory `</script` escape; use it for all structured data.
   machine-readable `hours[].schema`) is emitted from `__root.tsx` on every page. Range pages
   add BreadcrumbList + ItemList of Products; brochure product pages add Product + breadcrumbs;
   shop product pages add Product/AggregateOffer (`src/lib/shop/schema.ts`); FAQs add FAQPage.
+  Every Offer carries `RETURN_POLICY` from `seo.ts` (no returns, owners 2026-10-02); there is no
+  `shippingDetails` because the shop is pickup only.
 - **Titles and descriptions.** Per-range title/description live in `categoryMeta` in
   `src/data/catalogue.ts`. Range and product pages carry "Northbridge Perth" in the title.
+  `productMeta` (same file, keyed by product slug) overrides one product page's title or
+  description; only the two honey cakes use it so far.
   The shop's `?category=` views get their own title but canonical to `/shop`; the brochure
   `/patisserie` pages are the indexable range pages.
 - **Crawl control.** `public/robots.txt` (disallows cart, account, api), `/sitemap.xml` (server
@@ -160,7 +165,7 @@ mandatory `</script` escape; use it for all structured data.
   flag (a route that throws `notFound()` never runs its own `head()`).
   `vercel.json` sends `X-Robots-Tag: noindex` only when the host is not coricapastries.com.au,
   so staging is never indexed and cutover needs no config change.
-- **Redirects.** `vercel.json` holds 116 permanent redirects from the old WordPress URLs
+- **Redirects.** `vercel.json` holds 115 permanent redirects from the old WordPress URLs
   (`/about-us`, `/contact-us`, `/catering` → contact, `/product-category/<slug>` including the
   misspelt `bisucits` and its `/page/<n>` pagination, all 79 `/product/<slug>` URLs → the matching
   `/patisserie/<range>/<product>` page or the range page when the product is gone, the blog posts,
