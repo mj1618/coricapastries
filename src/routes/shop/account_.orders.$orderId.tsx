@@ -1,6 +1,5 @@
 import { Link, createFileRoute, getRouteApi } from '@tanstack/react-router'
 import { useCallback } from 'react'
-import type { ReactNode } from 'react'
 import { AccountSync } from '#/components/shop/AccountSync'
 import {
   AccountBadge,
@@ -11,10 +10,15 @@ import {
   humanise,
   useAccountResource,
 } from '#/components/shop/AccountUi'
+import {
+  OrderAddress,
+  OrderItems,
+  OrderRow,
+  OrderTotals,
+} from '#/components/shop/OrderParts'
 import { Eyebrow, Ornament, PageHero } from '#/components/ui'
 import { fullAddress, site } from '#/data/site'
 import { getOrder, useAuth } from '#/lib/shop/auth'
-import { formatCents } from '#/lib/shop/money'
 import type { Order, Store } from '#/lib/shop/types'
 import { seo } from '#/lib/seo'
 
@@ -168,14 +172,14 @@ function StatusCard({ order }: { order: Order }) {
 
       <dl className="mx-auto mt-7 grid max-w-[640px] gap-x-8 gap-y-3 sm:grid-cols-2">
         {order.pickupOrDelivery ? (
-          <Row term="Fulfilment">
+          <OrderRow term="Fulfilment">
             <span className="capitalize">
               {humanise(order.pickupOrDelivery)}
             </span>
-          </Row>
+          </OrderRow>
         ) : null}
         {when ? (
-          <Row
+          <OrderRow
             term={
               order.pickupOrDelivery === 'pickup'
                 ? 'Pickup date'
@@ -183,17 +187,17 @@ function StatusCard({ order }: { order: Order }) {
             }
           >
             {when}
-          </Row>
+          </OrderRow>
         ) : null}
         {order.invoiceReference ? (
-          <Row term="Invoice">{order.invoiceReference}</Row>
+          <OrderRow term="Invoice">{order.invoiceReference}</OrderRow>
         ) : null}
         {order.pickupOrDelivery === 'pickup' ? (
-          <Row term="Collect from">{fullAddress}</Row>
+          <OrderRow term="Collect from">{fullAddress}</OrderRow>
         ) : order.shippingAddress ? (
-          <Row term="Delivering to">
-            <Address address={order.shippingAddress} />
-          </Row>
+          <OrderRow term="Delivering to">
+            <OrderAddress address={order.shippingAddress} />
+          </OrderRow>
         ) : null}
       </dl>
 
@@ -224,48 +228,12 @@ function StatusCard({ order }: { order: Order }) {
   )
 }
 
-function Row({ term, children }: { term: string; children: ReactNode }) {
-  return (
-    <div className="border-b border-gold-soft/70 pb-2">
-      <dt className="text-[0.72rem] tracking-[0.22em] text-gold uppercase">
-        {term}
-      </dt>
-      <dd className="mt-1 text-ink">{children}</dd>
-    </div>
-  )
-}
-
-const ADDRESS_KEYS = [
-  'addressLine1',
-  'addressLine2',
-  'suburb',
-  'state',
-  'postcode',
-  'country',
-]
-
-function Address({ address }: { address: Record<string, string> }) {
-  const known = ADDRESS_KEYS.map((k) => address[k]).filter(Boolean)
-  const parts = known.length
-    ? known
-    : Object.values(address).filter((v) => typeof v === 'string' && v)
-  if (parts.length === 0) return null
-  return (
-    <span>
-      {parts.map((part, i) => (
-        <span key={i} className="block">
-          {part}
-        </span>
-      ))}
-    </span>
-  )
-}
-
 /* ------------------------------------------------------------------ invoice */
 
 function Invoice({ order, store }: { order: Order; store: Store }) {
   const supplier = store.supplier
-  const totals = readTotals(order)
+  // The guide documents `totals`, but a partial response could omit it.
+  const totals = order.totals as Order['totals'] | undefined
   const placed = formatTimestamp(order.createdAt)
 
   return (
@@ -298,102 +266,19 @@ function Invoice({ order, store }: { order: Order; store: Store }) {
 
       <dl className="mx-auto mb-8 grid max-w-[560px] gap-x-8 gap-y-3 sm:grid-cols-2">
         {order.invoiceReference ? (
-          <Row term="Invoice number">{order.invoiceReference}</Row>
+          <OrderRow term="Invoice number">{order.invoiceReference}</OrderRow>
         ) : null}
         {order.orderReference ? (
-          <Row term="Order reference">{order.orderReference}</Row>
+          <OrderRow term="Order reference">{order.orderReference}</OrderRow>
         ) : null}
-        {placed ? <Row term="Issued">{placed}</Row> : null}
+        {placed ? <OrderRow term="Issued">{placed}</OrderRow> : null}
         {totals?.promoCodeApplied ? (
-          <Row term="Promo code">{totals.promoCodeApplied}</Row>
+          <OrderRow term="Promo code">{totals.promoCodeApplied}</OrderRow>
         ) : null}
       </dl>
 
-      <ul className="border-t border-gold-soft">
-        {order.items.map((item, i) => (
-          <li
-            key={`${item.productId}-${i}`}
-            className="flex gap-4 border-b border-gold-soft py-4"
-          >
-            <div className="h-20 w-20 shrink-0 overflow-hidden bg-cream-deep/40">
-              {item.image ? (
-                <img
-                  src={item.image}
-                  alt=""
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              ) : null}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="font-display text-[1.2rem] text-green">
-                {item.name}
-              </p>
-              {item.sku ? (
-                <p className="text-[0.95rem] text-ink-soft">SKU {item.sku}</p>
-              ) : null}
-              {item.optionsSelected.length > 0 ? (
-                <ul className="mt-1 text-[0.95rem] text-ink-soft">
-                  {item.optionsSelected.map((option, oi) => (
-                    <li key={oi}>
-                      {option.name}: {option.value}
-                      {option.feeAmountCents
-                        ? ` (+${formatCents(option.feeAmountCents)})`
-                        : null}
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              <p className="mt-1 text-[1rem] text-ink-soft">
-                {item.quantity} × {formatCents(item.unitPriceCents)}
-                {item.chargeGst ? ' incl. GST' : ' (GST free)'}
-              </p>
-            </div>
-            <p className="shrink-0 self-center font-display text-[1.25rem] text-green">
-              {formatCents(lineTotal(item))}
-            </p>
-          </li>
-        ))}
-      </ul>
-
-      {totals ? (
-        <dl className="mt-6 ml-auto max-w-[420px] space-y-2 text-[1.05rem]">
-          <Total term="Items (incl. GST)" cents={totals.itemsIncGstCents} />
-          {totals.lineDiscountIncGstCents ? (
-            <Total
-              term="Item discounts"
-              cents={-Math.abs(totals.lineDiscountIncGstCents)}
-            />
-          ) : null}
-          {totals.cartDiscountIncGstCents ? (
-            <Total
-              term="Cart discount"
-              cents={-Math.abs(totals.cartDiscountIncGstCents)}
-            />
-          ) : null}
-          {totals.shippingIncGstCents ? (
-            <Total
-              term="Delivery (incl. GST)"
-              cents={totals.shippingIncGstCents}
-            />
-          ) : null}
-          {totals.creditNotesIncGstCents ? (
-            <Total
-              term="Credit notes"
-              cents={-Math.abs(totals.creditNotesIncGstCents)}
-            />
-          ) : null}
-          <Total term="GST included" cents={totals.gstCents} muted />
-          <div className="flex justify-between border-t border-gold-soft pt-3 font-display text-[1.5rem] text-green">
-            <dt>Total</dt>
-            <dd>{formatCents(totals.totalIncGstCents)}</dd>
-          </div>
-        </dl>
-      ) : (
-        <p className="mt-6 text-right font-display text-[1.5rem] text-green">
-          {formatCents(order.totalIncGstCents)}
-        </p>
-      )}
+      <OrderItems items={order.items} />
+      <OrderTotals order={order} />
 
       <p className="mt-9 text-center text-[0.95rem] text-ink-soft italic">
         Payment for online orders is taken by SupplyWise on behalf of{' '}
@@ -407,41 +292,6 @@ function Invoice({ order, store }: { order: Order; store: Store }) {
       </p>
     </section>
   )
-}
-
-function Total({
-  term,
-  cents,
-  muted = false,
-}: {
-  term: string
-  cents: number
-  muted?: boolean
-}) {
-  return (
-    <div
-      className={`flex justify-between ${muted ? 'text-ink-soft' : 'text-ink'}`}
-    >
-      <dt>{term}</dt>
-      <dd>{formatCents(cents, { alwaysCents: true })}</dd>
-    </div>
-  )
-}
-
-/**
- * The guide documents `totals` on the full order, but an older or partial response
- * could omit it, and the invoice must still render — so treat it as optional.
- */
-function readTotals(order: Order): Order['totals'] | undefined {
-  return order.totals
-}
-
-function lineTotal(item: Order['items'][number]) {
-  const fees = item.optionsSelected.reduce(
-    (n, option) => n + (option.feeAmountCents ?? 0),
-    0,
-  )
-  return (item.unitPriceCents + fees) * item.quantity
 }
 
 /** +61893288196 → (08) 9328 8196; anything unexpected is left alone. */

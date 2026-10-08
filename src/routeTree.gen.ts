@@ -23,6 +23,7 @@ import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
 import { Route as ShopAccountRouteImport } from './routes/shop/account'
 import { Route as ShopCartRouteImport } from './routes/shop/cart'
+import { Route as ShopOrderConfirmationRouteImport } from './routes/shop/order-confirmation'
 import { Route as ApiSwSplatRouteImport } from './routes/api/sw/$'
 import { Route as PatisserieCategoryProductRouteImport } from './routes/patisserie/$category_.$product'
 import { Route as ShopParentParentSlugRouteImport } from './routes/shop/parent/$parentSlug'
@@ -98,6 +99,11 @@ const ShopCartRoute = ShopCartRouteImport.update({
   path: '/cart',
   getParentRoute: () => ShopRoute,
 } as any)
+const ShopOrderConfirmationRoute = ShopOrderConfirmationRouteImport.update({
+  id: '/order-confirmation',
+  path: '/order-confirmation',
+  getParentRoute: () => ShopRoute,
+} as any)
 const ApiSwSplatRoute = ApiSwSplatRouteImport.update({
   id: '/api/sw/$',
   path: '/api/sw/$',
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/order-confirmation': typeof ShopOrderConfirmationRoute
   '/patisserie/': typeof PatisserieIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/order-confirmation': typeof ShopOrderConfirmationRoute
   '/patisserie': typeof PatisserieIndexRoute
   '/shop': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
@@ -174,6 +182,7 @@ export interface FileRoutesById {
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
+  '/shop/order-confirmation': typeof ShopOrderConfirmationRoute
   '/patisserie/': typeof PatisserieIndexRoute
   '/shop/': typeof ShopIndexRoute
   '/api/sw/$': typeof ApiSwSplatRoute
@@ -196,6 +205,7 @@ export interface FileRouteTypes {
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/order-confirmation'
     | '/patisserie/'
     | '/shop/'
     | '/api/sw/$'
@@ -215,6 +225,7 @@ export interface FileRouteTypes {
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/order-confirmation'
     | '/patisserie'
     | '/shop'
     | '/api/sw/$'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
+    | '/shop/order-confirmation'
     | '/patisserie/'
     | '/shop/'
     | '/api/sw/$'
@@ -358,6 +370,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShopCartRouteImport
       parentRoute: typeof ShopRoute
     }
+    '/shop/order-confirmation': {
+      id: '/shop/order-confirmation'
+      path: '/order-confirmation'
+      fullPath: '/shop/order-confirmation'
+      preLoaderRoute: typeof ShopOrderConfirmationRouteImport
+      parentRoute: typeof ShopRoute
+    }
     '/api/sw/$': {
       id: '/api/sw/$'
       path: '/api/sw/$'
@@ -393,6 +412,7 @@ interface ShopRouteChildren {
   ShopSlugRoute: typeof ShopSlugRoute
   ShopAccountRoute: typeof ShopAccountRoute
   ShopCartRoute: typeof ShopCartRoute
+  ShopOrderConfirmationRoute: typeof ShopOrderConfirmationRoute
   ShopIndexRoute: typeof ShopIndexRoute
   ShopParentParentSlugRoute: typeof ShopParentParentSlugRoute
   ShopAccountOrdersOrderIdRoute: typeof ShopAccountOrdersOrderIdRoute
@@ -402,6 +422,7 @@ const ShopRouteChildren: ShopRouteChildren = {
   ShopSlugRoute: ShopSlugRoute,
   ShopAccountRoute: ShopAccountRoute,
   ShopCartRoute: ShopCartRoute,
+  ShopOrderConfirmationRoute: ShopOrderConfirmationRoute,
   ShopIndexRoute: ShopIndexRoute,
   ShopParentParentSlugRoute: ShopParentParentSlugRoute,
   ShopAccountOrdersOrderIdRoute: ShopAccountOrdersOrderIdRoute,

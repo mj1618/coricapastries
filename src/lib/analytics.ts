@@ -1,4 +1,4 @@
-import type { CartLine, Product } from '#/lib/shop/types'
+import type { CartLine, ConfirmedOrder, Product } from '#/lib/shop/types'
 
 /**
  * dataLayer events for Google Tag Manager (container in `src/data/site.ts`).
@@ -16,6 +16,7 @@ type EcommerceEvent =
   | 'remove_from_cart'
   | 'view_cart'
   | 'begin_checkout'
+  | 'purchase'
 
 export type AnalyticsItem = {
   /** SupplyWise product id, the same id Merchant Center has as the offer id. */
@@ -87,6 +88,37 @@ export function trackEcommerce(
       ...extra,
       items,
     },
+  })
+}
+
+/**
+ * GA4 `purchase` for a paid order, from the order SupplyWise hands back on the
+ * confirmation page. `value` is what the shopper paid (GST inclusive, after
+ * discounts), with `tax` and `shipping` broken out; `transaction_id` is the order
+ * reference, which GA4 also de-duplicates on. Carries no customer details. The
+ * caller must report each order once (see `firstConfirmation`).
+ */
+export function trackPurchase(order: ConfirmedOrder) {
+  const items = order.items.map((item, index) => {
+    const fees = item.optionsSelected.reduce(
+      (n, o) => n + (o.feeAmountCents ?? 0),
+      0,
+    )
+    return analyticsItem(
+      { id: item.productId, name: item.name },
+      item.unitPriceCents + fees,
+      { quantity: item.quantity, index },
+    )
+  })
+  // `totals` is documented but treated as optional, as on the account order page.
+  const totals = order.totals as ConfirmedOrder['totals'] | undefined
+  const paidCents = totals?.totalIncGstCents ?? order.totalIncGstCents
+  trackEcommerce('purchase', items, {
+    transaction_id: order.orderReference ?? order.id,
+    value: paidCents / 100,
+    tax: (totals?.gstCents ?? paidCents - order.totalExcGstCents) / 100,
+    shipping: (totals?.shippingIncGstCents ?? 0) / 100,
+    ...(totals?.promoCodeApplied ? { coupon: totals.promoCodeApplied } : {}),
   })
 }
 

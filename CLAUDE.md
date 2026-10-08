@@ -46,7 +46,8 @@ src/server/contact.ts        Server function that emails enquiries via the Resen
 src/components/              Header, Footer, Reveal (scroll fade-in), ui.tsx (Eyebrow, Ornament,
                              ButtonLink, PageHero), plus per-page folders including shop/
 src/lib/shop/                SupplyWise client: api, catalog, browse, cart, favourites, auth,
-                             checkout, money, sanitize, types, config (slug, bases, storage keys)
+                             checkout, confirmation, money, sanitize, types, config (slug, bases,
+                             storage keys)
 src/data/site.ts             Business facts and nav
 src/data/catalogue.ts        Categories and products (edit here to change prices/copy)
 src/data/shopLinks.ts        Catalogue slug → shop `?category=` key, for brochure→shop links
@@ -85,7 +86,8 @@ The online shop at `/shop` is a custom storefront over the SupplyWise Retail Sto
 Reference spec: https://supplywise.com.au/retail-shop-builder-llm.txt
 
 **Routes.** `/shop` (product grid, filtered by `?category=<key>`), `/shop/$slug` (a product),
-`/shop/parent/$parentSlug` (a variant group), `/shop/cart`, `/shop/account`. Category keys come
+`/shop/parent/$parentSlug` (a variant group), `/shop/cart`, `/shop/account`,
+`/shop/order-confirmation` (where the hosted checkout returns a paid order). Category keys come
 from the SupplyWise category names: `small-pastries, extras, mini-range, biscuits, strudels,
 special-occasion, gluten-free-range, birthday-cakes, christmas`.
 
@@ -122,7 +124,24 @@ and gets back `{ token, checkoutUrl }`; the shopper is redirected to SupplyWise'
 checkout, which owns the pickup calendar, delivery pricing and payment. Corica is **pickup only**
 (`shippingType: 'pickup-only'`), so the shopper picks a pickup day at checkout and collects from
 106 Aberdeen Street. Some products carry a notice period (1–3 days) that the hosted checkout
-enforces.
+enforces. The cart is never cleared on the way to checkout: the shopper may come back unpaid.
+
+**Order confirmation.** `/shop/order-confirmation` (`src/routes/shop/order-confirmation.tsx`; the
+path is fixed by SupplyWise) is where the hosted checkout sends the shopper once an order is
+paid, with `?token=`. The page fetches `GET /order-confirmation/{token}` in the browser and
+shows the order, pickup details and totals (`components/shop/OrderParts.tsx`, shared with the
+account order page). A 200 is the only "the order went through" signal we get, so that is where
+the cart is cleared and `purchase` is reported, once per order: `firstConfirmation()` in
+`src/lib/shop/confirmation.ts` remembers confirmed order ids in `localStorage`, so reloading
+(the token works for 24 hours) cannot empty a newer cart or double-count. A missing token, 404
+or 410 shows "check your email" and touches nothing. The token reads the order without a login,
+so it must stay out of analytics, logs and referrers: an inline head script in `__root.tsx`,
+**above the GTM snippet**, moves it from the URL into `sessionStorage` (`sw_order_confirmation`)
+before any tag can read the page address, and the route sends `Referrer-Policy: no-referrer`
+and `Cache-Control: private, no-store` (overriding the shop layout's shared cache). The supplier
+must switch on "Show the order confirmation on my website" under Settings → Custom Storefront;
+until then shoppers finish on SupplyWise's own confirmation page, the cart stays full and no
+`purchase` fires. Unpaid orders (bank transfer) always stay on SupplyWise.
 
 **Shopper login.** PKCE (S256) against `https://supplywise.com.au/coricapastries/retail/authorize`,
 with `redirect_uri` set to `<origin>/shop/account`. The verifier and CSRF state are stashed in
@@ -155,7 +174,7 @@ mandatory `</script` escape; use it for all structured data.
   description; only the two honey cakes use it so far.
   The shop's `?category=` views get their own title but canonical to `/shop`; the brochure
   `/patisserie` pages are the indexable range pages.
-- **Crawl control.** `public/robots.txt` (disallows cart, account, api), `/sitemap.xml` (server
+- **Crawl control.** `public/robots.txt` (disallows cart, account, order confirmation, api), `/sitemap.xml` (server
   route `src/routes/sitemap[.]xml.ts`: brochure pages, ranges, products, `/shop`, and the live
   shop product and variant-group URLs). Until 2026-10-05 most SupplyWise slugs were a
   `-copy` of another product's name; `/shop/$slug` 301s the 92 old product URLs Merchant Center
@@ -204,8 +223,16 @@ when an enquiry is sent. Nobody on our side has access to the GTM container (it 
 the coricapastriesau Google account), and its form trigger still looks for the old WordPress
 form fields, so nothing in GTM listens for `contact_form_submit` yet. Instead the form moves to
 `/contact?sent=1` on success and a GA4 custom event (Admin → Events → Create event) turns that
-page view into the `form_submit` key event; if GTM is ever fixed, remove one of the two. There is no `purchase` event: payment happens on SupplyWise's hosted
-checkout on another domain, so `begin_checkout` is the conversion (owner's call, 2026-10-05).
+page view into the `form_submit` key event; if GTM is ever fixed, remove one of the two. `purchase` (2026-10-08) is pushed by
+`trackPurchase()` from the order confirmation page, once per order, with `transaction_id` (the
+order reference), `value` (what the shopper paid, GST inclusive, after discounts), `tax`,
+`shipping`, `coupon` and the order's items; the container's GA4 ecommerce tag already triggers
+on `purchase` and reads those `ecommerce.*` keys. It only fires once SupplyWise is set to return
+shoppers to our confirmation page (see the Shop section). Payment happens on supplywise.com.au,
+so that domain (and the payment provider's) must be listed under GA4 Admin → Data streams →
+Configure tag settings → List unwanted referrals, or every purchase is credited to a
+supplywise.com.au referral. `begin_checkout` was the conversion until then (owner's call,
+2026-10-05); mark `purchase` as the key event in GA4 and repoint the Google Ads conversion.
 `cart.add()` reports `add_to_cart` only when its second argument carries `unitCents`. React
 StrictMode doubles the view events in `npm run dev` only.
 

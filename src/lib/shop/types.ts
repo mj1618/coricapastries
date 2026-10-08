@@ -180,6 +180,8 @@ export type OrderSummary = {
   createdAt: number
   pickupOrDelivery: 'pickup' | 'delivery' | null
   deliveryDate: string | null
+  /** Pickup time chosen at checkout, "HH:mm" each. */
+  pickupWindow?: { start: string; end: string } | null
   totalIncGstCents: number
   totalExcGstCents: number
 }
@@ -215,6 +217,16 @@ export type Order = OrderSummary & {
     images: string[]
     image: string | null
   }[]
+}
+
+/** `GET /order-confirmation/{token}`: the order a shopper has just paid for. */
+export type ConfirmedOrder = Order & {
+  orderNumber: number | null
+  /** Informational only; never branch on it. */
+  paymentMethod: string | null
+  customer: { name: string | null; email: string | null } | null
+  /** ms epoch — when the confirmation token stops working. */
+  expiresAt: number
 }
 
 export type Subscription = {

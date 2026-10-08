@@ -88,11 +88,12 @@ function Page() {
               We use Google Tag Manager to run Google Analytics, Google Ads
               conversion tracking and the Meta (Facebook) pixel. These set
               cookies and record how the site is used, such as the pages you
-              visit and whether you reach the checkout, so we can see which
-              parts of the site are useful and measure our advertising. The data
-              is processed by Google and Meta under their own privacy policies.
-              You can block these cookies in your browser settings or with an ad
-              blocker without affecting ordering.
+              visit, whether you reach the checkout and what an order contained
+              and cost (not who placed it), so we can see which parts of the
+              site are useful and measure our advertising. The data is processed
+              by Google and Meta under their own privacy policies. You can block
+              these cookies in your browser settings or with an ad blocker
+              without affecting ordering.
             </p>
             <p className={p}>
               The enquiry form may use Cloudflare Turnstile to tell people from

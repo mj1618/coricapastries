@@ -2,6 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /shop/cart
 Disallow: /shop/account
+Disallow: /shop/order-confirmation
 Disallow: /api/
 
 Sitemap: https://coricapastries.com.au/sitemap.xml

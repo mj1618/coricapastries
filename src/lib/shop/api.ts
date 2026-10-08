@@ -2,6 +2,7 @@ import { apiBase } from './config'
 import type {
   CartLine,
   CheckoutResult,
+  ConfirmedOrder,
   ParentDetail,
   Product,
   ProductDetail,
@@ -107,6 +108,18 @@ export function createCheckout(body: {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })
+}
+
+/**
+ * The order behind a confirmation token (the hosted checkout's return to
+ * /shop/order-confirmation). The token is the credential: no auth header, valid
+ * for 24 hours, 404 when unknown and 410 once expired. Never log it.
+ */
+export function getOrderConfirmation(token: string) {
+  return request<ConfirmedOrder>(
+    `/order-confirmation/${encodeURIComponent(token)}`,
+    { cache: 'no-store' },
+  )
 }
 
 /** Raw authenticated call helper for /account/* (token handling lives in auth.ts). */

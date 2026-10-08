@@ -12,6 +12,7 @@ import { ButtonLink } from '#/components/ui'
 import { analyticsHostPattern, gtmId, site } from '#/data/site'
 import { businessGraph, jsonLd } from '#/lib/seo'
 import { CartProvider } from '#/lib/shop/cart'
+import { stashConfirmationTokenSnippet } from '#/lib/shop/confirmation'
 import appCss from '../styles.css?url'
 
 const fontsHref =
@@ -63,6 +64,9 @@ export const Route = createRootRoute({
     scripts: [
       // Marks that JS is running so .reveal animations can hide content before fading in.
       { children: "document.documentElement.classList.add('js')" },
+      // Must stay above Google Tag Manager: takes the order confirmation token out
+      // of the URL before any tag can send the page address to analytics.
+      { children: stashConfirmationTokenSnippet },
       // Google Tag Manager, guarded by hostname so dev and staging never send hits.
       // No <noscript> iframe: it cannot be guarded the same way, and GA4's own
       // history-change tracking covers client-side navigation once gtm.js runs.

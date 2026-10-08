@@ -21,4 +21,8 @@ export const STORAGE_KEYS = {
   favourites: `sw_favourites_${SUPPLIER_SLUG}`,
   tokens: 'sw_retail_tokens',
   pkce: 'sw_pkce',
+  /** sessionStorage: the confirmation token, moved out of the URL (see __root.tsx). */
+  confirmationToken: 'sw_order_confirmation',
+  /** Order ids this browser has already confirmed (cart cleared, purchase reported). */
+  confirmedOrders: `sw_confirmed_orders_${SUPPLIER_SLUG}`,
 } as const
