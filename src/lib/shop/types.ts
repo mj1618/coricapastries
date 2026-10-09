@@ -16,6 +16,11 @@ export type Product = {
   stockStatus: 'in-stock' | 'out-of-stock'
   inStock: boolean
   stockLevel: number | null
+  /**
+   * The most of this product one cart may hold, across all its lines. `null` is no
+   * limit and `0` is none left. Absent on older API responses: treat as no limit.
+   */
+  maxOrderQuantity?: number | null
   subscribable: boolean
   allowFractionalQuantities: boolean
   minDeliveryDays: number | null

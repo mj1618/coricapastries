@@ -1,5 +1,11 @@
 import { useId, useState } from 'react'
-import { useCart } from '#/lib/shop/cart'
+import {
+  MAX_QUANTITY,
+  quantityOfProduct,
+  remainingFor,
+  stockLimitText,
+  useCart,
+} from '#/lib/shop/cart'
 import { formatCents } from '#/lib/shop/money'
 import type {
   OptionSelected,
@@ -41,8 +47,8 @@ export function ProductPurchasePanel({
   /** Variant wording for the cart notification, e.g. "Black Forrest Torta — Medium". */
   displayName?: string
 }) {
-  const { add, hydrated } = useCart()
-  const [quantity, setQuantity] = useState(1)
+  const { add, hydrated, lines } = useCart()
+  const [chosenQuantity, setQuantity] = useState(1)
   const [frequency, setFrequency] = useState<'once' | SubscriptionFrequency>(
     'once',
   )
@@ -55,6 +61,19 @@ export function ProductPurchasePanel({
     setSignatureSeen(signature)
     setSelections(defaultSelections(options))
   }
+
+  // The stock limit covers every cart line of this product, so what can still be
+  // added is the limit less what the cart holds. Clamping here (rather than in
+  // state) keeps the quantity right when the variant or the cart changes.
+  const inCart = quantityOfProduct(lines, product.id)
+  const remaining = remainingFor(product, lines)
+  const max = Math.min(MAX_QUANTITY, remaining ?? MAX_QUANTITY)
+  const quantity = Math.max(1, Math.min(chosenQuantity, max))
+  const soldOut = !product.inStock || product.maxOrderQuantity === 0
+  const limitText =
+    !soldOut && remaining !== null && quantity >= remaining
+      ? stockLimitText(remaining, inCart)
+      : null
 
   const optionsSelected = buildOptionsSelected(options, selections)
   const feesCents = optionsSelected.reduce(
@@ -90,7 +109,8 @@ export function ProductPurchasePanel({
         <QuantityStepper
           value={quantity}
           onChange={setQuantity}
-          disabled={!product.inStock}
+          max={max}
+          disabled={soldOut || max < 1}
         />
 
         <div className="min-w-[8rem]">
@@ -109,9 +129,15 @@ export function ProductPurchasePanel({
         </div>
       </div>
 
+      {limitText ? (
+        <p className="mt-3 text-[0.9rem] text-ink-soft" aria-live="polite">
+          {limitText}
+        </p>
+      ) : null}
+
       <button
         type="button"
-        disabled={!product.inStock || !hydrated}
+        disabled={soldOut || max < 1 || !hydrated}
         onClick={() => {
           const repeat = FREQUENCIES.find((f) => f.value === frequency)
           add(
@@ -134,7 +160,7 @@ export function ProductPurchasePanel({
         }}
         className="btn btn-solid mt-6 w-full disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {product.inStock ? 'Add to cart' : 'Sold out'}
+        {soldOut ? 'Sold out' : 'Add to cart'}
       </button>
     </div>
   )
@@ -316,10 +342,13 @@ function SubscribeField({
 function QuantityStepper({
   value,
   onChange,
+  max,
   disabled,
 }: {
   value: number
   onChange: (value: number) => void
+  /** The most that can be chosen: the stock left for this cart, at most 99. */
+  max: number
   disabled?: boolean
 }) {
   const id = useId()
@@ -344,21 +373,21 @@ function QuantityStepper({
           type="number"
           inputMode="numeric"
           min={1}
-          max={99}
+          max={Math.max(1, max)}
           value={value}
           disabled={disabled}
           onChange={(e) => {
             const next = Number.parseInt(e.target.value, 10)
             onChange(
-              Number.isFinite(next) ? Math.min(99, Math.max(1, next)) : 1,
+              Number.isFinite(next) ? Math.max(1, Math.min(max, next)) : 1,
             )
           }}
           className="w-14 border-x border-gold-soft bg-transparent text-center text-[1.05rem] text-ink [appearance:textfield] focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
         />
         <StepButton
           label="Increase quantity"
-          disabled={disabled || value >= 99}
-          onClick={() => onChange(Math.min(99, value + 1))}
+          disabled={disabled || value >= max}
+          onClick={() => onChange(Math.min(max, value + 1))}
         >
           +
         </StepButton>

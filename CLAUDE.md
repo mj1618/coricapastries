@@ -119,12 +119,29 @@ hydration mismatch. Passing a second `{ name, image, details }` argument to `car
 "Added to your cart" pop-down under the header (`components/shop/CartNotification.tsx`, modelled
 on Shopify's Dawn cart notification); every Add button should pass it.
 
+**Stock limits.** A product's `maxOrderQuantity` is the most of it ONE cart may hold: `null` is
+no limit, `0` is none left, and an absent field (older API responses) is treated as no limit, in
+which case the product page stepper keeps its 1–99 range. The limit is per product, summed over
+every cart line of that `productId` (different options, one-off and subscription lines), so
+nothing compares a single line against it: `quantityOfProduct()` and `remainingFor()` in
+`src/lib/shop/cart.tsx` do the sum (the provider itself holds no product data and `cart.add()`
+does not clamp, so every control must). The product page stepper and Add button, the grid's
+quick Add, the account tiles and the cart rows all stop at what is left, and say why with
+`stockLimitText()` ("Only N available", "Only N more available", "You have all the available
+stock in your cart"). A cart row's ceiling is the limit less the OTHER lines of the product
+(`CartRow.max`, set in `routes/shop/cart.tsx`); a row already over it can still be lowered or
+removed. At checkout `reconcile()` adds a `quantity` change per over-limit product, the button
+lowers those lines through the cart (0 removes one; earlier lines keep their quantity) and stops
+in the `review` phase, so the POST only happens on the next press, with the lowered lines.
+
 **Checkout hand-off.** We never take payment. `createCheckout()` POSTs the cart to `/checkout`
 and gets back `{ token, checkoutUrl }`; the shopper is redirected to SupplyWise's hosted
 checkout, which owns the pickup calendar, delivery pricing and payment. Corica is **pickup only**
 (`shippingType: 'pickup-only'`), so the shopper picks a pickup day at checkout and collects from
 106 Aberdeen Street. Some products carry a notice period (1–3 days) that the hosted checkout
-enforces. The cart is never cleared on the way to checkout: the shopper may come back unpaid.
+enforces. The cart is never cleared on the way to checkout: the shopper may come back unpaid. Before the
+POST, `CheckoutButton` refetches `/products` and reconciles prices and stock; that re-check is a
+courtesy, not a gate: if the refetch fails the cart is handed over unchanged.
 
 **Order confirmation.** `/shop/order-confirmation` (`src/routes/shop/order-confirmation.tsx`; the
 path is fixed by SupplyWise) is where the hosted checkout sends the shopper once an order is

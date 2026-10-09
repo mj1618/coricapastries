@@ -12,6 +12,11 @@ export type CartRow = {
   /** Variant label from the group, e.g. "Medium 20 to 25 serves". */
   variantName: string | null
   status: 'ok' | 'removed' | 'sold-out'
+  /**
+   * The most this line may hold: the product's stock limit less the cart's other
+   * lines of the same product. Null when there is no limit.
+   */
+  max: number | null
 }
 
 const FREQUENCY_LABEL: Record<string, string> = {
@@ -57,7 +62,7 @@ export function CartLineItem({
   onQuantity: (key: string, quantity: number) => void
   onRemove: (key: string) => void
 }) {
-  const { line, product, group, variantName, status } = row
+  const { line, product, group, variantName, status, max } = row
   const title = group?.name ?? product?.name ?? 'Item no longer available'
   const qty = line.quantity
   const fees = optionFeesCents(line)
@@ -72,6 +77,8 @@ export function CartLineItem({
       ? ({ to: '/shop/$slug', params: { slug: product.slug } } as const)
       : null
   const unusable = status !== 'ok'
+  // At or over the stock limit: no more can be added, but less always can.
+  const atLimit = max !== null && qty >= max
 
   const heading = (
     <>
@@ -154,6 +161,14 @@ export function CartLineItem({
             </p>
           ) : null}
 
+          {atLimit && !unusable ? (
+            <p className="mt-2 text-[0.9rem] text-ink-soft" aria-live="polite">
+              {qty > max
+                ? `Only ${product?.maxOrderQuantity ?? max} available`
+                : 'You have all the available stock in your cart'}
+            </p>
+          ) : null}
+
           <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
             {unusable ? (
               <span className="text-[0.95rem] text-ink-soft">
@@ -175,11 +190,18 @@ export function CartLineItem({
                     type="number"
                     min={1}
                     step={1}
+                    max={max === null ? undefined : Math.max(max, qty)}
                     value={qty}
                     onChange={(e) => {
-                      const next = Number(e.target.value)
+                      const next = Math.floor(Number(e.target.value))
                       if (Number.isFinite(next) && next >= 1) {
-                        onQuantity(line.key, Math.floor(next))
+                        // Going down is always allowed; going up stops at the limit.
+                        onQuantity(
+                          line.key,
+                          max === null || next <= qty
+                            ? next
+                            : Math.max(qty, Math.min(next, max)),
+                        )
                       }
                     }}
                     aria-label={`Quantity of ${title}`}
@@ -187,7 +209,8 @@ export function CartLineItem({
                   />
                   <button
                     type="button"
-                    className="h-9 w-9 text-[1.2rem] leading-none text-green"
+                    className="h-9 w-9 text-[1.2rem] leading-none text-green disabled:opacity-35"
+                    disabled={atLimit}
                     onClick={() => onQuantity(line.key, qty + 1)}
                     aria-label={`Increase quantity of ${title}`}
                   >

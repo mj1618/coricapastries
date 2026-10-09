@@ -3,7 +3,12 @@ import { useState } from 'react'
 import { FavouriteButton } from '#/components/shop/FavouriteButton'
 import { ShopImage } from '#/components/shop/ShopImage'
 import { trackEcommerce } from '#/lib/analytics'
-import { useCart } from '#/lib/shop/cart'
+import {
+  quantityOfProduct,
+  remainingFor,
+  stockLimitText,
+  useCart,
+} from '#/lib/shop/cart'
 import { itemHref, itemImage, itemInStock, itemName } from '#/lib/shop/catalog'
 import {
   gridAnalyticsItem,
@@ -128,6 +133,7 @@ export function ShopCard({
               name={quickAdd.name}
               image={quickAdd.image}
               unitCents={quickAdd.priceCents}
+              maxOrderQuantity={quickAdd.maxOrderQuantity}
             />
           ) : (
             <span className="inline-block border-b border-gold pb-0.5 text-[0.7rem] tracking-nav text-green uppercase transition-colors group-hover:text-red">
@@ -166,28 +172,40 @@ function QuickAdd({
   name,
   image,
   unitCents,
+  maxOrderQuantity,
 }: {
   productId: string
   name: string
   image: string | null
   unitCents: number
+  /** The product's stock limit per cart; null or absent is no limit. */
+  maxOrderQuantity?: number | null
 }) {
-  const { add, hydrated } = useCart()
+  const { add, hydrated, lines } = useCart()
   const [added, setAdded] = useState(false)
+  const remaining = remainingFor({ id: productId, maxOrderQuantity }, lines)
+  const atLimit = remaining !== null && remaining < 1
 
   return (
-    <button
-      type="button"
-      disabled={!hydrated}
-      onClick={() => {
-        add({ productId, quantity: 1 }, { name, image, unitCents })
-        setAdded(true)
-        window.setTimeout(() => setAdded(false), 2200)
-      }}
-      className="relative z-10 border border-green px-4 py-2 text-[0.7rem] tracking-nav text-green uppercase transition-colors hover:bg-green hover:text-cream disabled:opacity-50"
-    >
-      {added ? 'Added ✓' : 'Add'}
-      <span className="sr-only"> {name} to cart</span>
-    </button>
+    <>
+      <button
+        type="button"
+        disabled={!hydrated || atLimit}
+        onClick={() => {
+          add({ productId, quantity: 1 }, { name, image, unitCents })
+          setAdded(true)
+          window.setTimeout(() => setAdded(false), 2200)
+        }}
+        className="relative z-10 border border-green px-4 py-2 text-[0.7rem] tracking-nav text-green uppercase transition-colors hover:bg-green hover:text-cream disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:text-green"
+      >
+        {added ? 'Added ✓' : 'Add'}
+        <span className="sr-only"> {name} to cart</span>
+      </button>
+      {atLimit ? (
+        <p className="mt-2 text-[0.8rem] text-ink-soft">
+          {stockLimitText(remaining, quantityOfProduct(lines, productId))}
+        </p>
+      ) : null}
+    </>
   )
 }

@@ -355,6 +355,16 @@ export type CartChange =
       fromCents: number
       toCents: number
     }
+  | {
+      /** The cart holds more of a product than its `maxOrderQuantity`. */
+      kind: 'quantity'
+      /** The product id: one change per product, however many lines it has. */
+      key: string
+      name: string
+      available: number
+      /** The lines to lower, with their new quantities (0 removes the line). */
+      lines: { key: string; quantity: number }[]
+    }
 
 export type Reconciliation = {
   /** What changed since the cart was last rendered. */
@@ -367,7 +377,8 @@ export type Reconciliation = {
 
 /**
  * Compares the cart against a freshly fetched product list. Callers should render
- * `changes`, swap in `products`, and refuse to check out while `unavailable`.
+ * `changes`, swap in `products`, refuse to check out while `unavailable`, and lower
+ * the cart lines named by any `quantity` change before checking out.
  */
 export function reconcile(
   lines: CartLine[],
@@ -377,6 +388,7 @@ export function reconcile(
   const fresh = new Map(freshProducts.map((p) => [p.id, p]))
   const changes: CartChange[] = []
   let unavailable = false
+  const buyable = new Map<string, CartLine[]>()
 
   for (const line of lines) {
     const before = previous.get(line.productId)
@@ -392,6 +404,7 @@ export function reconcile(
       unavailable = true
       continue
     }
+    buyable.set(line.productId, [...(buyable.get(line.productId) ?? []), line])
     if (before && before.priceCents !== after.priceCents) {
       changes.push({
         kind: 'price',
@@ -399,6 +412,31 @@ export function reconcile(
         name,
         fromCents: before.priceCents,
         toCents: after.priceCents,
+      })
+    }
+  }
+
+  // Stock limits apply to a product's total across its lines; earlier lines keep
+  // their quantity and later ones give way.
+  for (const [productId, productLines] of buyable) {
+    const product = fresh.get(productId)
+    const max = product?.maxOrderQuantity
+    if (!product || typeof max !== 'number' || !Number.isFinite(max)) continue
+    const available = Math.max(0, Math.floor(max))
+    let left = available
+    const lowered: { key: string; quantity: number }[] = []
+    for (const line of productLines) {
+      const quantity = Math.min(line.quantity, left)
+      left -= quantity
+      if (quantity !== line.quantity) lowered.push({ key: line.key, quantity })
+    }
+    if (lowered.length > 0) {
+      changes.push({
+        kind: 'quantity',
+        key: productId,
+        name: product.name,
+        available,
+        lines: lowered,
       })
     }
   }

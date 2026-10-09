@@ -8,7 +8,7 @@ import { ButtonLink, Eyebrow, PageHero } from '#/components/ui'
 import { cartItems, trackEcommerce } from '#/lib/analytics'
 import { seo } from '#/lib/seo'
 import { parentByProductId } from '#/lib/shop/catalog'
-import { useCart } from '#/lib/shop/cart'
+import { remainingFor, useCart } from '#/lib/shop/cart'
 import { fulfilmentOptions, maxNoticeDays } from '#/lib/shop/checkout'
 import type { Fulfilment } from '#/lib/shop/checkout'
 import type { Product } from '#/lib/shop/types'
@@ -67,6 +67,7 @@ function Page() {
             : !product.inStock || product.stockStatus === 'out-of-stock'
               ? 'sold-out'
               : 'ok',
+          max: product ? remainingFor(product, cart.lines, line.key) : null,
         }
       }),
     [cart.lines, byId, parents],

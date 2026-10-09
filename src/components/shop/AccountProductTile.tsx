@@ -4,7 +4,12 @@ import type { ReactNode } from 'react'
 import { FavouriteButton } from '#/components/shop/FavouriteButton'
 import { groupChoiceLabel } from '#/lib/shop/browse'
 import { optionsFor, parentByProductId } from '#/lib/shop/catalog'
-import { useCart } from '#/lib/shop/cart'
+import {
+  quantityOfProduct,
+  remainingFor,
+  stockLimitText,
+  useCart,
+} from '#/lib/shop/cart'
 import { formatCents } from '#/lib/shop/money'
 import type { Store } from '#/lib/shop/types'
 
@@ -26,7 +31,7 @@ export function AccountProductTile({
   meta?: ReactNode
   showHeart?: boolean
 }) {
-  const { add } = useCart()
+  const { add, lines } = useCart()
   const [added, setAdded] = useState(false)
 
   const product = store.products.find((p) => p.id === productId)
@@ -41,6 +46,8 @@ export function AccountProductTile({
   const group = parentByProductId(store).get(product.id)
   const hasOptions = optionsFor(store, product.id).length > 0
   const image = product.image ?? store.supplier.image
+  const remaining = remainingFor(product, lines)
+  const atLimit = remaining !== null && remaining < 1
 
   const link =
     group && group.slug
@@ -124,7 +131,8 @@ export function AccountProductTile({
           ) : (
             <button
               type="button"
-              className="btn btn-solid w-full sm:w-auto"
+              disabled={atLimit}
+              className="btn btn-solid w-full disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
               onClick={() => {
                 add(
                   { productId: product.id },
@@ -141,6 +149,11 @@ export function AccountProductTile({
               {added ? 'Added ✓' : 'Add to cart'}
             </button>
           )}
+          {atLimit && !link && product.inStock ? (
+            <p className="mt-2 text-[0.9rem] text-ink-soft">
+              {stockLimitText(remaining, quantityOfProduct(lines, product.id))}
+            </p>
+          ) : null}
         </div>
       </div>
     </li>

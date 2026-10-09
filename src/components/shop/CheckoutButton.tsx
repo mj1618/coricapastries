@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { cartItems, trackEcommerce } from '#/lib/analytics'
 import { createCheckout, getProducts } from '#/lib/shop/api'
+import { useCart } from '#/lib/shop/cart'
 import { checkoutErrorMessage, reconcile } from '#/lib/shop/checkout'
 import type { CartChange, Fulfilment } from '#/lib/shop/checkout'
 import { formatCents } from '#/lib/shop/money'
@@ -20,6 +21,10 @@ function changeText(change: CartChange) {
       return `${change.name} is now ${formatCents(change.toCents, {
         alwaysCents: true,
       })} (was ${formatCents(change.fromCents, { alwaysCents: true })}).`
+    case 'quantity':
+      return change.available > 0
+        ? `Only ${change.available} of ${change.name} available — we've updated your cart.`
+        : `${change.name} has sold out — we've updated your cart.`
   }
 }
 
@@ -48,6 +53,7 @@ export function CheckoutButton({
   blockedReason: string | null
   onProductsRefreshed: (products: Product[]) => void
 }) {
+  const { setQuantity } = useCart()
   const [phase, setPhase] = useState<Phase>('idle')
   const [changes, setChanges] = useState<CartChange[]>([])
   const [error, setError] = useState<string | null>(null)
@@ -58,17 +64,31 @@ export function CheckoutButton({
     setError(null)
     setChanges([])
     try {
-      const { products } = await getProducts()
-      const result = reconcile(lines, products, byId)
-      onProductsRefreshed(products)
-      if (result.changes.length > 0) {
+      // The re-check is a courtesy, not a gate: if the product list cannot be
+      // fetched, hand the cart over as it is and let SupplyWise have the last word.
+      const products = await getProducts().then(
+        (r) => r.products,
+        (err) => {
+          console.warn('[checkout] could not re-check the cart', err)
+          return null
+        },
+      )
+      const result = products ? reconcile(lines, products, byId) : null
+      if (products) onProductsRefreshed(products)
+      if (result && result.changes.length > 0) {
         setChanges(result.changes)
         // Something can't be bought: stop and let the shopper fix the cart.
         if (result.unavailable) {
           setPhase('blocked')
           return
         }
-        // Prices moved: show what changed and make them press again.
+        // More in the cart than is in stock: lower those lines (0 removes one).
+        for (const change of result.changes) {
+          if (change.kind !== 'quantity') continue
+          for (const line of change.lines) setQuantity(line.key, line.quantity)
+        }
+        // Prices or quantities moved: show what changed and make them press
+        // again. That press runs with the lowered lines, never the ones above.
         setPhase('review')
         return
       }
@@ -132,7 +152,7 @@ export function CheckoutButton({
         {changes.length > 0 ? (
           <div className="mt-3 border border-gold-soft bg-cream-deep/60 p-4 text-[0.95rem]">
             <p className="text-ink">
-              {phase === 'blocked'
+              {phase === 'blocked' || changes.some((c) => c.kind === 'quantity')
                 ? 'Your cart changed while you were shopping:'
                 : 'Prices have changed since you added these:'}
             </p>

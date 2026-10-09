@@ -207,6 +207,52 @@ export function useCart() {
   return ctx
 }
 
+/** The most one add or stepper allows when the product has no stock limit. */
+export const MAX_QUANTITY = 99
+
+/** How many of a product the cart holds, across every line (options, subscriptions). */
+export function quantityOfProduct(
+  lines: CartLine[],
+  productId: string,
+  excludeKey?: string,
+) {
+  return lines.reduce(
+    (n, l) =>
+      l.productId === productId && l.key !== excludeKey ? n + l.quantity : n,
+    0,
+  )
+}
+
+/**
+ * How many more of a product the cart can take: its `maxOrderQuantity` less what the
+ * cart already holds (never below 0). Null when the product has no limit. Pass
+ * `excludeKey` to get the most one line may hold given the other lines.
+ */
+export function remainingFor(
+  product: Pick<Product, 'id' | 'maxOrderQuantity'>,
+  lines: CartLine[],
+  excludeKey?: string,
+): number | null {
+  const max = product.maxOrderQuantity
+  if (typeof max !== 'number' || !Number.isFinite(max)) return null
+  return Math.max(
+    0,
+    Math.floor(max) - quantityOfProduct(lines, product.id, excludeKey),
+  )
+}
+
+/** The short reason shown beside a control that has reached the stock limit. */
+export function stockLimitText(remaining: number, inCart: number) {
+  if (remaining <= 0) {
+    return inCart > 0
+      ? 'You have all the available stock in your cart'
+      : 'Sold out'
+  }
+  return inCart > 0
+    ? `Only ${remaining} more available`
+    : `Only ${remaining} available`
+}
+
 /** Line price = (unit price + option fees) × quantity, in cents. */
 export function linePriceCents(line: CartLine, product: Product) {
   const fees = line.optionsSelected.reduce(
