@@ -55,8 +55,17 @@ export function setRemoteFavouriteToggle(fn: typeof remoteToggle) {
   remoteToggle = fn
 }
 
+const noSubscribe = () => () => {}
+
 export function useFavourites() {
   const ids = useSyncExternalStore(subscribe, getFavourites, () => EMPTY)
+  // False on the server and during hydration, when `ids` is always empty: lets a
+  // view tell "no favourites" apart from "not read from storage yet".
+  const hydrated = useSyncExternalStore(
+    noSubscribe,
+    () => true,
+    () => false,
+  )
   const isFavourite = useCallback((id: string) => ids.includes(id), [ids])
   const toggle = useCallback((id: string) => {
     const on = !readLocal().includes(id)
@@ -70,5 +79,5 @@ export function useFavourites() {
       )
     })
   }, [])
-  return { ids, isFavourite, toggle }
+  return { ids, hydrated, isFavourite, toggle }
 }

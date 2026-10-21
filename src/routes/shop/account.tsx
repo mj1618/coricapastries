@@ -182,6 +182,13 @@ function SignedIn({
         eyebrow="Saved"
         title="Your favourites"
         lede="Hearted pastries, synced to your account."
+        action={
+          ids.length > 0 ? (
+            <Link to="/shop" search={{ favourites: 1 }} className="link-gold">
+              View in shop
+            </Link>
+          ) : null
+        }
       >
         {ids.length === 0 ? (
           <AccountNotice>

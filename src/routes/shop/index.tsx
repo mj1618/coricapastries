@@ -17,12 +17,14 @@ import {
   browseItems,
   gridAnalyticsItem,
   categoryChips,
+  favouriteItems,
   itemsInCategory,
   parseFilterSelection,
   serialiseFilterSelection,
   validateShopSearch,
 } from '#/lib/shop/browse'
 import { findCategoryBySlug, gridItems } from '#/lib/shop/catalog'
+import { useFavourites } from '#/lib/shop/favourites'
 import { seo } from '#/lib/seo'
 import type { SortKey } from '#/lib/shop/browse'
 
@@ -43,10 +45,16 @@ function titleCase(slug: string): string {
 export const Route = createFileRoute('/shop/')({
   validateSearch: validateShopSearch,
   // A filtered view gets its own title for tabs and history, but canonicals to
-  // /shop: the brochure /patisserie pages are the indexable range pages.
+  // /shop: the brochure /patisserie pages are the indexable range pages. The
+  // favourites view is per shopper (and empty to a crawler), so it is never in the
+  // sitemap and canonicals to /shop like the rest.
   head: ({ match }) => {
     const category = match.search.category
-    const range = category ? titleCase(category) : null
+    const range = match.search.favourites
+      ? 'Your Favourites'
+      : category
+        ? titleCase(category)
+        : null
     return seo({
       title: range ? `${range} — Order Online` : 'Order Online for Pickup',
       description: range
@@ -61,19 +69,30 @@ export const Route = createFileRoute('/shop/')({
 function Page() {
   const { store } = shopRoute.useLoaderData()
   const search = Route.useSearch()
+  // Favourites live in localStorage (mirrored from the account when logged in), so
+  // they only exist in the browser: the server render and the hydration pass see
+  // none, and `hydrated` says when the real list has been read.
+  const favourites = useFavourites()
 
   const all = gridItems(store)
   const chips = categoryChips(store, all)
-  const category = search.category
-    ? findCategoryBySlug(store, search.category)
-    : null
-  const items = browseItems(store, search)
+  const showFavourites = search.favourites === 1
+  const category =
+    search.category && !showFavourites
+      ? findCategoryBySlug(store, search.category)
+      : null
+  const items = browseItems(store, search, favourites.ids)
+  const favouriteCount = favouriteItems(all, favourites.ids).length
   const sort: SortKey = search.sort ?? 'featured'
   const gstInclusive = store.products.every((p) => p.chargeGst)
+  // Until storage is read the favourites view cannot know what to show.
+  const ready = !showFavourites || favourites.hydrated
 
-  // One list view per category; typing in the search box or re-sorting is not a new list.
-  const listName = category?.name ?? 'Shop'
+  // One list view per category; typing in the search box or re-sorting is not a new
+  // list, and neither is hearting or un-hearting inside the favourites view.
+  const listName = showFavourites ? 'Favourites' : (category?.name ?? 'Shop')
   useEffect(() => {
+    if (!ready) return
     trackEcommerce(
       'view_item_list',
       items
@@ -83,7 +102,7 @@ function Page() {
         ),
       { item_list_name: listName },
     )
-  }, [listName])
+  }, [listName, ready])
 
   // Facets are scoped to a chosen category. This supplier publishes none today, so
   // `filterGroups` is empty and nothing renders — the rules live in browse.ts.
@@ -103,13 +122,25 @@ function Page() {
         lede={`Order online and collect from the shop at ${site.address.street}, ${site.address.suburb} — you choose your pickup day at checkout.`}
       />
 
-      <ShopCategoryNav chips={chips} current={search.category} />
+      <ShopCategoryNav
+        chips={chips}
+        current={search.category}
+        favourites={
+          // Shown once there is a favourite; kept while selected so the shopper
+          // can see where they are after un-hearting the last one.
+          favourites.hydrated && (favouriteCount > 0 || showFavourites)
+            ? { count: favouriteCount, active: showFavourites }
+            : null
+        }
+      />
 
       <section className="pt-8 pb-16 md:pt-10 md:pb-20">
         <div className="wrap">
           <Toolbar
-            count={items.length}
-            categoryName={category?.name ?? null}
+            count={ready ? items.length : null}
+            categoryName={
+              showFavourites ? 'your favourites' : (category?.name ?? null)
+            }
             q={search.q ?? ''}
             sort={sort}
           />
@@ -121,8 +152,17 @@ function Page() {
             />
           ) : null}
 
-          {items.length === 0 ? (
-            <EmptyState q={search.q} categoryName={category?.name ?? null} />
+          {!ready ? (
+            <div className="mt-7 min-h-[20rem]" aria-busy="true" />
+          ) : showFavourites && favouriteCount === 0 ? (
+            <NoFavourites />
+          ) : items.length === 0 ? (
+            <EmptyState
+              q={search.q}
+              categoryName={
+                showFavourites ? 'your favourites' : (category?.name ?? null)
+              }
+            />
           ) : (
             <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {items.map((item, i) => (
@@ -157,7 +197,8 @@ function Toolbar({
   q,
   sort,
 }: {
-  count: number
+  /** `null` while the favourites view is still reading storage. */
+  count: number | null
   categoryName: string | null
   q: string
   sort: SortKey
@@ -165,9 +206,15 @@ function Toolbar({
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
       <p className="text-[0.95rem] text-ink-soft">
-        {count} {count === 1 ? 'item' : 'items'}
-        {categoryName ? ` in ${categoryName}` : ' in the shop'}
-        {q ? ` matching “${q}”` : ''}
+        {count === null ? (
+          '\u00a0'
+        ) : (
+          <>
+            {count} {count === 1 ? 'item' : 'items'}
+            {categoryName ? ` in ${categoryName}` : ' in the shop'}
+            {q ? ` matching “${q}”` : ''}
+          </>
+        )}
       </p>
       <div className="flex flex-wrap items-end gap-4">
         <SearchBox value={q} />
@@ -307,6 +354,25 @@ function FilterBar({
 }
 
 /* ----------------------------------------------------------- empty state */
+
+/** The favourites view with nothing hearted, e.g. after un-hearting the last one. */
+function NoFavourites() {
+  return (
+    <div className="mt-10 border border-gold-soft bg-ivory px-6 py-14 text-center">
+      <h2 className="text-[1.7rem]">No favourites yet</h2>
+      <p className="mx-auto mt-3 max-w-[46ch] text-ink-soft">
+        Tap the heart on any product to keep it here.
+      </p>
+      <Link
+        to="/shop"
+        search={(prev) => ({ ...prev, favourites: undefined })}
+        className="btn mt-7 inline-block"
+      >
+        Show all products
+      </Link>
+    </div>
+  )
+}
 
 function EmptyState({
   q,

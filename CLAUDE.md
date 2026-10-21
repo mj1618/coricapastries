@@ -119,6 +119,16 @@ hydration mismatch. Passing a second `{ name, image, details }` argument to `car
 "Added to your cart" pop-down under the header (`components/shop/CartNotification.tsx`, modelled
 on Shopify's Dawn cart notification); every Add button should pass it.
 
+**Favourites view.** `/shop?favourites=1` (guide §8 A12) shows only hearted items: a
+"Favourites" tab after "All" in `ShopCategoryNav`, shown once the shopper has one (and kept
+while selected), counting grid items (a variant group counts when any member is hearted;
+ids no longer in the shop drop out). It replaces the category, clears facets, and keeps
+search and sort; `validateShopSearch` drops `category`/`f` when it is set. Favourites exist
+only in the browser, so the server render shows a blank placeholder until
+`useFavourites().hydrated`; the `view_item_list` event waits for it too. Un-hearting the
+last one shows "No favourites yet". The account page's favourites section links to it.
+It canonicals to `/shop` and is not in the sitemap.
+
 **Stock limits.** A product's `maxOrderQuantity` is the most of it ONE cart may hold: `null` is
 no limit, `0` is none left, and an absent field (older API responses) is treated as no limit, in
 which case the product page stepper keeps its 1–99 range. The limit is per product, summed over

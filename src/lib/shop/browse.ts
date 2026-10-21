@@ -37,9 +37,14 @@ export type ShopSearch = {
   sort?: SortKey
   /** Selected facet values as `filterId:valueId` pairs joined by `~`. */
   f?: string
+  /**
+   * `?favourites=1`: only the shopper's hearted items. It takes the place of a
+   * category (the two never combine) and facets are not offered with it.
+   */
+  favourites?: 1
 }
 
-/** Reads `?category=&q=&sort=&f=` off the URL, dropping anything unrecognised. */
+/** Reads `?category=&q=&sort=&f=&favourites=` off the URL, dropping anything unrecognised. */
 export function validateShopSearch(
   search: Record<string, unknown>,
 ): ShopSearch {
@@ -52,6 +57,14 @@ export function validateShopSearch(
   if (SORT_KEYS.has(sort) && sort !== 'featured') out.sort = sort as SortKey
   const f = typeof search.f === 'string' ? search.f.slice(0, 200) : ''
   if (f) out.f = f
+  const fav = search.favourites
+  if (fav === 1 || fav === '1' || fav === true || fav === 'true') {
+    // The favourites view replaces the category, so a hand-written URL with both
+    // behaves like the chip: favourites win and the category and facets drop.
+    out.favourites = 1
+    delete out.category
+    delete out.f
+  }
   return out
 }
 
@@ -107,6 +120,26 @@ export function categoryChips(store: Store, items: GridItem[]): CategoryChip[] {
       count: counts.get(c.id) ?? 0,
     })),
   ]
+}
+
+/* ------------------------------------------------------------- favourites */
+
+/**
+ * The grid items a shopper has hearted. Hearts are per product, so a variant-group
+ * card counts when any of its members is a favourite. Ids no longer in the shop drop
+ * out, which is why the Favourites chip counts these rather than the raw ids.
+ */
+export function favouriteItems(
+  items: GridItem[],
+  favouriteIds: readonly string[],
+): GridItem[] {
+  if (favouriteIds.length === 0) return []
+  const ids = new Set(favouriteIds)
+  return items.filter((item) =>
+    item.kind === 'group'
+      ? item.members.some((m) => ids.has(m.id))
+      : ids.has(item.product.id),
+  )
 }
 
 /* ------------------------------------------------------ filtering/sorting */
@@ -225,11 +258,22 @@ export function sortItems(
   }
 }
 
-/** Grid contents for the current URL: category, then facets, then search, then sort. */
-export function browseItems(store: Store, search: ShopSearch): GridItem[] {
+/**
+ * Grid contents for the current URL: category (or favourites), then facets, then
+ * search, then sort. `favouriteIds` only matters for `?favourites=1`.
+ */
+export function browseItems(
+  store: Store,
+  search: ShopSearch,
+  favouriteIds: readonly string[] = [],
+): GridItem[] {
   const all = gridItems(store)
-  let items = itemsInCategory(store, all, search.category)
-  const selected = Object.values(parseFilterSelection(search.f))
+  let items = search.favourites
+    ? favouriteItems(all, favouriteIds)
+    : itemsInCategory(store, all, search.category)
+  const selected = search.favourites
+    ? []
+    : Object.values(parseFilterSelection(search.f))
   if (selected.length > 0) {
     items = items.filter((item) => {
       const products = item.kind === 'group' ? item.members : [item.product]
