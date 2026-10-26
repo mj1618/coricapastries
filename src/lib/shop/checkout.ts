@@ -487,3 +487,27 @@ export function scheduleFor(store: Store, fulfilment: Fulfilment | null) {
     ? store.checkout.deliverySchedule
     : store.checkout.pickupSchedule
 }
+
+/**
+ * The line that opens the "Before you order" modal: how much notice online
+ * orders need and the earliest day this cart can be collected. A shopper
+ * ordered at noon on a Saturday and came in that afternoon for a Monday pickup
+ * (SWO-1260); the supplier's notice said so, but mid-paragraph. Null when
+ * same-day is possible.
+ */
+export function earliestDateNotice(
+  schedule: Schedule | null,
+  fulfilment: Fulfilment | null,
+  extraLeadDays = 0,
+  now: Date = new Date(),
+): string | null {
+  if (!schedule) return null
+  const days = Math.max(asNumber(schedule.minDaysDelay, 0), extraLeadDays)
+  if (days <= 0) return null
+  const word = fulfilment === 'delivery' ? 'delivery' : 'pickup'
+  const notice = `Online orders need ${days === 1 ? 'a day’s' : `${days} days’`} notice.`
+  const date = nextAvailableDate(schedule, extraLeadDays, now)
+  return date
+    ? `${notice} The earliest ${word} for this order is ${formatIsoDate(date)}.`
+    : notice
+}

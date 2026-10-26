@@ -10,10 +10,13 @@ import {
 } from '#/lib/shop/api'
 import {
   discountCentsFrom,
+  earliestDateNotice,
   fulfilmentNote,
   fulfilmentOptions,
+  maxNoticeDays,
   minOrderCents,
   promoItems,
+  scheduleFor,
   unitPriceCents,
 } from '#/lib/shop/checkout'
 import type { Fulfilment } from '#/lib/shop/checkout'
@@ -306,6 +309,13 @@ export function CartSummary({
         promoCode={promo.kind === 'applied' ? promoCode : null}
         fulfilment={fulfilment}
         notification={store.checkout.beforeOrderNotification}
+        dateNotice={() =>
+          earliestDateNotice(
+            scheduleFor(store, fulfilment),
+            fulfilment,
+            maxNoticeDays(lines, byId),
+          )
+        }
         blockedReason={blockedReason}
         onProductsRefreshed={onProductsRefreshed}
       />

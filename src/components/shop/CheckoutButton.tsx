@@ -40,6 +40,7 @@ export function CheckoutButton({
   promoCode,
   fulfilment,
   notification,
+  dateNotice,
   blockedReason,
   onProductsRefreshed,
 }: {
@@ -49,6 +50,11 @@ export function CheckoutButton({
   promoCode: string | null
   fulfilment: Fulfilment | null
   notification: string | null
+  /**
+   * Notice and earliest pickup/delivery date, worked out when Checkout is
+   * pressed (a page left open past the cut-off moves it). Null = same-day.
+   */
+  dateNotice: () => string | null
   /** Non-null keeps the button disabled and explains why. */
   blockedReason: string | null
   onProductsRefreshed: (products: Product[]) => void
@@ -57,6 +63,7 @@ export function CheckoutButton({
   const [phase, setPhase] = useState<Phase>('idle')
   const [changes, setChanges] = useState<CartChange[]>([])
   const [error, setError] = useState<string | null>(null)
+  const [dateLine, setDateLine] = useState<string | null>(null)
   const busy = phase === 'pending'
 
   async function run() {
@@ -110,9 +117,13 @@ export function CheckoutButton({
 
   function start() {
     if (blockedReason) return
-    if (notification && phase === 'idle') {
-      setPhase('notify')
-      return
+    if (phase === 'idle') {
+      const line = dateNotice()
+      if (notification || line) {
+        setDateLine(line)
+        setPhase('notify')
+        return
+      }
     }
     void run()
   }
@@ -135,9 +146,10 @@ export function CheckoutButton({
         {label}
       </button>
 
-      {notification ? (
+      {notification || dateLine ? (
         <NoticeDialog
           open={phase === 'notify'}
+          dateLine={dateLine}
           text={notification}
           onContinue={() => void run()}
           onCancel={() => setPhase('idle')}
@@ -197,18 +209,20 @@ export function CheckoutButton({
 }
 
 /**
- * The supplier's pre-order notice as a modal. It used to open inline under the
+ * The earliest-date line and the supplier's pre-order notice as a modal. It used to open inline under the
  * cart summary, where a long notice ran below the fold and shoppers missed it.
  * A native <dialog> gives the focus trap, Escape and backdrop for free.
  */
 function NoticeDialog({
   open,
+  dateLine,
   text,
   onContinue,
   onCancel,
 }: {
   open: boolean
-  text: string
+  dateLine: string | null
+  text: string | null
   onContinue: () => void
   onCancel: () => void
 }) {
@@ -246,7 +260,14 @@ function NoticeDialog({
               Please note
             </h2>
           </div>
-          <p className="mt-4 text-[1.05rem] whitespace-pre-line">{text}</p>
+          {dateLine ? (
+            <p className="mt-4 border border-gold-soft bg-cream-deep/60 p-4 text-[1.05rem] text-green">
+              {dateLine}
+            </p>
+          ) : null}
+          {text ? (
+            <p className="mt-4 text-[1.05rem] whitespace-pre-line">{text}</p>
+          ) : null}
         </div>
         <div className="flex flex-col gap-3 border-t border-gold-soft px-6 py-4 sm:flex-row sm:px-9">
           <button
