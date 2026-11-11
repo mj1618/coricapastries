@@ -14,11 +14,14 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AppleStrudelHistoryRouteImport } from './routes/apple-strudel-history'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as FaqsRouteImport } from './routes/faqs'
+import { Route as MerchantFeedDotxmlRouteImport } from './routes/merchant-feed[.]xml'
+import { Route as MerchantLocalInventoryDotxmlRouteImport } from './routes/merchant-local-inventory[.]xml'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PatisserieIndexRouteImport } from './routes/patisserie/index'
 import { Route as PatisserieCategoryRouteImport } from './routes/patisserie/$category'
+import { Route as ProductImagesIdRouteImport } from './routes/product-images/$id'
 import { Route as ShopIndexRouteImport } from './routes/shop/index'
 import { Route as ShopSlugRouteImport } from './routes/shop/$slug'
 import { Route as ShopAccountRouteImport } from './routes/shop/account'
@@ -54,6 +57,17 @@ const FaqsRoute = FaqsRouteImport.update({
   path: '/faqs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MerchantFeedDotxmlRoute = MerchantFeedDotxmlRouteImport.update({
+  id: '/merchant-feed.xml',
+  path: '/merchant-feed.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MerchantLocalInventoryDotxmlRoute =
+  MerchantLocalInventoryDotxmlRouteImport.update({
+    id: '/merchant-local-inventory.xml',
+    path: '/merchant-local-inventory.xml',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
@@ -77,6 +91,11 @@ const PatisserieIndexRoute = PatisserieIndexRouteImport.update({
 const PatisserieCategoryRoute = PatisserieCategoryRouteImport.update({
   id: '/patisserie/$category',
   path: '/patisserie/$category',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductImagesIdRoute = ProductImagesIdRouteImport.update({
+  id: '/product-images/$id',
+  path: '/product-images/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ShopIndexRoute = ShopIndexRouteImport.update({
@@ -133,10 +152,13 @@ export interface FileRoutesByFullPath {
   '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/merchant-feed.xml': typeof MerchantFeedDotxmlRoute
+  '/merchant-local-inventory.xml': typeof MerchantLocalInventoryDotxmlRoute
   '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/product-images/$id': typeof ProductImagesIdRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -154,9 +176,12 @@ export interface FileRoutesByTo {
   '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/merchant-feed.xml': typeof MerchantFeedDotxmlRoute
+  '/merchant-local-inventory.xml': typeof MerchantLocalInventoryDotxmlRoute
   '/privacy': typeof PrivacyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/product-images/$id': typeof ProductImagesIdRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -175,10 +200,13 @@ export interface FileRoutesById {
   '/apple-strudel-history': typeof AppleStrudelHistoryRoute
   '/contact': typeof ContactRoute
   '/faqs': typeof FaqsRoute
+  '/merchant-feed.xml': typeof MerchantFeedDotxmlRoute
+  '/merchant-local-inventory.xml': typeof MerchantLocalInventoryDotxmlRoute
   '/privacy': typeof PrivacyRoute
   '/shop': typeof ShopRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/patisserie/$category': typeof PatisserieCategoryRoute
+  '/product-images/$id': typeof ProductImagesIdRoute
   '/shop/$slug': typeof ShopSlugRoute
   '/shop/account': typeof ShopAccountRoute
   '/shop/cart': typeof ShopCartRoute
@@ -198,10 +226,13 @@ export interface FileRouteTypes {
     | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
+    | '/merchant-feed.xml'
+    | '/merchant-local-inventory.xml'
     | '/privacy'
     | '/shop'
     | '/sitemap.xml'
     | '/patisserie/$category'
+    | '/product-images/$id'
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -219,9 +250,12 @@ export interface FileRouteTypes {
     | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
+    | '/merchant-feed.xml'
+    | '/merchant-local-inventory.xml'
     | '/privacy'
     | '/sitemap.xml'
     | '/patisserie/$category'
+    | '/product-images/$id'
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -239,10 +273,13 @@ export interface FileRouteTypes {
     | '/apple-strudel-history'
     | '/contact'
     | '/faqs'
+    | '/merchant-feed.xml'
+    | '/merchant-local-inventory.xml'
     | '/privacy'
     | '/shop'
     | '/sitemap.xml'
     | '/patisserie/$category'
+    | '/product-images/$id'
     | '/shop/$slug'
     | '/shop/account'
     | '/shop/cart'
@@ -261,10 +298,13 @@ export interface RootRouteChildren {
   AppleStrudelHistoryRoute: typeof AppleStrudelHistoryRoute
   ContactRoute: typeof ContactRoute
   FaqsRoute: typeof FaqsRoute
+  MerchantFeedDotxmlRoute: typeof MerchantFeedDotxmlRoute
+  MerchantLocalInventoryDotxmlRoute: typeof MerchantLocalInventoryDotxmlRoute
   PrivacyRoute: typeof PrivacyRoute
   ShopRoute: typeof ShopRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   PatisserieCategoryRoute: typeof PatisserieCategoryRoute
+  ProductImagesIdRoute: typeof ProductImagesIdRoute
   PatisserieIndexRoute: typeof PatisserieIndexRoute
   ApiSwSplatRoute: typeof ApiSwSplatRoute
   PatisserieCategoryProductRoute: typeof PatisserieCategoryProductRoute
@@ -307,6 +347,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FaqsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/merchant-feed.xml': {
+      id: '/merchant-feed.xml'
+      path: '/merchant-feed.xml'
+      fullPath: '/merchant-feed.xml'
+      preLoaderRoute: typeof MerchantFeedDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/merchant-local-inventory.xml': {
+      id: '/merchant-local-inventory.xml'
+      path: '/merchant-local-inventory.xml'
+      fullPath: '/merchant-local-inventory.xml'
+      preLoaderRoute: typeof MerchantLocalInventoryDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy': {
       id: '/privacy'
       path: '/privacy'
@@ -340,6 +394,13 @@ declare module '@tanstack/react-router' {
       path: '/patisserie/$category'
       fullPath: '/patisserie/$category'
       preLoaderRoute: typeof PatisserieCategoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/product-images/$id': {
+      id: '/product-images/$id'
+      path: '/product-images/$id'
+      fullPath: '/product-images/$id'
+      preLoaderRoute: typeof ProductImagesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/shop/': {
@@ -436,10 +497,13 @@ const rootRouteChildren: RootRouteChildren = {
   AppleStrudelHistoryRoute: AppleStrudelHistoryRoute,
   ContactRoute: ContactRoute,
   FaqsRoute: FaqsRoute,
+  MerchantFeedDotxmlRoute: MerchantFeedDotxmlRoute,
+  MerchantLocalInventoryDotxmlRoute: MerchantLocalInventoryDotxmlRoute,
   PrivacyRoute: PrivacyRoute,
   ShopRoute: ShopRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   PatisserieCategoryRoute: PatisserieCategoryRoute,
+  ProductImagesIdRoute: ProductImagesIdRoute,
   PatisserieIndexRoute: PatisserieIndexRoute,
   ApiSwSplatRoute: ApiSwSplatRoute,
   PatisserieCategoryProductRoute: PatisserieCategoryProductRoute,

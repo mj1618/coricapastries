@@ -231,6 +231,16 @@ mandatory `</script` escape; use it for all structured data.
 - **Search Console.** The old site's `google-site-verification` meta is in `__root.tsx`; after
   cutover, submit `/sitemap.xml` in Search Console and use the Change of Address tool only if
   the domain itself changes (it does not).
+- **Merchant Center** (account 5864937865). Products come from two feeds the site serves live
+  from SupplyWise, built in `src/lib/shop/merchantFeed.ts`: `/merchant-feed.xml` (one item per
+  product with a slug and a photo; offer id = SupplyWise product id; sizes share
+  `item_group_id`; `pickup_sla` from `minDeliveryDays`) and `/merchant-local-inventory.xml`
+  (store code `30301`, the linked Business Profile). Merchant Center fetches both daily as file
+  data sources; API-inserted products expired after 30 days and half the range dropped out
+  (2026-11-11). Feed image links point at `/product-images/<storage id>`, which serves the
+  SupplyWise photo in one 200 from our domain: Merchant Center rejected every SupplyWise
+  `getImage` link (a 302 to Convex storage) as "Invalid image encoding". Destinations are free
+  local listings only; Shopping ads stay off because they require delivery.
 
 ## Analytics
 
