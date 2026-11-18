@@ -8,6 +8,7 @@ import {
 import type { ReactNode } from 'react'
 import { Header } from '#/components/Header'
 import { Footer } from '#/components/Footer'
+import { WelcomePopup } from '#/components/WelcomePopup'
 import { ButtonLink } from '#/components/ui'
 import { analyticsHostPattern, gtmId, site } from '#/data/site'
 import { businessGraph, jsonLd } from '#/lib/seo'
@@ -115,6 +116,7 @@ function RootLayout() {
         <Outlet />
       </main>
       <Footer />
+      <WelcomePopup />
     </CartProvider>
   )
 }
