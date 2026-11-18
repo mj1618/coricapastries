@@ -967,17 +967,17 @@ export const catalogue: Category[] = [
         "image": "/img/products/fruit-mince-pies-mini.jpg",
         "description": "",
         "note": "",
-        "priceFrom": 19.0,
-        "priceTo": 29.0,
+        "priceFrom": 20.0,
+        "priceTo": 30.5,
         "optionLabel": "Packaging",
         "variants": [
           {
             "label": "6 Tray",
-            "price": 19
+            "price": 20
           },
           {
             "label": "12 Tray",
-            "price": 29
+            "price": 30.5
           }
         ]
       },
