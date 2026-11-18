@@ -1002,6 +1002,17 @@ export const catalogue: Category[] = [
         ]
       },
       {
+        "slug": "fruit-mince-pies-wrap",
+        "name": "Fruit Mince Pies Wrap",
+        "image": "/product-images/k97ft4tjs5x33qe875jmfnhe7s85abz7",
+        "description": "12 of our delicious regular fruit mince pies, wrapped up and perfect for gifting!",
+        "note": "",
+        "priceFrom": 40.0,
+        "priceTo": null,
+        "optionLabel": null,
+        "variants": []
+      },
+      {
         "slug": "gingerbread",
         "name": "Gingerbread",
         "image": "/img/products/gingerbread.jpg",
