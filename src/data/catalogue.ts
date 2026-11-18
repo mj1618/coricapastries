@@ -985,23 +985,19 @@ export const catalogue: Category[] = [
         "slug": "fruit-mince-pies-reg",
         "name": "Fruit Mince Pies (Reg)",
         "image": "/img/products/fruit-mince-pies-reg.jpg",
-        "description": "Our Regular Fruit Mince Pies available in 3 different packet sizes!",
+        "description": "Our Regular Fruit Mince Pies available in 2 different packet sizes!",
         "note": "Please be advised that our products may contain traces of nuts.",
-        "priceFrom": 21.0,
-        "priceTo": 36.0,
+        "priceFrom": 22.0,
+        "priceTo": 38.0,
         "optionLabel": "Packaging",
         "variants": [
           {
             "label": "6 Tray",
-            "price": 21
+            "price": 22
           },
           {
             "label": "12 Tray",
-            "price": 36
-          },
-          {
-            "label": "12 Wrap",
-            "price": 36
+            "price": 38
           }
         ]
       },
